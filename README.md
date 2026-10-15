@@ -51,6 +51,7 @@
 
 ## Ограничения карты v1
 - Ориентация: Neues Rathaus, Altstadt, Hauptbahnhof, Aegidienkirche — по реальным осям и сторонам света. Opernhaus стоит ровно как в своей карточке (поворот 0, ~45° от реальной оси; на Opernplatz места хватает). Остальные новые — по реальной оси, ближайшей к виду из карточки (отклонение ≤ 45°; сторона к зрителю может отличаться от реальности).
+  - Модули из `mitte2.js`: длинная ось модуля всегда по реальной длинной оси здания (раньше ставилась по «ближайшей оси» и могла лечь поперёк); сторона фасада задаётся в `FACE` (`prep.py`): Landesmuseum — к Willy-Brandt-Allee (с нашего ракурса она за зданием, видна задняя сторона), Kreuzkirche — башня на запад; остальные — наименьший поворот.
 - Дома OSM, чья середина попадает в прямоугольник достопримечательности, убираются (иначе остатки комплексов перекрывают модуль).
 - Hauptbahnhof: дома в зоне Ernst-August-Platz перед фасадом убраны (`CLEAR` в `prep.py`, координаты относительно здания); конь памятника смотрит на вокзал (силуэт на восточной грани постамента).
 - Kröpcke-Uhr стоит по координате из плана города (своего контура в OSM нет); на общей карте почти не видна — есть точка.
@@ -78,6 +79,7 @@
 2. ✅ Altstadt v1.
 2a. ✅ Opernhaus, Hauptbahnhof (+ Ernst-August-Denkmal), Aegidienkirche v1.
 2b. ✅ 11 второстепенных (`landmarks/mitte2.js`, фото `ref/mitte2/`) v1 «узнаваемо» → ждут оценки; детали доводить позже. Их точки меньше и появляются при приближении ≥ 0,8: Anzeiger-Hochhaus, NORD/LB, Landesmuseum, Museum August Kestner, Wangenheimpalais, Kreuzkirche, Neustädter Hof- und Stadtkirche, Beginenturm, Leibnizhaus, Waterloosäule, Kröpcke-Uhr.
+2c. ✅ Herrenhausen (v1): Galerie + Orangerie (`galerie`, жёлтая штукатурка/мансарда и красная черепица) и Große Fontäne (`fontaene`, струя ~60 м) — две точки у входа в Großer Garten; Schloss Herrenhausen, Berggarten, Georgengarten, Welfenschloss — пока без модулей. Карта расширена на запад до Herrenhausen (≈ 21 700 зданий); плитки `render-tiles.mjs` пропускают пустые блоки (маска по `data/q.txt`).
 3. ✅ Карта Mitte на OSM v1 (`karte.html`) → ждёт оценки. Расширена до ≈3×3 км (X/Y ±1500 м в `prep.py`). Дальше: края карты мягче, LOD, детальные крыши фона, достопримечательности новых районов по одной и детально.
 4. Hauptbahnhof + Ernst-August, Opernhaus, Welfenschloss (ур. 2), Herrenhäuser Gärten + Große Fontäne, Maschsee, Telemax, Expo-Dach (ур. 3). Без логотипов (96, üstra).
 5. Домики клиентов из JSON (имя, координаты, ссылка) — только с письменного согласия.

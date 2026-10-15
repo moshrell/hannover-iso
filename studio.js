@@ -17,6 +17,8 @@
     beginenturm: 'Rest der mittelalterlichen Stadtbefestigung (um 1357), heute Teil des Historischen Museums.',
     leibnizhaus: 'Renaissance-Bürgerhaus, in dem Leibniz bis zu seinem Tod 1716 lebte; die Fassade wurde 1983 am Holzmarkt wiederaufgebaut.',
     waterloo: 'Waterloosäule von Laves (1832), 46 m hoch, zur Erinnerung an die Schlacht bei Waterloo; oben die Siegesgöttin Viktoria.',
+    galerie: 'Galerie und Orangerie am Eingang der Herrenhäuser Gärten (Ende 17. Jh.): gelber Putz, Mansarddach – hier beginnt der Große Garten, eine der bedeutendsten Barockgartenanlagen Europas.',
+    fontaene: 'Die Große Fontäne im Großen Garten springt bis zu 70 m hoch – die höchste Gartenfontäne Europas, von Kurfürstin Sophie 1720 erstmals gebaut.',
     kroepcke: 'Die Kröpcke-Uhr – Hannovers Treffpunkt Nummer eins: „Wir treffen uns unter der Uhr.“',
     aegidienkirche: 'Gotische Kirche, 1943 zerstört und seit 1952 Mahnmal für die Opfer von Krieg und Gewalt; im Turm die Friedensglocke aus Hiroshima.',
   };

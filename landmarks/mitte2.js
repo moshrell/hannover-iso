@@ -56,23 +56,24 @@
       const n = Math.floor((len - 2) / 4.2), off = (len - n * 4.2) / 2 + 2.1;
       for (let i = 0; i < n; i++) { const u = off + i * 4.2; w += winA(u - 1.2, 2, 2.4, 6, 1) + winA(u - 1, 11.6, 2, 4.4, 0); if (i < n - 1) q += vl(u + 2.1, 1.3, 9.6); }
       return q + wins(w); };
-    add({ id: 'lmMain', fp: [0, 0, 90, 30], draw: K => K.box(0, 0, Z0, 90, 30, 18, 'st', { S: fac, E: fac, W: fac }) + hip(K, 0, 0, 90, 30, Z0 + 18, Z0 + 24, 'sl') });
+    // Hauptbau mit flachem Walmdach hinter der Balustrade; Eckpavillons mit Kuppeldach; Mittelrisalit mit drei Bogenfenstern, höher als die Flügel
+    add({ id: 'lmMain', fp: [0, 0, 82, 30], draw: K => K.box(0, 0, Z0, 82, 30, 17, 'st', { S: fac, E: fac, W: fac, N: fac }) + hip(K, 0, 0, 82, 30, Z0 + 17, Z0 + 19.6, 'sl') });
     const pav = x => add({ id: 'lmP' + x, fp: [x, -2, x + 14, 33], parent: 'lmMain', side: 'S', draw: K => {
-      let s = K.box(x, -2, Z0, 14, 35, 21, 'st', { S: fac, E: fac, W: fac }) + hip(K, x, -2, x + 14, 33, Z0 + 21, Z0 + 27, 'sl');
-      return s + lathe(K, x + 7, 30, [[Z0 + 21, 3], [Z0 + 24.5, 3], [Z0 + 26, 2.2], [Z0 + 27.6, .9], [Z0 + 28.4, .3]], 'cu', 4, [1]);
+      let s = K.box(x, -2, Z0, 14, 35, 20, 'st', { S: fac, E: fac, W: fac, N: fac }) + hip(K, x, -2, x + 14, 33, Z0 + 20, Z0 + 24, 'sl');
+      return s + lathe(K, x + 7, 15, [[Z0 + 22, 2.6], [Z0 + 24.5, 2.6], [Z0 + 26, 1.9], [Z0 + 27.4, .8], [Z0 + 28.2, .3]], 'cu', 4, [1]);
     } });
-    pav(0); pav(76);
-    add({ id: 'lmRis', fp: [35, 30, 55, 34], parent: 'lmMain', side: 'S', draw: K => {
-      const f = (len, h) => { let q = hl(0, len, .6) + hl(0, len, 1.3) + hl(0, len, h - 7.4) + vl(1.4, 1.3, h) + vl(len - 1.4, 1.3, h), w = '';
-        [4.8, 10, 15.2].forEach(u => { w += winA(u - 1.8, 4.4, 3.6, 11, 2, ' hi'); });
-        w += winA(len / 2 - 1.6, h - 6.4, 3.2, 5.4, 0, ' dim');
+    pav(0); pav(68);
+    add({ id: 'lmRis', fp: [31, 30, 51, 34], parent: 'lmMain', side: 'S', draw: K => {
+      const f = (len, h) => { let q = hl(0, len, .6) + hl(0, len, 1.3) + hl(0, len, h - 2.4) + vl(1.4, 1.3, h) + vl(len - 1.4, 1.3, h), w = '';
+        [4.8, 10, 15.2].forEach(u => { w += winA(u - 1.8, 4.4, 3.6, 10, 2, ' hi'); });
+        w += winA(len / 2 - 1.6, 1.8, 3.2, 5.4, 0, ' dim');
         return q + wins(w); };
-      let s = K.box(35, 30, Z0, 20, 4, 26, 'st', { S: f, E: l => hl(0, l, .6), W: l => hl(0, l, .6) });
-      s += saddle(K, [35, 34], [55, 34], [0, -8], Z0 + 26, Z0 + 31, 'sl');
-      s += K.wall([35, 34], [55, 34], Z0 + 26, Z0 + 26.01, 'st', len => `<path class="st fr" d="M0 0L${f2(len / 2)} -5L${f2(len)} 0Z"/><circle class="dt" cx="${f2(len / 2)}" cy="-2" r="1.2"/>`);
+      let s = K.box(31, 30, Z0, 20, 4, 22, 'st', { S: f, E: l => hl(0, l, .6) + hl(0, l, 19.6), W: l => hl(0, l, .6) + hl(0, l, 19.6), N: l => hl(0, l, .6) });
+      s += hip(K, 31, 30, 51, 34, Z0 + 22, Z0 + 24.2, 'sl');
+      [[31, 32.6], [49.6, 32.6]].forEach(([px, py]) => { s += K.box(px, py, Z0 + 22, 1.4, 1.4, 1.2, 'st') + lathe(K, px + .7, py + .7, [[Z0 + 23.2, .7], [Z0 + 24.4, .5], [Z0 + 26, .12]], 'st', 3); });
       return s;
     } });
-    return { mods: M, lc: [45, 16], z0: 0, top: [45, 34, 32], label: 'Landesmuseum', h: 32, len: 90 };
+    return { mods: M, lc: [41, 16], z0: 0, top: [41, 34, 28], label: 'Landesmuseum', h: 30, len: 82 };
   });
 
   /* --- Museum August Kestner: Würfel mit Wabenfassade aus Glasbausteinen über dunklem Sockel, rotes Band --- */
@@ -208,5 +209,44 @@
       return s;
     } });
     return { mods: M, lc: [1.5, 1.5], z0: 0, top: [1.5, 1.5, 7.5], label: 'Kröpcke-Uhr', h: 7.5, len: 3 };
+  });
+
+  /* --- Herrenhausen: Galerie (rechts, gelber Putz, Mansarddach) und Orangerie (rote Ziegel, hohe Bogenfenster) um den Vorhof des Großen Gartens --- */
+  ISO.landmark('galerie', H => {
+    const { f2, hl, vl, winR, winA, wins, hip, saddle } = H, M = [], add = m => (M.push(m), m);
+    // Galerie: zwei Geschosse, Fenster mit Steinrahmen, Dachgauben, Mansarddach aus Schiefer
+    const gal = (len, h) => { let q = hl(0, len, .7) + hl(0, len, 4.6) + hl(0, len, 4.9) + hl(0, len, h - .6), w = '';
+      const n = Math.floor((len - 4) / 4.6), off = (len - n * 4.6) / 2 + 2.3;
+      for (let i = 0; i < n; i++) { const u = off + i * 4.6; w += winR(u - .8, 1.4, 1.6, 2.8, 1) + winR(u - .8, 5.7, 1.6, 2.8, 0); }
+      return q + wins(w); };
+    const galEnd = (len, h) => hl(0, len, .7) + hl(0, len, 4.7) + wins(winR(len / 2 - 3.4, 1.4, 1.6, 2.8, 1) + winR(len / 2 + 1.8, 1.4, 1.6, 2.8, 1) + winR(len / 2 - 3.4, 5.7, 1.6, 2.8, 0) + winR(len / 2 + 1.8, 5.7, 1.6, 2.8, 0));
+    add({ id: 'galB', fp: [2.1, 42.4, 90.8, 59.9], draw: K => {
+      let s = K.box(2.1, 42.4, Z0, 88.7, 17.5, 9, 'gb', { S: gal, N: gal, E: galEnd, W: galEnd }) + hip(K, 2.1, 42.4, 90.8, 59.9, Z0 + 9, Z0 + 14.2, 'sl');
+      for (let x = 10; x < 86; x += 9.2) s += K.box(x, 57.4, Z0 + 9.3, 1.8, 1.5, 2.3, 'gb', { S: () => wins(winR(.3, .4, 1.2, 1.4, 1)) }, false) + saddle(K, [x - .2, 58.9], [x + 2, 58.9], [0, -1.5], Z0 + 11.6, Z0 + 12.8, 'sl');
+      return s;
+    } });
+    // Orangerie: ein hohes Geschoss, Bogenfenster zum Hof, rotes Ziegeldach
+    const org = (len, h) => { let q = hl(0, len, .6) + hl(0, len, h - .8), w = '';
+      const n = Math.floor((len - 4) / 6.2), off = (len - n * 6.2) / 2 + 3.1;
+      for (let i = 0; i < n; i++) { const u = off + i * 6.2; w += winA(u - 1.3, 1.2, 2.6, h - 3.4, 1, ' dim'); }
+      return q + wins(w); };
+    const orgEnd = (len, h) => hl(0, len, .6) + wins(winA(len / 2 - 3.6, 1.2, 2.4, h - 3.4, 1, ' dim') + winA(len / 2 + 1.2, 1.2, 2.4, h - 3.4, 1, ' dim'));
+    add({ id: 'orgB', fp: [0, 0, 93.3, 18.4], draw: K =>
+      K.box(0, 0, Z0, 93.3, 18.4, 8.6, 'gb', { S: org, N: org, E: orgEnd, W: orgEnd }) + hip(K, 0, 0, 93.3, 18.4, Z0 + 8.6, Z0 + 14.4, 'tl') });
+    return { mods: M, lc: [46.6, 30], z0: 0, top: [46.6, 51, 15], label: 'Herrenhäuser Gärten · Galerie', h: 16, len: 93 };
+  });
+
+  /* --- Große Fontäne: Strahl bis ~60 m (höchste Gartenfontäne Europas) im Becken des Großen Gartens, nachts angestrahlt --- */
+  ISO.landmark('fontaene', H => {
+    const { lathe } = H, M = [];
+    M.push({ id: 'ft', fp: [-12, -12, 16, 16], draw: K => {
+      let s = '';
+      for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6, x = 2 + 11 * Math.cos(a), y = 2 + 11 * Math.sin(a);
+        s += lathe(K, x, y, [[Z0, .5], [Z0 + 5, .3], [Z0 + 10, .08]], 'jet', 3); }
+      // Strahlen: unten dick, nach oben fein auslaufend, dazu ein glühender Kern (Anstrahlung)
+      s += lathe(K, 2, 2, [[Z0, .8], [Z0 + 20, .5], [Z0 + 40, .3], [Z0 + 60, .05]], 'jet', 4);
+      return s;
+    } });
+    return { mods: M, lc: [2, 2], z0: 0, top: [2, 2, 62], label: 'Große Fontäne', h: 62, len: 14 };
   });
 })();

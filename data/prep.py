@@ -79,9 +79,9 @@ def num(v):
 LM_IDS = {'w5121355': 'marktkirche', 'w5121356': 'altesRathaus', 'r1170793': 'leineschloss', 'r313173': 'neuesRathaus',
           'w4816458': 'opernhaus', 'w265614713': 'hauptbahnhof', 'r7359339': 'aegidienkirche',
           'w304133007': 'anzeiger', 'r2479829': 'nordlb', 'r364529': 'landesmuseum', 'w4816460': 'kestner', 'r5162749': 'wangenheim',
-          'w29348078': 'kreuzkirche', 'w29173386': 'neustaedter', 'w31290856': 'beginenturm', 'w10677757': 'leibnizhaus', 'w140254020': 'waterloo'}
+          'w29348078': 'kreuzkirche', 'w29173386': 'neustaedter', 'w31290856': 'beginenturm', 'w10677757': 'leibnizhaus', 'w140254020': 'waterloo', 'w10142072': 'galerie', 'w10142074': 'galerie'}
 # Wahrzeichen ohne eigenen OSM-Umriss (Punkt, Lage aus dem Stadtplan): Name → (lat, lon, Kantenlänge m)
-LM_POINTS = {'kroepcke': (52.37444, 9.73812, 3)}
+LM_POINTS = {'kroepcke': (52.37444, 9.73812, 3), 'fontaene': (52.38601, 9.69596, 4)}
 B, LM = [], {}
 for e in d['elements']:
     t = e.get('tags', {})
@@ -120,14 +120,36 @@ for k, rs in LM.items():
     A, th, w, hh, cx, cy = mar(pts)
     LMI[k] = {'th': th, 'w': w, 'd': hh, 'cx': cx, 'cy': cy, 'hull': hull(pts)}
     print(k, 'theta %.1f°' % math.degrees(th), 'size %.0f x %.0f' % (w, hh), 'c %.0f,%.0f' % (cx, cy), file=sys.stderr)
+# Ausrichtung einzelner Module nach der Wirklichkeit: ('street', lokale Front, Straßenname) bzw. ('compass', lokale Richtung, Kompassvektor Ost/Süd)
+FACE = {'landesmuseum': ('street', (0, 1), 'Willy-Brandt-Allee'), 'kreuzkirche': ('compass', (-1, 0), (-1, 0))}
+_sp = {}
+def street_pt(name, v):
+    if name not in _sp:
+        best = None
+        for e in d['elements']:
+            if e.get('tags', {}).get('name') == name and 'highway' in e.get('tags', {}) and 'geometry' in e:
+                for q in proj(e['geometry']):
+                    dd = math.hypot(q[0] - v['cx'], q[1] - v['cy'])
+                    if best is None or dd < best[0]: best = (dd, q)
+        _sp[name] = best[1]
+    return _sp[name]
 def phi_of(k, v):
     tl = v['th'] if v['w'] >= v['d'] else v['th'] + math.pi / 2   # reale Längsachse
     long_y = k in ('leineschloss', 'opernhaus')
     if k not in ('neuesRathaus', 'marktkirche', 'altesRathaus', 'leineschloss', 'hauptbahnhof', 'aegidienkirche'):
-        # wie in der Detailansicht: unter den echten Ausrichtungen (Längsachse bleibt Längsachse) die mit der kleinsten Drehung
         norm = lambda a: (a + math.pi) % (2 * math.pi) - math.pi
-        if k == 'opernhaus': return 0.0       # frei auf dem Opernplatz: genau wie in der Detailansicht (Säulenhalle schräg zum Betrachter)
-        return min((norm(tl + i * math.pi / 2) for i in range(4)), key=abs)   # an Straßen ausgerichtet, höchstens 45° von der Detailansicht                    # Modul-Längsachse lokal y
+        if k == 'opernhaus': return 0.0       # frei auf dem Opernplatz: genau wie in der Detailansicht
+        # Modul-Längsachse (lokal x) liegt auf der echten Längsachse; nur die Richtung der Front wird gewählt
+        cs = [tl, tl + math.pi] if max(v['w'], v['d']) / min(v['w'], v['d']) >= 1.2 else [tl + i * math.pi / 2 for i in range(4)]
+        rot = lambda ph, x, y: (x * math.cos(ph) - y * math.sin(ph), x * math.sin(ph) + y * math.cos(ph))
+        if k in FACE:
+            kind, a, b = FACE[k]                 # 'street': lokale Front (a) zur benannten Straße; 'compass': lokale Richtung a nach Kompassrichtung b (x Ost, y Süd)
+            if kind == 'street':
+                tx, ty = street_pt(b, v); tx -= v['cx']; ty -= v['cy']
+            else:
+                tx, ty = b[0] * ROT[0] - b[1] * ROT[1], b[0] * ROT[1] + b[1] * ROT[0]
+            return max(cs, key=lambda ph: sum(p * q for p, q in zip(rot(ph, *a), (tx, ty))))
+        return min((norm(c_) for c_ in cs), key=abs)   # sonst: kleinste Drehung (wie Detailansicht)
     cands = [tl - math.pi / 2, tl + math.pi / 2] if long_y else [tl, tl + math.pi]
     if max(v['w'], v['d']) / min(v['w'], v['d']) < 1.2: cands = [tl + i * math.pi / 2 for i in range(4)]   # fast quadratisch: alle vier Richtungen erlaubt
     rot = lambda ph, x, y: (x * math.cos(ph) - y * math.sin(ph), x * math.sin(ph) + y * math.cos(ph))
@@ -182,14 +204,14 @@ for e in d['elements']:
         for r in outer(e):
             if r: PK.append(r)
 # Ausschnitt begrenzen
-X0, X1, Y0, Y1 = -1500, 1500, -1500, 1500
+X0, X1, Y0, Y1 = -4500, 2100, -3500, 2820
 inb = lambda p: X0 <= p[0] <= X1 and Y0 <= p[1] <= Y1
 B = [b for b in B if any(inb(p) for p in b['p'])]
 TR = [t for t in TR if inb(t) and not in_clear(*t)]
 # ---------- Sortierung (Malerverfahren) ----------
 items = [{'k': 'b', 'i': i, 'hull': hull([tuple(p) for p in b['p']]), 'h': b['h']} for i, b in enumerate(B)]
 LMH = {'neuesRathaus': 99, 'marktkirche': 99, 'altesRathaus': 40, 'leineschloss': 26, 'opernhaus': 40, 'hauptbahnhof': 39, 'aegidienkirche': 57,
-       'anzeiger': 56, 'nordlb': 74, 'landesmuseum': 32, 'kestner': 21, 'wangenheim': 18, 'kreuzkirche': 59, 'neustaedter': 68, 'beginenturm': 27, 'leibnizhaus': 32, 'waterloo': 47, 'kroepcke': 8}
+       'anzeiger': 56, 'nordlb': 74, 'landesmuseum': 32, 'kestner': 21, 'wangenheim': 18, 'kreuzkirche': 59, 'neustaedter': 68, 'beginenturm': 27, 'leibnizhaus': 32, 'waterloo': 47, 'kroepcke': 8, 'galerie': 18, 'fontaene': 60}
 for k, v in LMI.items(): items.append({'k': 'l', 'i': k, 'hull': v['hull'], 'h': LMH[k]})
 for ti, (x, y) in enumerate(TR): items.append({'k': 't', 'i': ti, 'hull': [(x - 2, y - 2), (x + 2, y - 2), (x + 2, y + 2), (x - 2, y + 2)], 'h': 11})
 for it in items:

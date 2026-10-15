@@ -21,6 +21,8 @@
     leibnizhaus: { t: 'Leibnizhaus', f: 'Renaissance-Bürgerhaus, in dem Leibniz bis 1716 lebte; Fassade 1983 am Holzmarkt wiederaufgebaut.', d: 'studio.html?lm=leibnizhaus', from: ['leibnizhaus'], minor: 1 },
     waterloo: { t: 'Waterloosäule', f: 'Siegessäule von Laves (1832), 46 m hoch, oben die Viktoria.', d: 'studio.html?lm=waterloo', from: ['waterloo'], minor: 1 },
     kroepcke: { t: 'Kröpcke-Uhr', f: 'Hannovers Treffpunkt Nummer eins: „Wir treffen uns unter der Uhr.“', d: 'studio.html?lm=kroepcke', from: ['kroepcke'], minor: 1 },
+    galerie: { t: 'Herrenhäuser Gärten', f: 'Galerie und Orangerie am Eingang des Großen Gartens, einer der bedeutendsten Barockgärten Europas.', d: 'studio.html?lm=galerie', from: ['galerie'] },
+    fontaene: { t: 'Große Fontäne', f: 'Bis zu 70 m hoch – die höchste Gartenfontäne Europas.', d: 'studio.html?lm=fontaene', from: ['fontaene'] },
     altstadt: { t: 'Altstadt', f: 'Marktkirche (Backsteingotik, 14. Jh., Turm 97 m), Altes Rathaus mit Treppengiebeln und das Leineschloss – heute Sitz des Niedersächsischen Landtags.', d: 'altstadt.html', from: ['marktkirche', 'altesRathaus', 'leineschloss'] },
   };
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
@@ -31,7 +33,7 @@
 
   /* ---------- Kacheln ---------- */
   function setup(meta) {
-    M = meta;
+    M = meta; M.box = M.box || [0, 0, M.VW, M.VH];
     M.have = M.levels.map((_, i) => new Set(M.tiles[i] || []));
     M.levels.forEach((lv, i) => {
       const el = document.createElement('div'); el.className = 'lv'; el.style.width = lv.w + 'px'; el.style.height = lv.h + 'px';
@@ -81,8 +83,9 @@
   const clamp = () => {
     const W = map.clientWidth, H = map.clientHeight;
     v.z = Math.min(zMax, Math.max(zMin, v.z));
-    v.x = Math.min(W * .6, Math.max(W * .4 - M.VW * v.z, v.x));
-    v.y = Math.min(H * .6, Math.max(H * .4 - M.VH * v.z, v.y));
+    const [bx0, by0, bx1, by1] = M.box;   // nur das Datengebiet ist begehbar
+    v.x = Math.min(W * .6 - bx0 * v.z, Math.max(W * .4 - bx1 * v.z, v.x));
+    v.y = Math.min(H * .6 - by0 * v.z, Math.max(H * .4 - by1 * v.z, v.y));
   };
   const zoomAt = (f, px, py) => { const z0 = v.z; v.z = Math.min(zMax, Math.max(zMin, v.z * f)); const k = v.z / z0; v.x = px - (px - v.x) * k; v.y = py - (py - v.y) * k; clamp(); apply(); };
   const focus = (wx, wy, z) => { v.z = z; v.x = map.clientWidth / 2 - wx * z; v.y = map.clientHeight / 2 - wy * z; clamp(); apply(); };
@@ -114,8 +117,8 @@
   map.addEventListener('dblclick', e => { if (e.target.closest('button')) return; const r = map.getBoundingClientRect(); zoomAt(1.8, e.clientX - r.left, e.clientY - r.top); });
   document.getElementById('zin').addEventListener('click', () => zoomAt(1.5, map.clientWidth / 2, map.clientHeight / 2));
   document.getElementById('zout').addEventListener('click', () => zoomAt(1 / 1.5, map.clientWidth / 2, map.clientHeight / 2));
-  document.getElementById('zall').addEventListener('click', () => fly(M.VW / 2, M.VH / 2, zMin));
-  window.addEventListener('resize', () => { if (M) { zMin = Math.min(map.clientWidth / M.VW, map.clientHeight / M.VH) * .95; clamp(); apply(); } });
+  document.getElementById('zall').addEventListener('click', () => fly((M.box[0] + M.box[2]) / 2, (M.box[1] + M.box[3]) / 2, zMin));
+  window.addEventListener('resize', () => { if (M) { zMin = Math.min(map.clientWidth / (M.box[2] - M.box[0]), map.clientHeight / (M.box[3] - M.box[1])) * .95; clamp(); apply(); } });
 
   /* ---------- Detailansicht eines Wahrzeichens (eigene Seite im Rahmen, mit Abendlicht) ---------- */
   const dlg = document.getElementById('detail'), frame = document.getElementById('detail-frame'), dTitle = document.getElementById('detail-title'), dFact = document.getElementById('detail-fact');
@@ -142,7 +145,7 @@
   /* ---------- Start ---------- */
   try {
     setup(window.TILES);
-    zMin = Math.min(map.clientWidth / M.VW, map.clientHeight / M.VH) * .95;
+    zMin = Math.min(map.clientWidth / (M.box[2] - M.box[0]), map.clientHeight / (M.box[3] - M.box[1])) * .95;
     // Start: nah am Neuen Rathaus, Altstadt noch im Bild
     const nr = M.pins.find(p => p.name === 'neuesRathaus'), al = M.pins.find(p => p.name === 'altstadt');
     focus(nr.x * .62 + al.x * .38, nr.y * .62 + al.y * .38, Math.max(zMin, map.clientWidth < 700 ? 1.15 : 1.5));

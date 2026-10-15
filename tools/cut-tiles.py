@@ -27,6 +27,8 @@ open(os.path.join(out, 'meta.js'), 'w').write('window.TILES=' + json.dumps(meta,
 lv = meta['levels'][0]; P = Image.new('RGB', (lv['w'] * D, lv['h'] * D), (10, 14, 12))
 for f in glob.glob(os.path.join(tmp, 'L0_*_*.png')):
     _, bx, by = map(int, os.path.basename(f)[1:-4].split('_')); P.paste(Image.open(f).convert('RGB'), (bx * B * D, by * B * D))
-P = P.crop((0, 0, lv['w'] * D, lv['h'] * D)); P.save(os.path.join(out, 'poster.webp'), 'WEBP', quality=80, method=6)
+P = P.crop((0, 0, lv['w'] * D, lv['h'] * D))
+if P.width > 1800: P = P.resize((1800, round(P.height * 1800 / P.width)), Image.LANCZOS)   # Telefon-Speicher: Poster höchstens 1800 px breit
+P.save(os.path.join(out, 'poster.webp'), 'WEBP', quality=60, method=6)
 n = sum(len(v) for v in tiles.values()); size = sum(os.path.getsize(p) for p in glob.glob(os.path.join(out, '*', '*.webp')))
 print('Kacheln', n, 'MB %.1f' % (size / 1e6), 'Poster KB', os.path.getsize(os.path.join(out, 'poster.webp')) // 1000)

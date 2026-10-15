@@ -131,3 +131,5 @@
   .rh .glb { fill:#0E1519; stroke:#25333B; stroke-width:.5; } .rh .glb.sd { fill:#0A1013; } .rh .glb.tp { fill:#121B20; }
   .rh .glb { transition:fill 1.84s var(--soft) var(--d, 0s), stroke 1.84s var(--soft) var(--d, 0s); }
   .rh.lit .glb { fill:#2C4250; stroke:#7FA3B5; } .rh.lit .glb.sd { fill:#1E2F39; } .rh.lit .glb.tp { fill:#36505F; }
+
+  .rh .jet { fill:#BFD6E2; stroke:none; opacity:.78; }
