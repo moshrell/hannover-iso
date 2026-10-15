@@ -4,11 +4,10 @@
 (() => {
   'use strict';
   const BASE = 'tiles/';
+  // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): Altstadt = ein Punkt für alle drei Bauten
   const FACTS = {
-    neuesRathaus: { t: 'Neues Rathaus', f: 'Erbaut 1901–1913 am Maschteich, Kuppel 97,73 m, Bogenaufzug bis zur Aussicht.', d: 'rathaus.html' },
-    marktkirche: { t: 'Marktkirche', f: 'Backsteingotik aus dem 14. Jahrhundert, Turm 97 m – Wahrzeichen der Altstadt.', d: 'altstadt.html' },
-    altesRathaus: { t: 'Altes Rathaus', f: 'Ältestes Profangebäude der Stadt (ab 1410), Treppengiebel mit glasierten Friesen.', d: 'altstadt.html' },
-    leineschloss: { t: 'Leineschloss · Landtag', f: 'Ehemaliges Residenzschloss an der Leine, seit 1962 Sitz des Niedersächsischen Landtags.', d: 'altstadt.html' },
+    neuesRathaus: { t: 'Neues Rathaus', f: 'Erbaut 1901–1913 am Maschteich, Kuppel 97,73 m, Bogenaufzug bis zur Aussicht.', d: 'rathaus.html', from: ['neuesRathaus'] },
+    altstadt: { t: 'Altstadt', f: 'Marktkirche (Backsteingotik, 14. Jh., Turm 97 m), Altes Rathaus mit Treppengiebeln und das Leineschloss – heute Sitz des Niedersächsischen Landtags.', d: 'altstadt.html', from: ['marktkirche', 'altesRathaus', 'leineschloss'] },
   };
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
   const labelsEl = document.getElementById('labels');
@@ -25,9 +24,12 @@
       world.appendChild(el); layers.push({ el, s: lv.s, imgs: new Map() });
     });
     poster.style.width = M.VW + 'px'; poster.style.height = M.VH + 'px';
-    M.labels.forEach(l => {
-      const b = document.createElement('button'); b.className = 'lbl'; b.textContent = FACTS[l.name] ? FACTS[l.name].t : l.label;
-      b.addEventListener('click', () => openDetail(l.name)); labelsEl.appendChild(b); l.el = b;
+    // Punkte aus den gerenderten Positionen der Bauten (Mittelwert bei Gruppen)
+    M.pins = Object.entries(FACTS).map(([name, F]) => {
+      const ls = F.from.map(n => M.labels.find(l => l.name === n)).filter(Boolean);
+      const p = { name, x: ls.reduce((s, l) => s + l.x, 0) / ls.length, y: ls.reduce((s, l) => s + l.y, 0) / ls.length };
+      const b = document.createElement('button'); b.className = 'pin'; b.dataset.n = F.t; b.setAttribute('aria-label', F.t + ' – Detailansicht öffnen');
+      b.addEventListener('click', () => openDetail(name)); labelsEl.appendChild(b); p.el = b; return p;
     });
   }
   const levelFor = z => { const dpr = Math.min(2, window.devicePixelRatio || 1); for (let i = 0; i < M.levels.length; i++) if (M.levels[i].s * 2 >= z * dpr * .9) return i; return M.levels.length - 1; };
@@ -56,7 +58,7 @@
         if (tx < x0 - 3 || tx > x1 + 3 || ty < y0 - 3 || ty > y1 + 3) { im.remove(); ly.imgs.delete(key); } });
     });
     poster.style.transform = `translate3d(${v.x.toFixed(1)}px, ${v.y.toFixed(1)}px, 0) scale(${v.z.toFixed(5)})`;
-    M.labels.forEach(l => { l.el.style.transform = `translate3d(${(v.x + l.x * v.z).toFixed(1)}px, ${(v.y + l.y * v.z - 6).toFixed(1)}px, 0) translate(-50%, -100%)`; });
+    M.pins.forEach(p => { p.el.style.transform = `translate3d(${(v.x + p.x * v.z).toFixed(1)}px, ${(v.y + p.y * v.z).toFixed(1)}px, 0) translate(-50%, -50%)`; });
   }
   const apply = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; tiles(); }); };
 
@@ -105,7 +107,7 @@
   function openDetail(name) {
     const F = FACTS[name]; if (!F) return;
     dTitle.textContent = F.t; dFact.textContent = F.f;
-    const l = M.labels.find(q => q.name === name); if (l) fly(l.x, l.y + 40, Math.max(v.z, 1.6));
+    const p = M.pins.find(q => q.name === name); if (p) fly(p.x, p.y + 40, Math.max(v.z, 1.6));
     frame.src = `${F.d}?embed`;
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
@@ -126,9 +128,9 @@
   try {
     setup(window.TILES);
     zMin = Math.min(map.clientWidth / M.VW, map.clientHeight / M.VH) * .95;
-    const nr = M.labels.find(l => l.name === 'neuesRathaus'), mk = M.labels.find(l => l.name === 'marktkirche');
-    const cx = (nr.x + mk.x) / 2, cy = (nr.y + mk.y) / 2 + 60;
-    focus(cx, cy, Math.max(zMin, Math.min(1.3, map.clientWidth / (map.clientWidth < 700 ? 560 : 900))));
+    // Start: nah am Neuen Rathaus, Altstadt noch im Bild
+    const nr = M.pins.find(p => p.name === 'neuesRathaus'), al = M.pins.find(p => p.name === 'altstadt');
+    focus(nr.x * .62 + al.x * .38, nr.y * .62 + al.y * .38, Math.max(zMin, map.clientWidth < 700 ? 1.15 : 1.5));
     map.classList.add('ready');
   } catch (err) { console.error('karte:', err); }
 })();

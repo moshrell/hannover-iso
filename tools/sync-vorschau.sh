@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 D=${1:-../kravets-site}/public/vorschau/karte-ksn0
 find "$D" -mindepth 1 ! -name .htaccess -exec rm -rf {} + 2>/dev/null || true
 mkdir -p "$D"
-cp karte.html "$D/index.html"; cp karte.css karte.js rathaus.html rathaus.css rathaus.js altstadt.html altstadt.css altstadt.js "$D/"
+cp karte.html "$D/index.html"; cp karte.css karte.js embed.js rathaus.html rathaus.css rathaus.js altstadt.html altstadt.css altstadt.js "$D/"
 cp -r tiles "$D/tiles"; rm -f "$D/tiles/meta.json"
 cat > "$D/.htaccess" <<'H'
 # Entwurf Hannover-Karte (privat): eigene Sicherheitsregeln, nicht in Suchmaschinen

@@ -1,6 +1,5 @@
 (() => {
   'use strict';
-  if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add('embed');
   const C = Math.cos(Math.PI / 6), S = Math.sin(Math.PI / 6);
   const f2 = n => (+n).toFixed(2);
   const CX = 30, CY = 50;                  // Szenenmitte
@@ -482,7 +481,7 @@
       flood: [...svg.querySelectorAll('.flood')],
     };
   }
-  const SPEED = .765;  // Tempo des ganzen Ablaufs (1 = langsam, kleiner = schneller)
+  const SPEED = .38;  // Tempo des ganzen Ablaufs (1 = langsam, kleiner = schneller)
   const setD = (el, d) => el.style.setProperty('--d', `${(d * SPEED).toFixed(2)}s`);
   function applyLight(svg) {
     prep = prep || prepare(svg);
@@ -517,5 +516,5 @@
   show(0);
   // Beim ersten Aufruf: einmal von selbst angehen und wieder ausgehen, danach nur per Knopf. ?sofort = sofort an
   if (q.has('sofort')) { cur.classList.add('instant'); setLit(true); }
-  else demo = [setTimeout(() => setLit(true), 900), setTimeout(() => setLit(false), 900 + 10400)];
+  else demo = [setTimeout(() => setLit(true), 900), setTimeout(() => setLit(false), 900 + 5600)];
 })();

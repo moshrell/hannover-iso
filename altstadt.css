@@ -55,11 +55,11 @@
   .rh * { vector-effect:non-scaling-stroke; }
   /* Abendablauf: Laternen → Fenster etagenweise → Anstrahlung der Fassade von unten nach oben → Kuppellaterne.
      Jedes Element bekommt seine Verzögerung als --d (JS), Abschalten läuft rückwärts. */
-  .rh .st, .rh .tl, .rh .cu, .rh .bk, .rh .sl, .rh .gz, .rh .lv, .rh .dt, .rh .mul, .rh .clockface, .rh .hand { transition:fill 1.84s var(--soft) var(--d, 0s), stroke 1.84s var(--soft) var(--d, 0s); }
-  .rh .wn { transition:fill 1.22s var(--soft) var(--d, 0s), stroke 1.22s var(--soft) var(--d, 0s), opacity 1.22s var(--soft) var(--d, 0s); }
-  .rh .lamp, .rh .lant { transition:fill 1.38s var(--soft) var(--d, 0s); }
-  .rh .lamp-g, .rh .lamp-r, .rh .lant-h { transition:opacity 1.53s var(--soft) var(--d, 0s); }
-  .rh .flood { transition:opacity 2.75s var(--soft) var(--d, 0s); }
+  .rh .st, .rh .tl, .rh .cu, .rh .bk, .rh .sl, .rh .gz, .rh .lv, .rh .dt, .rh .mul, .rh .clockface, .rh .hand { transition:fill 0.92s var(--soft) var(--d, 0s), stroke 0.92s var(--soft) var(--d, 0s); }
+  .rh .wn { transition:fill 0.61s var(--soft) var(--d, 0s), stroke 0.61s var(--soft) var(--d, 0s), opacity 0.61s var(--soft) var(--d, 0s); }
+  .rh .lamp, .rh .lant { transition:fill 0.69s var(--soft) var(--d, 0s); }
+  .rh .lamp-g, .rh .lamp-r, .rh .lant-h { transition:opacity 0.77s var(--soft) var(--d, 0s); }
+  .rh .flood { transition:opacity 1.38s var(--soft) var(--d, 0s); }
   .rh .wins { filter:url(#wglow); }
   .rh.instant * { transition:none !important; }
   @media (prefers-reduced-motion:reduce) { .rh * { transition-duration:.01s !important; transition-delay:0s !important; } }
@@ -128,3 +128,7 @@
   html.embed .stage { width:min(100%, calc((100svh - 96px) * var(--ar))); margin:0 auto; }
   html.embed .side-col { max-width:880px; margin:0 auto; }
   @media (max-width:899px) { html.embed .wrap { min-height:100svh; display:flex; flex-direction:column; justify-content:center; } }
+  /* Bedienleiste in der Einbettung: mittig und fest, damit nichts springt */
+  html.embed .ctrl { flex-direction:column; justify-content:center; align-items:center; gap:8px; }
+  html.embed .read { flex:none; width:100%; text-align:center; min-height:1.5em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  @media (max-width:640px) { html.embed body { overflow-x:hidden; } html.embed .stage { width:150%; margin-left:-25%; } }
