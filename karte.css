@@ -1,0 +1,43 @@
+/* Seite karte.html: Rahmen, Kartenfenster, Bedienelemente (Zeichnung: core/iso.css) */
+  * { box-sizing:border-box; }
+html, body { margin:0; background:var(--bg); color:var(--txt); }
+body { font-family:ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif; }
+.wrap { max-width:1280px; margin:0 auto; padding:20px 16px 48px; }
+.eb { font:500 .7rem/1.6 ui-monospace, "Cascadia Mono", Menlo, monospace; letter-spacing:.2em; text-transform:uppercase; color:var(--glow-d); }
+h1 { font:400 clamp(1.8rem, 5vw, 3rem)/1.05 "Palatino Linotype", Palatino, Georgia, serif; margin:.4rem 0 .3rem; }
+.sub { color:var(--mut); margin:0 0 1rem; font-size:.95rem; max-width:60ch; }
+
+/* Kartenfenster: feste Höhe, damit nichts springt */
+.map { position:relative; height:min(74svh, 820px); min-height:420px; overflow:hidden; border-radius:14px; background:var(--bg);
+       border:1px solid rgba(255,231,163,.12); touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; }
+.map.drag { cursor:grabbing; }
+.world { position:absolute; left:0; top:0; transform-origin:0 0; }
+.map.moving .world { will-change:transform; }
+.world svg { display:block; }
+.lbl { position:absolute; transform:translate(-50%, -100%) scale(var(--iz, 1)); transform-origin:50% 100%; pointer-events:auto;
+       font:500 .72rem/1.2 ui-monospace, Menlo, monospace; letter-spacing:.08em; color:var(--txt); white-space:nowrap;
+       background:rgba(10,14,12,.78); border:1px solid rgba(255,231,163,.35); border-radius:999px; padding:.35rem .6rem; cursor:pointer; }
+.lbl::after { content:""; position:absolute; left:50%; top:100%; width:1px; height:14px; background:rgba(255,231,163,.45); }
+.lbl:hover { border-color:var(--glow); }
+.hud { position:absolute; display:flex; gap:8px; }
+.hud.tr { top:10px; right:10px; flex-direction:column; }
+.hud.bl { left:10px; bottom:10px; align-items:center; flex-wrap:wrap; right:10px; }
+.btn { appearance:none; border:1px solid rgba(255,231,163,.35); background:rgba(10,14,12,.72); color:var(--txt); backdrop-filter:blur(6px);
+       font:500 .95rem/1 inherit; padding:.8rem 1.05rem; border-radius:999px; cursor:pointer; display:inline-flex; gap:.6rem; align-items:center; min-height:44px;
+       transition:background .3s, border-color .3s, box-shadow .3s; }
+.btn:hover { background:rgba(255,231,163,.12); }
+.btn:focus-visible { outline:2px solid var(--glow); outline-offset:3px; }
+.btn[aria-pressed="true"] { background:rgba(255,231,163,.18); border-color:var(--glow); box-shadow:0 0 22px rgba(255,231,163,.25); }
+.btn i { width:9px; height:9px; border-radius:50%; background:var(--glow); box-shadow:0 0 10px var(--glow); flex:none; }
+.btn.ic { width:44px; padding:0; justify-content:center; font-size:1.2rem; }
+.hint { font:500 .72rem/1.4 ui-monospace, Menlo, monospace; color:var(--mut); background:rgba(10,14,12,.6); padding:.3rem .55rem; border-radius:6px; }
+.load { position:absolute; inset:0; display:grid; place-items:center; font:500 .8rem/1 ui-monospace, Menlo, monospace; color:var(--mut); letter-spacing:.1em; }
+
+.list { display:grid; gap:10px; margin:18px 0 0; padding:0; list-style:none; }
+@media (min-width:720px) { .list { grid-template-columns:repeat(2, 1fr); } }
+.list button { all:unset; box-sizing:border-box; display:block; width:100%; cursor:pointer; padding:14px 16px; border-radius:12px; border:1px solid rgba(255,231,163,.14); background:rgba(255,231,163,.03); }
+.list button:hover, .list button:focus-visible { border-color:rgba(255,231,163,.45); }
+.list b { display:block; font:400 1.15rem/1.2 "Palatino Linotype", Palatino, Georgia, serif; margin-bottom:4px; }
+.list span { color:var(--mut); font-size:.9rem; line-height:1.45; }
+.credit { margin-top:2rem; font:.72rem/1.6 ui-monospace, Menlo, monospace; color:rgba(237,232,221,.42); }
+.credit a { color:inherit; }
