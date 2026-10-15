@@ -6,39 +6,42 @@
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
 <title>Hannover Mitte · Karte (Entwurf)</title>
-<link rel="stylesheet" href="core/iso.css">
+<link rel="preload" as="image" href="tiles/poster.webp">
 <link rel="stylesheet" href="karte.css">
 </head>
 <body>
 <div class="wrap">
   <span class="eb">Hannover-Karte · Entwurf</span>
   <h1>Hannover Mitte</h1>
-  <p class="sub">Von der Altstadt bis zum Maschteich: Straßen und Häuser nach OpenStreetMap, die Wahrzeichen von Hand gezeichnet.</p>
+  <p class="sub">Von der Altstadt bis zum Maschteich: Straßen und Häuser nach OpenStreetMap, die Wahrzeichen von Hand gezeichnet. Tippen Sie auf ein Wahrzeichen.</p>
 
-  <div class="map" id="map" aria-label="Interaktive isometrische Karte von Hannover Mitte">
-    <div class="load" id="load">Karte wird gezeichnet …</div>
+  <div class="map" id="map" aria-label="Isometrische Karte von Hannover Mitte am Abend">
+    <img class="poster" id="poster" src="tiles/poster.webp" alt="" width="1014" height="630" decoding="async">
     <div class="world" id="world"></div>
+    <div class="labels" id="labels"></div>
     <div class="hud tr">
       <button class="btn ic" id="zin" aria-label="Vergrößern">+</button>
       <button class="btn ic" id="zout" aria-label="Verkleinern">−</button>
       <button class="btn ic" id="zall" aria-label="Ganze Karte zeigen">⤢</button>
     </div>
-    <div class="hud bl">
-      <button class="btn" id="b-light" aria-pressed="false"><i></i>Abendlicht</button>
-      <span class="hint" id="hint">Ziehen · Zoomen mit zwei Fingern oder Mausrad</span>
-    </div>
+    <div class="hud bl"><span class="hint">Ziehen · Zoomen mit zwei Fingern oder Mausrad</span></div>
   </div>
 
   <ul class="list" id="list"></ul>
 
   <p class="credit">Kartendaten © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap-Mitwirkende</a> (ODbL) ·
-    Projektion nach iso-figure (MIT, Tolga Cohce) · Zeichnung nicht maßstabsgetreu bei den Wahrzeichen</p>
+    Projektion nach iso-figure (MIT, Tolga Cohce) · Wahrzeichen nicht maßstabsgetreu</p>
 </div>
 
-<script src="core/iso-core.js"></script>
-<script src="landmarks/neues-rathaus.js"></script>
-<script src="landmarks/altstadt.js"></script>
-<script src="data/mitte.js"></script>
+<dialog class="detail" id="detail" aria-labelledby="detail-title">
+  <div class="d-head">
+    <div><h2 id="detail-title"></h2><p id="detail-fact"></p></div>
+    <button class="btn ic" id="detail-close" aria-label="Schließen">×</button>
+  </div>
+  <iframe id="detail-frame" title="Detailansicht" src="about:blank"></iframe>
+</dialog>
+
+<script src="tiles/meta.js"></script>
 <script src="karte.js"></script>
 </body>
 </html>

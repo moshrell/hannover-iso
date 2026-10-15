@@ -1,37 +1,37 @@
-/* Seite karte.html: Rahmen, Kartenfenster, Bedienelemente (Zeichnung: core/iso.css) */
-  * { box-sizing:border-box; }
+/* karte.css — Seite der Kachelkarte (mobil zuerst) */
+:root { --bg:#0A0E0C; --txt:#EDE8DD; --mut:rgba(237,232,221,.58); --glow:#FFE7A3; --glow-d:#C9A96E; }
+* { box-sizing:border-box; }
 html, body { margin:0; background:var(--bg); color:var(--txt); }
 body { font-family:ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif; }
 .wrap { max-width:1280px; margin:0 auto; padding:20px 16px 48px; }
 .eb { font:500 .7rem/1.6 ui-monospace, "Cascadia Mono", Menlo, monospace; letter-spacing:.2em; text-transform:uppercase; color:var(--glow-d); }
 h1 { font:400 clamp(1.8rem, 5vw, 3rem)/1.05 "Palatino Linotype", Palatino, Georgia, serif; margin:.4rem 0 .3rem; }
-.sub { color:var(--mut); margin:0 0 1rem; font-size:.95rem; max-width:60ch; }
+.sub { color:var(--mut); margin:0 0 1rem; font-size:.95rem; max-width:62ch; }
 
-/* Kartenfenster: feste Höhe, damit nichts springt */
-.map { position:relative; height:min(74svh, 820px); min-height:420px; overflow:hidden; border-radius:14px; background:var(--bg);
-       border:1px solid rgba(255,231,163,.12); touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; }
+/* Kartenfenster: feste Höhe → nichts springt */
+.map { position:relative; height:min(72svh, 820px); min-height:420px; overflow:hidden; border-radius:14px; background:var(--bg);
+       border:1px solid rgba(255,231,163,.12); touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; contain:strict; }
 .map.drag { cursor:grabbing; }
-.world { position:absolute; left:0; top:0; transform-origin:0 0; }
-.map.moving .world { will-change:transform; }
-.world svg { display:block; }
-.lbl { position:absolute; transform:translate(-50%, -100%) scale(var(--iz, 1)); transform-origin:50% 100%; pointer-events:auto;
+.poster, .lv { position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform; }
+.map:not(.ready) .poster { width:100% !important; height:100% !important; object-fit:cover; }
+.lv .t { position:absolute; width:256px; height:256px; opacity:0; transition:opacity .25s; }
+.lv .t.in { opacity:1; }
+.world { position:absolute; inset:0; }
+.labels { position:absolute; inset:0; pointer-events:none; }
+.lbl { position:absolute; left:0; top:0; pointer-events:auto; will-change:transform;
        font:500 .72rem/1.2 ui-monospace, Menlo, monospace; letter-spacing:.08em; color:var(--txt); white-space:nowrap;
-       background:rgba(10,14,12,.78); border:1px solid rgba(255,231,163,.35); border-radius:999px; padding:.35rem .6rem; cursor:pointer; }
-.lbl::after { content:""; position:absolute; left:50%; top:100%; width:1px; height:14px; background:rgba(255,231,163,.45); }
-.lbl:hover { border-color:var(--glow); }
+       background:rgba(10,14,12,.8); border:1px solid rgba(255,231,163,.4); border-radius:999px; padding:.45rem .7rem; cursor:pointer; min-height:32px; }
+.lbl::after { content:""; position:absolute; left:50%; top:100%; width:1px; height:12px; background:rgba(255,231,163,.5); }
+.lbl:hover, .lbl:focus-visible { border-color:var(--glow); outline:none; }
 .hud { position:absolute; display:flex; gap:8px; }
 .hud.tr { top:10px; right:10px; flex-direction:column; }
-.hud.bl { left:10px; bottom:10px; align-items:center; flex-wrap:wrap; right:10px; }
-.btn { appearance:none; border:1px solid rgba(255,231,163,.35); background:rgba(10,14,12,.72); color:var(--txt); backdrop-filter:blur(6px);
-       font:500 .95rem/1 inherit; padding:.8rem 1.05rem; border-radius:999px; cursor:pointer; display:inline-flex; gap:.6rem; align-items:center; min-height:44px;
-       transition:background .3s, border-color .3s, box-shadow .3s; }
+.hud.bl { left:10px; bottom:10px; right:10px; }
+.btn { appearance:none; border:1px solid rgba(255,231,163,.35); background:rgba(10,14,12,.78); color:var(--txt);
+       font:500 .95rem/1 inherit; padding:.8rem 1.05rem; border-radius:999px; cursor:pointer; display:inline-flex; gap:.6rem; align-items:center; min-height:44px; }
 .btn:hover { background:rgba(255,231,163,.12); }
 .btn:focus-visible { outline:2px solid var(--glow); outline-offset:3px; }
-.btn[aria-pressed="true"] { background:rgba(255,231,163,.18); border-color:var(--glow); box-shadow:0 0 22px rgba(255,231,163,.25); }
-.btn i { width:9px; height:9px; border-radius:50%; background:var(--glow); box-shadow:0 0 10px var(--glow); flex:none; }
 .btn.ic { width:44px; padding:0; justify-content:center; font-size:1.2rem; }
-.hint { font:500 .72rem/1.4 ui-monospace, Menlo, monospace; color:var(--mut); background:rgba(10,14,12,.6); padding:.3rem .55rem; border-radius:6px; }
-.load { position:absolute; inset:0; display:grid; place-items:center; font:500 .8rem/1 ui-monospace, Menlo, monospace; color:var(--mut); letter-spacing:.1em; }
+.hint { font:500 .72rem/1.4 ui-monospace, Menlo, monospace; color:var(--mut); background:rgba(10,14,12,.65); padding:.3rem .55rem; border-radius:6px; }
 
 .list { display:grid; gap:10px; margin:18px 0 0; padding:0; list-style:none; }
 @media (min-width:720px) { .list { grid-template-columns:repeat(2, 1fr); } }
@@ -42,12 +42,13 @@ h1 { font:400 clamp(1.8rem, 5vw, 3rem)/1.05 "Palatino Linotype", Palatino, Georg
 .credit { margin-top:2rem; font:.72rem/1.6 ui-monospace, Menlo, monospace; color:rgba(237,232,221,.42); }
 .credit a { color:inherit; }
 
-/* Abendebene über der Nachtebene: weicher Lichtkreis vom Zentrum (nur Maske, kein Neuzeichnen) */
-@property --r { syntax:'<length>'; inherits:false; initial-value:0px; }
-.world svg.eve { position:absolute; left:0; top:0; pointer-events:none; --r:0px;
-  -webkit-mask-image:radial-gradient(circle at var(--cx) var(--cy), #000 calc(var(--r) - 420px), transparent var(--r));
-          mask-image:radial-gradient(circle at var(--cx) var(--cy), #000 calc(var(--r) - 420px), transparent var(--r));
-  transition:--r 2.6s cubic-bezier(.4,0,.6,1); }
-.world svg.eve.on { --r:var(--rmax); transition:--r 4.2s cubic-bezier(.35,0,.25,1); }
-.world svg.eve.now { transition:none; }
-@media (prefers-reduced-motion:reduce) { .world svg.eve, .world svg.eve.on { transition:none; } }
+/* Detailansicht: auf dem Telefon ganzer Bildschirm, am Rechner großes Fenster */
+.detail { padding:0; border:1px solid rgba(255,231,163,.2); border-radius:16px; background:var(--bg); color:var(--txt);
+          width:min(1100px, 100vw - 24px); height:min(860px, 100svh - 24px); max-width:none; max-height:none; overflow:hidden; }
+.detail::backdrop { background:rgba(4,6,5,.78); }
+.detail[open] { display:flex; flex-direction:column; }
+@media (max-width:719px) { .detail { width:100vw; height:100svh; border-radius:0; border:0; } }
+.d-head { display:flex; gap:12px; align-items:flex-start; justify-content:space-between; padding:14px 14px 0 16px; }
+.d-head h2 { font:400 1.5rem/1.1 "Palatino Linotype", Palatino, Georgia, serif; margin:.2rem 0 .2rem; }
+.d-head p { margin:0; color:var(--mut); font-size:.88rem; line-height:1.45; max-width:60ch; }
+#detail-frame { flex:1; width:100%; border:0; background:var(--bg); }
