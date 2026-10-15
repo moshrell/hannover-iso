@@ -48,28 +48,6 @@ def outer(e):
         else: rings.append(ring(cur)); cur = []
     if cur: rings.append(ring(cur))
     return rings
-DEF_H = {'house': 9, 'garage': 3, 'garages': 3, 'shed': 3, 'kiosk': 3.5, 'hut': 3, 'church': 22, 'apartments': 16, 'residential': 15, 'office': 18, 'retail': 11, 'commercial': 16, 'hotel': 20, 'parking': 12, 'service': 4, 'industrial': 8, 'terrace': 10}
-def num(v):
-    try: return float(str(v).replace(',', '.').split()[0])
-    except: return None
-LM_IDS = {'w5121355': 'marktkirche', 'w5121356': 'altesRathaus', 'r1170793': 'leineschloss', 'r313173': 'neuesRathaus'}
-B, LM = [], {}
-for e in d['elements']:
-    t = e.get('tags', {})
-    if 'building' not in t or e['type'] == 'node': continue
-    if t['building'] in ('roof', 'construction') : continue
-    eid = e['type'][0] + str(e['id'])
-    for r in outer(e):
-        if not r or abs(area(r)) < 6: continue
-        if area(r) < 0: r = r[::-1]
-        h = num(t.get('height'))
-        if not h:
-            lv = num(t.get('building:levels'))
-            h = lv * 3.3 + (1.5 if t.get('roof:shape') not in (None, 'flat') else .6) if lv else DEF_H.get(t['building'], 13)
-        h = max(3, min(h, 120))
-        if eid in LM_IDS: LM.setdefault(LM_IDS[eid], []).append(r); continue
-        mat = 'b' if t['building'] in ('church',) or t.get('building:material') == 'brick' else ''
-        B.append({'p': r, 'h': round(h, 1), 'm': mat, 'id': eid, 'roof': t.get('roof:shape', '')})
 # Hauptachse + Mitte der Wahrzeichen (minimales Rechteck)
 def hull(pts):
     pts = sorted(set(pts))
@@ -93,6 +71,41 @@ def mar(pts):
             cx, cy = (max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2; c2, s2 = math.cos(th), math.sin(th)
             best = (A, th, max(xs) - min(xs), max(ys) - min(ys), cx * c2 - cy * s2, cx * s2 + cy * c2)
     return best
+DEF_H = {'house': 9, 'garage': 3, 'garages': 3, 'shed': 3, 'kiosk': 3.5, 'hut': 3, 'church': 22, 'apartments': 16, 'residential': 15, 'office': 18, 'retail': 11, 'commercial': 16, 'hotel': 20, 'parking': 12, 'service': 4, 'industrial': 8, 'terrace': 10}
+def num(v):
+    try: return float(str(v).replace(',', '.').split()[0])
+    except: return None
+LM_IDS = {'w5121355': 'marktkirche', 'w5121356': 'altesRathaus', 'r1170793': 'leineschloss', 'r313173': 'neuesRathaus'}
+B, LM = [], {}
+for e in d['elements']:
+    t = e.get('tags', {})
+    if 'building' not in t or e['type'] == 'node': continue
+    if t['building'] in ('roof', 'construction') : continue
+    eid = e['type'][0] + str(e['id'])
+    for r in outer(e):
+        if not r or abs(area(r)) < 6: continue
+        if area(r) < 0: r = r[::-1]
+        # Höhe: height = First (inkl. Dach); sonst Geschosse × 3,3 m bis zur Traufe + Dach obendrauf
+        shape = t.get('roof:shape', '')
+        kind = 1 if shape in ('gabled', 'gambrel', 'double_saltbox') else 2 if shape in ('hipped', 'half-hipped', 'pyramidal', 'mansard', 'quadruple_saltbox') else 0
+        hT, lv = num(t.get('height')), num(t.get('building:levels'))
+        rhT = num(t.get('roof:height'))
+        h = hT or (lv * 3.3 + .6 if lv else DEF_H.get(t['building'], 13))
+        h = max(3, min(h, 120))
+        if eid in LM_IDS: LM.setdefault(LM_IDS[eid], []).append(r); continue
+        mat = 'b' if t['building'] in ('church',) or t.get('building:material') == 'brick' else ''
+        b = {'p': r, 'h': round(h, 1), 'm': mat, 'id': eid, 'rf': None}
+        if kind:
+            A_, th, w, dd, cx, cy = mar(r)
+            if abs(area(r)) / A_ > .78 and min(w, dd) >= 4:
+                rh = rhT or min(9, max(2.5, .5 * min(w, dd) * (1 if kind == 1 else .8)))
+                he = (h - rh) if hT else h - .6
+                if not hT: h = he + rh
+                if he >= 2.5:
+                    if w < dd: th += math.pi / 2; w, dd = dd, w     # First entlang der Längsseite
+                    if t.get('roof:orientation') == 'across': th += math.pi / 2; w, dd = dd, w
+                    b['h'] = round(h, 1); b['rf'] = [kind, round(he, 1), round(rh, 1), round(cx, 1), round(cy, 1), round(th, 4), round(w, 1), round(dd, 1)]
+        B.append(b)
 LMI = {}
 for k, rs in LM.items():
     pts = [p for r in rs for p in r]
@@ -190,7 +203,7 @@ flat = lambda r: [R(c) for p in r for c in p]
 data = {
     'attr': '© OpenStreetMap-Mitwirkende (ODbL)',
     'ext': [X0, X1, Y0, Y1],
-    'b': [[flat(b['p']), b['h'], b['m']] for b in B],
+    'b': [[flat(b['p']), b['h'], b['m']] + ([b['rf']] if b['rf'] else []) for b in B],
     'lm': {k: {'phi': round(phi_of(k, v), 4), 'w': R(v['w']), 'd': R(v['d']), 'cx': R(v['cx']), 'cy': R(v['cy'])} for k, v in LMI.items()},
     'seq': seq,
     'rd': {k: [flat(p) for p in v] for k, v in RD.items()},

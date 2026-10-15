@@ -41,3 +41,13 @@ h1 { font:400 clamp(1.8rem, 5vw, 3rem)/1.05 "Palatino Linotype", Palatino, Georg
 .list span { color:var(--mut); font-size:.9rem; line-height:1.45; }
 .credit { margin-top:2rem; font:.72rem/1.6 ui-monospace, Menlo, monospace; color:rgba(237,232,221,.42); }
 .credit a { color:inherit; }
+
+/* Abendebene über der Nachtebene: weicher Lichtkreis vom Zentrum (nur Maske, kein Neuzeichnen) */
+@property --r { syntax:'<length>'; inherits:false; initial-value:0px; }
+.world svg.eve { position:absolute; left:0; top:0; pointer-events:none; --r:0px;
+  -webkit-mask-image:radial-gradient(circle at var(--cx) var(--cy), #000 calc(var(--r) - 420px), transparent var(--r));
+          mask-image:radial-gradient(circle at var(--cx) var(--cy), #000 calc(var(--r) - 420px), transparent var(--r));
+  transition:--r 2.6s cubic-bezier(.4,0,.6,1); }
+.world svg.eve.on { --r:var(--rmax); transition:--r 4.2s cubic-bezier(.35,0,.25,1); }
+.world svg.eve.now { transition:none; }
+@media (prefers-reduced-motion:reduce) { .world svg.eve, .world svg.eve.on { transition:none; } }
