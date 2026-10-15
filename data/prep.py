@@ -119,13 +119,44 @@ for k, rs in LM.items():
     A, th, w, hh, cx, cy = mar(pts)
     LMI[k] = {'th': th, 'w': w, 'd': hh, 'cx': cx, 'cy': cy, 'hull': hull(pts)}
     print(k, 'theta %.1f°' % math.degrees(th), 'size %.0f x %.0f' % (w, hh), 'c %.0f,%.0f' % (cx, cy), file=sys.stderr)
+def phi_of(k, v):
+    tl = v['th'] if v['w'] >= v['d'] else v['th'] + math.pi / 2   # reale Längsachse
+    long_y = k in ('leineschloss', 'opernhaus')
+    if k not in ('neuesRathaus', 'marktkirche', 'altesRathaus', 'leineschloss', 'hauptbahnhof', 'aegidienkirche'):
+        # wie in der Detailansicht: unter den echten Ausrichtungen (Längsachse bleibt Längsachse) die mit der kleinsten Drehung
+        norm = lambda a: (a + math.pi) % (2 * math.pi) - math.pi
+        if k == 'opernhaus': return 0.0       # frei auf dem Opernplatz: genau wie in der Detailansicht (Säulenhalle schräg zum Betrachter)
+        return min((norm(tl + i * math.pi / 2) for i in range(4)), key=abs)   # an Straßen ausgerichtet, höchstens 45° von der Detailansicht                    # Modul-Längsachse lokal y
+    cands = [tl - math.pi / 2, tl + math.pi / 2] if long_y else [tl, tl + math.pi]
+    if max(v['w'], v['d']) / min(v['w'], v['d']) < 1.2: cands = [tl + i * math.pi / 2 for i in range(4)]   # fast quadratisch: alle vier Richtungen erlaubt
+    rot = lambda ph, x, y: (x * math.cos(ph) - y * math.sin(ph), x * math.sin(ph) + y * math.cos(ph))
+    score = {
+        'neuesRathaus': lambda ph: rot(ph, 0, 1)[1],                         # Teichseite nach Süden
+        'marktkirche': lambda ph: -rot(ph, -1, 0)[0],                    # Turm nach Westen
+        'altesRathaus': lambda ph: sum(rot(ph, 0, 1)),                       # Arkadenseite zum Betrachter
+        'leineschloss': lambda ph: -rot(ph, -1, 0)[0] + rot(ph, -1, 0)[1],           # Flussseite (lokal -x) nach Südwesten
+        'opernhaus': lambda ph: math.cos(ph),                                          # wie in der Detailansicht (Drehung nahe 0)
+        'hauptbahnhof': lambda ph: rot(ph, 0, 1)[1],                                   # Front zum Ernst-August-Platz (Süden)
+        'aegidienkirche': lambda ph: -rot(ph, -1, 0)[0],                               # Turm nach Westen
+    }.get(k, lambda ph: math.cos(ph))                                                  # neue Wahrzeichen: wie in der Detailansicht
+    return max(cands, key=score)
+# Freiräume vor Wahrzeichen (lokale Koordinaten relativ zur Modulmitte: x quer, y nach vorn): Ernst-August-Platz vor dem Hauptbahnhof
+CLEAR = {'hauptbahnhof': (-62, 62, 14, 95)}
+def in_clear(px, py):
+    for k, (x0, x1, y0, y1) in CLEAR.items():
+        v = LMI.get(k)
+        if not v: continue
+        ph = phi_of(k, v); c, s_ = math.cos(ph), math.sin(ph); dx, dy = px - v['cx'], py - v['cy']
+        rx, ry = dx * c + dy * s_, -dx * s_ + dy * c
+        if x0 <= rx <= x1 and y0 <= ry <= y1: return True
+    return False
 # Häuser, deren Mitte im Rechteck eines Wahrzeichens liegt, entfallen (sonst überdecken Reste des OSM-Komplexes das Modul)
 def inside_mar(px, py, v, pad=2):
     c, s_ = math.cos(-v['th']), math.sin(-v['th']); dx, dy = px - v['cx'], py - v['cy']
     u, w_ = dx * c - dy * s_, dx * s_ + dy * c
     return abs(u) <= v['w'] / 2 + pad and abs(w_) <= v['d'] / 2 + pad
 def cen(r): return sum(p[0] for p in r) / len(r), sum(p[1] for p in r) / len(r)
-_n = len(B); B = [b for b in B if not any(inside_mar(*cen(b['p']), v) for v in LMI.values())]
+_n = len(B); B = [b for b in B if not any(inside_mar(*cen(b['p']), v) for v in LMI.values()) and not in_clear(*cen(b['p']))]
 print('entfernt im Bereich der Wahrzeichen:', _n - len(B), file=sys.stderr)
 # Straßen, Wasser, Parks, Bäume
 RD = collections.defaultdict(list); WA, PK, TR = [], [], []
@@ -152,7 +183,7 @@ for e in d['elements']:
 X0, X1, Y0, Y1 = -760, 760, -800, 800
 inb = lambda p: X0 <= p[0] <= X1 and Y0 <= p[1] <= Y1
 B = [b for b in B if any(inb(p) for p in b['p'])]
-TR = [t for t in TR if inb(t)]
+TR = [t for t in TR if inb(t) and not in_clear(*t)]
 # ---------- Sortierung (Malerverfahren) ----------
 items = [{'k': 'b', 'i': i, 'hull': hull([tuple(p) for p in b['p']]), 'h': b['h']} for i, b in enumerate(B)]
 LMH = {'neuesRathaus': 99, 'marktkirche': 99, 'altesRathaus': 40, 'leineschloss': 26, 'opernhaus': 40, 'hauptbahnhof': 39, 'aegidienkirche': 57,
@@ -203,27 +234,6 @@ while len(order) < len(items):
         if indeg[v] == 0 and not done[v]: heapq.heappush(pq, (items[v]['dep'], v))
 seq = [items[i]['i'] if items[i]['k'] == 'b' else ('L:' + items[i]['i'] if items[i]['k'] == 'l' else -1 - items[i]['i']) for i in order]
 R = lambda v: round(v, 1)
-def phi_of(k, v):
-    tl = v['th'] if v['w'] >= v['d'] else v['th'] + math.pi / 2   # reale Längsachse
-    long_y = k in ('leineschloss', 'opernhaus')
-    if k not in ('neuesRathaus', 'marktkirche', 'altesRathaus', 'leineschloss', 'hauptbahnhof', 'aegidienkirche'):
-        # wie in der Detailansicht: unter den echten Ausrichtungen (Längsachse bleibt Längsachse) die mit der kleinsten Drehung
-        norm = lambda a: (a + math.pi) % (2 * math.pi) - math.pi
-        if k == 'opernhaus': return 0.0       # frei auf dem Opernplatz: genau wie in der Detailansicht (Säulenhalle schräg zum Betrachter)
-        return min((norm(tl + i * math.pi / 2) for i in range(4)), key=abs)   # an Straßen ausgerichtet, höchstens 45° von der Detailansicht                    # Modul-Längsachse lokal y
-    cands = [tl - math.pi / 2, tl + math.pi / 2] if long_y else [tl, tl + math.pi]
-    if max(v['w'], v['d']) / min(v['w'], v['d']) < 1.2: cands = [tl + i * math.pi / 2 for i in range(4)]   # fast quadratisch: alle vier Richtungen erlaubt
-    rot = lambda ph, x, y: (x * math.cos(ph) - y * math.sin(ph), x * math.sin(ph) + y * math.cos(ph))
-    score = {
-        'neuesRathaus': lambda ph: rot(ph, 0, 1)[1],                         # Teichseite nach Süden
-        'marktkirche': lambda ph: -rot(ph, -1, 0)[0],                    # Turm nach Westen
-        'altesRathaus': lambda ph: sum(rot(ph, 0, 1)),                       # Arkadenseite zum Betrachter
-        'leineschloss': lambda ph: -rot(ph, -1, 0)[0] + rot(ph, -1, 0)[1],           # Flussseite (lokal -x) nach Südwesten
-        'opernhaus': lambda ph: math.cos(ph),                                          # wie in der Detailansicht (Drehung nahe 0)
-        'hauptbahnhof': lambda ph: rot(ph, 0, 1)[1],                                   # Front zum Ernst-August-Platz (Süden)
-        'aegidienkirche': lambda ph: -rot(ph, -1, 0)[0],                               # Turm nach Westen
-    }.get(k, lambda ph: math.cos(ph))                                                  # neue Wahrzeichen: wie in der Detailansicht
-    return max(cands, key=score)
 flat = lambda r: [R(c) for p in r for c in p]
 data = {
     'attr': '© OpenStreetMap-Mitwirkende (ODbL)',

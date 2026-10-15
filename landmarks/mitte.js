@@ -108,11 +108,12 @@ ISO.landmark('hauptbahnhof', H => {
   add({ id: 'hbCanopy', o: .1, fp: [0, 26, 140, 30], parent: 'hbCenter', side: 'S', draw: K =>
     K.box(0, 26, Z0 + 6.4, 50, 3.6, .6, 'gl') + K.box(90, 26, Z0 + 6.4, 50, 3.6, .6, 'gl') } );
   // Ernst-August-Denkmal (Reiterstandbild auf Sockel), Figur als Schattenriss in der Fläche
-  add({ id: 'hbStatue', o: .8, fp: [67, 54, 73, 60], obj: false, draw: K => {
-    let s = K.box(66.5, 54.5, Z0, 7, 4.5, 1.2, 'st') + K.box(67.4, 55.2, Z0 + 1.2, 5.2, 3, 6.4, 'st', { S: l => hl(0, l, .6) + hl(0, l, 5.6), E: l => hl(0, l, .6) + hl(0, l, 5.6) });
+  add({ id: 'hbStatue', o: .8, fp: [66, 52, 74, 61.5], obj: false, draw: K => {
+    let s = K.box(66, 52.4, Z0, 5.2, 8.8, 1.2, 'st') + K.box(66.9, 53.2, Z0 + 1.2, 3.4, 7.2, 6.4, 'st', { S: l => hl(0, l, .6) + hl(0, l, 5.6), E: l => hl(0, l, .6) + hl(0, l, 5.6) });
     const horse = [[6.8, -3.4], [7.4, -1.6], [6.6, -2.6], [6.2, -2.2], [6.3, 0], [5.8, 0], [5.6, -1.8], [5, -1.9], [4.9, 0], [4.4, 0], [4.5, -2], [2.6, -2], [2.4, 0], [1.9, 0], [2, -2.1], [1.6, -2.4],
       [.9, -1.4], [.6, -1.7], [1.2, -2.8], [.9, -3.6], [.2, -4.4], [0, -4.1], [.4, -5], [1, -5.2], [1.4, -4.6], [2.4, -3.6], [2.9, -3.7], [3, -5.6], [3.3, -6.4], [3.2, -6.9], [3.4, -7.9], [3.6, -6.9], [3.8, -6.3], [3.9, -5.5], [4.2, -4.4], [4.9, -3.5], [5.6, -3.6], [6.2, -3.5]];
-    s += K.wall([67.4, 56.7], [72.6, 56.7], Z0 + 7.6, Z0 + 7.61, 'brz', () => `<path class="brz" d="M${horse.map(([x, y]) => f2(x * .74) + ' ' + f2(y * .74)).join('L')}Z"/>`);
+    // Reiter blickt zum Bahnhof (nach -y): Silhouette auf die Ostseite des Sockels (zum Betrachter), Kopf vorn
+    s += K.wall([70.4, 60.5], [70.4, 53.1], Z0 + 7.6, Z0 + 7.61, 'brz', () => `<path class="brz" d="M${horse.map(([x, y]) => f2(7.4 - x) + ' ' + f2(y)).join('L')}Z"/>`);
     return s;
   } });
   return { mods: M, lc: [70, 13], z0: 0, top: [70, 13, 39], label: 'Hauptbahnhof', h: 39, len: 140 };
