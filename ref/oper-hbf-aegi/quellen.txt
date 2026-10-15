@@ -1,0 +1,12 @@
+01.jpg  https://commons.wikimedia.org/wiki/File:2022-03-06_Staatsoper_Hannover.JPG
+02.jpg  https://commons.wikimedia.org/wiki/File:Das_Opernhaus_Hannover.jpg
+03.jpg  https://commons.wikimedia.org/wiki/File:Opernhaus_Hannover,_2026.jpg
+04.jpg  https://commons.wikimedia.org/wiki/File:2020-06-22_231411_Hannover_Opernhaus_Night_of_Light.jpg
+05.jpg  https://commons.wikimedia.org/wiki/File:Hannover,_der_Hauptbahnhof_Dm_IMG_4576_2018-07-01_17.37.jpg
+06.jpg  https://commons.wikimedia.org/wiki/File:Ernst-August-Denkmal_vor_dem_Hauptbahnhof_Hannover.jpg
+07.jpg  https://commons.wikimedia.org/wiki/File:Hannover,_das_Ernst-August-Denkmal_bij_het_station_IMG_4492_2018-07-01_11.04.jpg
+08.jpg  https://commons.wikimedia.org/wiki/File:Ernst-August-Denkmal_in_Hannover_(2026).jpg
+09.jpg  https://commons.wikimedia.org/wiki/File:2021-05-09_Aegidienkirche_Hannover.jpg
+10.jpg  https://commons.wikimedia.org/wiki/File:Aegidienkirche_(Hannover).jpg
+11.jpg  https://commons.wikimedia.org/wiki/File:Hannover_-_2015-03-25_-_Aegidienkirche_(12).jpg
+12.jpg  https://commons.wikimedia.org/wiki/File:2022-07-24_Aegidienkirche_Hannover.JPG

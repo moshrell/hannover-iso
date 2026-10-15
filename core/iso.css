@@ -13,6 +13,8 @@
     --bk-f-on:#8E4A30; --bk-s-on:#5F3020; --bk-t-on:#6E3926; --bk-l-on:#C8805C;
     --sl-f:#15191B; --sl-s:#0F1214; --sl-l:#2C3236;
     --sl-f-on:#3A454B; --sl-s-on:#283035; --sl-l-on:#6E7E86;
+    --gb-f:#272010; --gb-s:#1D170B; --gb-t:#2C2513; --gb-l:#453A1E; --gb-f-on:#A4823F; --gb-s-on:#6E5526; --gb-t-on:#86693A; --gb-l-on:#DDB86A;
+    --rs-f:#1A1713; --rs-s:#13110E; --rs-t:#1F1B16; --rs-l:#35302A; --rs-f-on:#6A5A44; --rs-s-on:#4A3E2F; --rs-t-on:#5A4C3A; --rs-l-on:#A08C6C;
     --ease:cubic-bezier(.2,.7,.2,1); --soft:cubic-bezier(.45,0,.25,1);
   }
   /* ---------- Zeichnung ---------- */
@@ -105,3 +107,13 @@
   .rh .water { fill:#0B1B21; stroke:#17313A; stroke-width:.8; }
   .rh .ter { fill:#161A16; stroke:#272C27; stroke-width:.6; } .rh .ter.sd { fill:#111411; } .rh .ter.tp { fill:#1A1E1A; }
   .rh .gr { fill:#22130E; stroke:#36211A; stroke-width:.5; } .rh .gr.sd { fill:#190D0A; }
+  /* Gelber Backstein (Hauptbahnhof) mit roten Bändern, Ruinenstein (Aegidienkirche), Bronze, Glas */
+  .rh .gb { stroke:var(--gb-l); stroke-width:.8; stroke-linejoin:round; fill:var(--gb-f); } .rh .gb.sd { fill:var(--gb-s); } .rh .gb.tp { fill:var(--gb-t); }
+  .rh .rs { stroke:var(--rs-l); stroke-width:.8; stroke-linejoin:round; fill:var(--rs-f); } .rh .rs.sd { fill:var(--rs-s); } .rh .rs.tp { fill:var(--rs-t); }
+  .rh .dt.rb { stroke:#3A1A12; stroke-width:.9; } .rh .brz { fill:#121813; stroke:#2A3A30; stroke-width:.4; }
+  .rh .gl { fill:#0E1A16; stroke:#24403A; stroke-width:.5; }
+  .rh .gb, .rh .rs, .rh .brz, .rh .gl { transition:fill 1.84s var(--soft) var(--d, 0s), stroke 1.84s var(--soft) var(--d, 0s); }
+  .rh.lit .gb { stroke:var(--gb-l-on); fill:var(--gb-f-on); } .rh.lit .gb.sd { fill:var(--gb-s-on); } .rh.lit .gb.tp { fill:var(--gb-t-on); }
+  .rh.lit .rs { stroke:var(--rs-l-on); fill:var(--rs-f-on); } .rh.lit .rs.sd { fill:var(--rs-s-on); } .rh.lit .rs.tp { fill:var(--rs-t-on); }
+  .rh.lit .dt.rb { stroke:#B5553A; } .rh.lit .brz { fill:#2E3B33; stroke:#7F9A86; } .rh.lit .gl { fill:#2C5A4C; stroke:#6FB09A; }
+  .rh .ishade { fill:#000; opacity:.38; pointer-events:none; }

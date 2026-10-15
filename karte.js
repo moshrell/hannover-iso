@@ -7,6 +7,9 @@
   // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): Altstadt = ein Punkt für alle drei Bauten
   const FACTS = {
     neuesRathaus: { t: 'Neues Rathaus', f: 'Erbaut 1901–1913 am Maschteich, Kuppel 97,73 m, Bogenaufzug bis zur Aussicht.', d: 'rathaus.html', from: ['neuesRathaus'] },
+    opernhaus: { t: 'Opernhaus', f: 'Staatsoper von Georg Ludwig Friedrich Laves (1845–1852): Vorhalle mit Terrasse, Giebel mit Figurengruppe.', d: 'studio.html?lm=opernhaus', from: ['opernhaus'] },
+    hauptbahnhof: { t: 'Hauptbahnhof', f: 'Empfangsgebäude von 1879 aus gelbem Backstein; davor das Ernst-August-Denkmal – Treffpunkt „unterm Schwanz“.', d: 'studio.html?lm=hauptbahnhof', from: ['hauptbahnhof'] },
+    aegidienkirche: { t: 'Aegidienkirche', f: 'Gotische Kirchenruine, seit 1952 Mahnmal; im Turm die Friedensglocke aus Hiroshima.', d: 'studio.html?lm=aegidienkirche', from: ['aegidienkirche'] },
     altstadt: { t: 'Altstadt', f: 'Marktkirche (Backsteingotik, 14. Jh., Turm 97 m), Altes Rathaus mit Treppengiebeln und das Leineschloss – heute Sitz des Niedersächsischen Landtags.', d: 'altstadt.html', from: ['marktkirche', 'altesRathaus', 'leineschloss'] },
   };
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
@@ -108,7 +111,7 @@
     const F = FACTS[name]; if (!F) return;
     dTitle.textContent = F.t; dFact.textContent = F.f;
     const p = M.pins.find(q => q.name === name); if (p) fly(p.x, p.y + 40, Math.max(v.z, 1.6));
-    frame.src = `${F.d}?embed`;
+    frame.src = F.d + (F.d.includes('?') ? '&' : '?') + 'embed';
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
   const closeDetail = () => { dlg.close ? dlg.close() : dlg.removeAttribute('open'); };

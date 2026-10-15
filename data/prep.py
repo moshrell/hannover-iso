@@ -75,7 +75,8 @@ DEF_H = {'house': 9, 'garage': 3, 'garages': 3, 'shed': 3, 'kiosk': 3.5, 'hut': 
 def num(v):
     try: return float(str(v).replace(',', '.').split()[0])
     except: return None
-LM_IDS = {'w5121355': 'marktkirche', 'w5121356': 'altesRathaus', 'r1170793': 'leineschloss', 'r313173': 'neuesRathaus'}
+LM_IDS = {'w5121355': 'marktkirche', 'w5121356': 'altesRathaus', 'r1170793': 'leineschloss', 'r313173': 'neuesRathaus',
+          'w4816458': 'opernhaus', 'w265614713': 'hauptbahnhof', 'r7359339': 'aegidienkirche'}
 B, LM = [], {}
 for e in d['elements']:
     t = e.get('tags', {})
@@ -140,7 +141,7 @@ B = [b for b in B if any(inb(p) for p in b['p'])]
 TR = [t for t in TR if inb(t)]
 # ---------- Sortierung (Malerverfahren) ----------
 items = [{'k': 'b', 'i': i, 'hull': hull([tuple(p) for p in b['p']]), 'h': b['h']} for i, b in enumerate(B)]
-LMH = {'neuesRathaus': 99, 'marktkirche': 99, 'altesRathaus': 40, 'leineschloss': 26}
+LMH = {'neuesRathaus': 99, 'marktkirche': 99, 'altesRathaus': 40, 'leineschloss': 26, 'opernhaus': 40, 'hauptbahnhof': 39, 'aegidienkirche': 57}
 for k, v in LMI.items(): items.append({'k': 'l', 'i': k, 'hull': v['hull'], 'h': LMH[k]})
 for ti, (x, y) in enumerate(TR): items.append({'k': 't', 'i': ti, 'hull': [(x - 2, y - 2), (x + 2, y - 2), (x + 2, y + 2), (x - 2, y + 2)], 'h': 11})
 for it in items:
@@ -189,14 +190,18 @@ seq = [items[i]['i'] if items[i]['k'] == 'b' else ('L:' + items[i]['i'] if items
 R = lambda v: round(v, 1)
 def phi_of(k, v):
     tl = v['th'] if v['w'] >= v['d'] else v['th'] + math.pi / 2   # reale Längsachse
-    long_y = k == 'leineschloss'                                  # Modul-Längsachse lokal y
+    long_y = k in ('leineschloss', 'opernhaus')                    # Modul-Längsachse lokal y
     cands = [tl - math.pi / 2, tl + math.pi / 2] if long_y else [tl, tl + math.pi]
+    if max(v['w'], v['d']) / min(v['w'], v['d']) < 1.2: cands = [tl + i * math.pi / 2 for i in range(4)]   # fast quadratisch: alle vier Richtungen erlaubt
     rot = lambda ph, x, y: (x * math.cos(ph) - y * math.sin(ph), x * math.sin(ph) + y * math.cos(ph))
     score = {
         'neuesRathaus': lambda ph: rot(ph, 0, 1)[1],                         # Teichseite nach Süden
         'marktkirche': lambda ph: -rot(ph, -1, 0)[0],                    # Turm nach Westen
         'altesRathaus': lambda ph: sum(rot(ph, 0, 1)),                       # Arkadenseite zum Betrachter
         'leineschloss': lambda ph: -rot(ph, -1, 0)[0] + rot(ph, -1, 0)[1],           # Flussseite (lokal -x) nach Südwesten
+        'opernhaus': lambda ph: rot(ph, 0, 1)[1] + .3 * rot(ph, 0, 1)[0],              # Vorhalle zur Georgstraße (Süden) – bewusst zum Betrachter gedreht, s. README
+        'hauptbahnhof': lambda ph: rot(ph, 0, 1)[1],                                   # Front zum Ernst-August-Platz (Süden)
+        'aegidienkirche': lambda ph: -rot(ph, -1, 0)[0],                               # Turm nach Westen
     }[k]
     return max(cands, key=score)
 flat = lambda r: [R(c) for p in r for c in p]
