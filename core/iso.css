@@ -15,6 +15,8 @@
     --sl-f-on:#3A454B; --sl-s-on:#283035; --sl-l-on:#6E7E86;
     --gb-f:#272010; --gb-s:#1D170B; --gb-t:#2C2513; --gb-l:#453A1E; --gb-f-on:#A4823F; --gb-s-on:#6E5526; --gb-t-on:#86693A; --gb-l-on:#DDB86A;
     --rs-f:#1A1713; --rs-s:#13110E; --rs-t:#1F1B16; --rs-l:#35302A; --rs-f-on:#6A5A44; --rs-s-on:#4A3E2F; --rs-t-on:#5A4C3A; --rs-l-on:#A08C6C;
+    --pl-f:#24221C; --pl-s:#1A1915; --pl-t:#2A2822; --pl-l:#3C392F; --pl-f-on:#B9AD8C; --pl-s-on:#857B62; --pl-t-on:#9D9276; --pl-l-on:#E6DCBC;
+    --kc-f:#1E1F1C; --kc-s:#161714; --kc-l:#33342F; --kc-f-on:#8E8C80; --kc-s-on:#66655C; --kc-l-on:#C8C5B6;
     --ease:cubic-bezier(.2,.7,.2,1); --soft:cubic-bezier(.45,0,.25,1);
   }
   /* ---------- Zeichnung ---------- */
@@ -117,3 +119,15 @@
   .rh.lit .rs { stroke:var(--rs-l-on); fill:var(--rs-f-on); } .rh.lit .rs.sd { fill:var(--rs-s-on); } .rh.lit .rs.tp { fill:var(--rs-t-on); }
   .rh.lit .dt.rb { stroke:#B5553A; } .rh.lit .brz { fill:#2E3B33; stroke:#7F9A86; } .rh.lit .gl { fill:#2C5A4C; stroke:#6FB09A; }
   .rh .ishade { fill:#000; opacity:.38; pointer-events:none; }
+  /* Putz (hell), Sichtbeton (Kestner), Gusseisen (Kröpcke-Uhr) */
+  .rh .pl { stroke:var(--pl-l); stroke-width:.8; stroke-linejoin:round; fill:var(--pl-f); } .rh .pl.sd { fill:var(--pl-s); } .rh .pl.tp { fill:var(--pl-t); }
+  .rh .kc { stroke:var(--kc-l); stroke-width:.8; fill:var(--kc-f); } .rh .kc.sd { fill:var(--kc-s); } .rh .kc.tp { fill:var(--kc-f); }
+  .rh .kz { fill:none; stroke:var(--kc-l); stroke-width:1; } .rh .kr { fill:none; stroke:#3A1410; stroke-width:.7; }
+  .rh .iron { fill:#0F1A16; stroke:#24352E; stroke-width:.5; } .rh .iron.sd { fill:#0B130F; }
+  .rh .pl, .rh .kc, .rh .kz, .rh .kr, .rh .iron { transition:fill 1.84s var(--soft) var(--d, 0s), stroke 1.84s var(--soft) var(--d, 0s); }
+  .rh.lit .pl { stroke:var(--pl-l-on); fill:var(--pl-f-on); } .rh.lit .pl.sd { fill:var(--pl-s-on); } .rh.lit .pl.tp { fill:var(--pl-t-on); }
+  .rh.lit .kc { stroke:var(--kc-l-on); fill:var(--kc-f-on); } .rh.lit .kc.sd { fill:var(--kc-s-on); } .rh.lit .kz { stroke:#B7B4A6; } .rh.lit .kr { stroke:#C2402E; }
+  .rh.lit .iron { fill:#1F3A30; stroke:#5E8C7A; } .rh.lit .iron.sd { fill:#172C25; }
+  .rh .glb { fill:#0E1519; stroke:#25333B; stroke-width:.5; } .rh .glb.sd { fill:#0A1013; } .rh .glb.tp { fill:#121B20; }
+  .rh .glb { transition:fill 1.84s var(--soft) var(--d, 0s), stroke 1.84s var(--soft) var(--d, 0s); }
+  .rh.lit .glb { fill:#2C4250; stroke:#7FA3B5; } .rh.lit .glb.sd { fill:#1E2F39; } .rh.lit .glb.tp { fill:#36505F; }

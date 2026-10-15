@@ -7,6 +7,17 @@
   const FACTS = {
     opernhaus: 'Staatsoper Hannover, erbaut 1845–1852 von Georg Ludwig Friedrich Laves; Vorhalle mit Terrasse, Giebel mit Figurengruppe.',
     hauptbahnhof: 'Empfangsgebäude von 1879 in gelbem Backstein mit roten Bändern; davor das Ernst-August-Denkmal, Treffpunkt „unterm Schwanz“.',
+    anzeiger: 'Expressionistisches Hochhaus von Fritz Höger (1928) aus dunklem Klinker; unter der grünen Kuppel war einst ein Planetarium, heute ein Kino.',
+    nordlb: 'Bankgebäude von Behnisch, Behnisch & Partner (2002): gläserne Randbebauung um einen Hof, darüber gestapelte, versetzte Glaskörper.',
+    landesmuseum: 'Niedersächsisches Landesmuseum (1897–1902) am Maschpark: Natur, Kunst und Kulturen unter einem Dach.',
+    kestner: 'Museum August Kestner: Antike, Münzen und Design; die Wabenfassade aus Glasbausteinen prägt den Platz der Menschenrechte.',
+    wangenheim: 'Klassizistisches Palais von Laves (1829–1833), zeitweise Rathaus, heute Sitz des Wirtschaftsministeriums.',
+    kreuzkirche: 'Älteste Kirche der Altstadt (geweiht 1333), Backsteingotik mit hohem, grünem Turmhelm.',
+    neustaedter: 'Barocke Hof- und Stadtkirche St. Johannis (1666–1670); hier ist Gottfried Wilhelm Leibniz begraben.',
+    beginenturm: 'Rest der mittelalterlichen Stadtbefestigung (um 1357), heute Teil des Historischen Museums.',
+    leibnizhaus: 'Renaissance-Bürgerhaus, in dem Leibniz bis zu seinem Tod 1716 lebte; die Fassade wurde 1983 am Holzmarkt wiederaufgebaut.',
+    waterloo: 'Waterloosäule von Laves (1832), 46 m hoch, zur Erinnerung an die Schlacht bei Waterloo; oben die Siegesgöttin Viktoria.',
+    kroepcke: 'Die Kröpcke-Uhr – Hannovers Treffpunkt Nummer eins: „Wir treffen uns unter der Uhr.“',
     aegidienkirche: 'Gotische Kirche, 1943 zerstört und seit 1952 Mahnmal für die Opfer von Krieg und Gewalt; im Turm die Friedensglocke aus Hiroshima.',
   };
   if (!ISO.LM[name]) { console.error('studio: unbekanntes Wahrzeichen', name); return; }
@@ -36,7 +47,7 @@
   const stage = document.getElementById('stage');
   stage.appendChild(svg);
   // Rahmen eng um die Zeichnung (Gebäude + etwas Boden), Seitenverhältnis vor dem ersten Bild
-  const bb = svg.querySelector('.bld').getBBox(), pad = 14;
+  const bb = svg.querySelector('.bld').getBBox(), pad = Math.max(2.5, Math.max(bb.width, bb.height) * .07);
   const vb = [bb.x - pad, bb.y - pad * 2.2, bb.width + pad * 2, bb.height + pad * 3.2];
   svg.setAttribute('viewBox', vb.map(f2).join(' '));
   stage.style.setProperty('--ar', (vb[2] / vb[3]).toFixed(4));

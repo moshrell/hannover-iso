@@ -10,6 +10,17 @@
     opernhaus: { t: 'Opernhaus', f: 'Staatsoper von Georg Ludwig Friedrich Laves (1845–1852): Vorhalle mit Terrasse, Giebel mit Figurengruppe.', d: 'studio.html?lm=opernhaus', from: ['opernhaus'] },
     hauptbahnhof: { t: 'Hauptbahnhof', f: 'Empfangsgebäude von 1879 aus gelbem Backstein; davor das Ernst-August-Denkmal – Treffpunkt „unterm Schwanz“.', d: 'studio.html?lm=hauptbahnhof', from: ['hauptbahnhof'] },
     aegidienkirche: { t: 'Aegidienkirche', f: 'Gotische Kirchenruine, seit 1952 Mahnmal; im Turm die Friedensglocke aus Hiroshima.', d: 'studio.html?lm=aegidienkirche', from: ['aegidienkirche'] },
+    anzeiger: { t: 'Anzeiger-Hochhaus', f: 'Expressionistischer Klinkerbau von Fritz Höger (1928) mit grüner Kuppel – einst Planetarium, heute Kino.', d: 'studio.html?lm=anzeiger', from: ['anzeiger'], minor: 1 },
+    nordlb: { t: 'NORD/LB', f: 'Bankgebäude von Behnisch, Behnisch & Partner (2002): gestapelte, versetzte Glaskörper über einem Hof.', d: 'studio.html?lm=nordlb', from: ['nordlb'], minor: 1 },
+    landesmuseum: { t: 'Landesmuseum', f: 'Niedersächsisches Landesmuseum (1897–1902) am Maschpark: Natur, Kunst und Kulturen.', d: 'studio.html?lm=landesmuseum', from: ['landesmuseum'], minor: 1 },
+    kestner: { t: 'Museum August Kestner', f: 'Antike, Münzen und Design hinter der Wabenfassade aus Glasbausteinen.', d: 'studio.html?lm=kestner', from: ['kestner'], minor: 1 },
+    wangenheim: { t: 'Wangenheimpalais', f: 'Klassizistisches Palais von Laves (1829–1833), heute Wirtschaftsministerium.', d: 'studio.html?lm=wangenheim', from: ['wangenheim'], minor: 1 },
+    kreuzkirche: { t: 'Kreuzkirche', f: 'Älteste Kirche der Altstadt (geweiht 1333), Backsteingotik mit hohem grünem Turmhelm.', d: 'studio.html?lm=kreuzkirche', from: ['kreuzkirche'], minor: 1 },
+    neustaedter: { t: 'Neustädter Hof- und Stadtkirche', f: 'Barocke Kirche St. Johannis (1666–1670) – Grabstätte von Gottfried Wilhelm Leibniz.', d: 'studio.html?lm=neustaedter', from: ['neustaedter'], minor: 1 },
+    beginenturm: { t: 'Beginenturm', f: 'Wehrturm der Stadtmauer (um 1357), heute Teil des Historischen Museums.', d: 'studio.html?lm=beginenturm', from: ['beginenturm'], minor: 1 },
+    leibnizhaus: { t: 'Leibnizhaus', f: 'Renaissance-Bürgerhaus, in dem Leibniz bis 1716 lebte; Fassade 1983 am Holzmarkt wiederaufgebaut.', d: 'studio.html?lm=leibnizhaus', from: ['leibnizhaus'], minor: 1 },
+    waterloo: { t: 'Waterloosäule', f: 'Siegessäule von Laves (1832), 46 m hoch, oben die Viktoria.', d: 'studio.html?lm=waterloo', from: ['waterloo'], minor: 1 },
+    kroepcke: { t: 'Kröpcke-Uhr', f: 'Hannovers Treffpunkt Nummer eins: „Wir treffen uns unter der Uhr.“', d: 'studio.html?lm=kroepcke', from: ['kroepcke'], minor: 1 },
     altstadt: { t: 'Altstadt', f: 'Marktkirche (Backsteingotik, 14. Jh., Turm 97 m), Altes Rathaus mit Treppengiebeln und das Leineschloss – heute Sitz des Niedersächsischen Landtags.', d: 'altstadt.html', from: ['marktkirche', 'altesRathaus', 'leineschloss'] },
   };
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
@@ -31,7 +42,7 @@
     M.pins = Object.entries(FACTS).map(([name, F]) => {
       const ls = F.from.map(n => M.labels.find(l => l.name === n)).filter(Boolean);
       const p = { name, x: ls.reduce((s, l) => s + l.x, 0) / ls.length, y: ls.reduce((s, l) => s + l.y, 0) / ls.length };
-      const b = document.createElement('button'); b.className = 'pin'; b.dataset.n = F.t; b.setAttribute('aria-label', F.t + ' – Detailansicht öffnen');
+      const b = document.createElement('button'); b.className = 'pin' + (F.minor ? ' minor' : ''); b.dataset.n = F.t; b.setAttribute('aria-label', F.t + ' – Detailansicht öffnen');
       b.addEventListener('click', () => openDetail(name)); labelsEl.appendChild(b); p.el = b; return p;
     });
   }
@@ -60,6 +71,7 @@
       if (ly.imgs.size > 160) ly.imgs.forEach((im, key) => { const [tx, ty] = key.split('_').map(Number);
         if (tx < x0 - 3 || tx > x1 + 3 || ty < y0 - 3 || ty > y1 + 3) { im.remove(); ly.imgs.delete(key); } });
     });
+    map.classList.toggle('far', v.z < .8);
     poster.style.transform = `translate3d(${v.x.toFixed(1)}px, ${v.y.toFixed(1)}px, 0) scale(${v.z.toFixed(5)})`;
     M.pins.forEach(p => { p.el.style.transform = `translate3d(${(v.x + p.x * v.z).toFixed(1)}px, ${(v.y + p.y * v.z).toFixed(1)}px, 0) translate(-50%, -50%)`; });
   }

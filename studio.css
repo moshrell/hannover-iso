@@ -66,4 +66,3 @@
   /* Bedienleiste in der Einbettung: mittig und fest, damit nichts springt */
   html.embed .ctrl { flex-direction:column; justify-content:center; align-items:center; gap:8px; }
   html.embed .read { flex:none; width:100%; text-align:center; min-height:1.5em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  @media (max-width:640px) { html.embed body { overflow-x:hidden; } html.embed .stage { width:150%; margin-left:-25%; } }

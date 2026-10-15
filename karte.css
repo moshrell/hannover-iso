@@ -57,3 +57,6 @@ h1 { font:400 clamp(1.8rem, 5vw, 3rem)/1.05 "Palatino Linotype", Palatino, Georg
 .d-head h2 { font:400 1.5rem/1.1 "Palatino Linotype", Palatino, Georgia, serif; margin:.2rem 0 .2rem; }
 .d-head p { margin:0; color:var(--mut); font-size:.88rem; line-height:1.45; max-width:60ch; }
 #detail-frame { flex:1; width:100%; border:0; background:var(--bg); }
+/* Nebenpunkte: kleiner, erst beim Heranzoomen */
+.pin.minor::before { width:9px; height:9px; margin:-4.5px 0 0 -4.5px; box-shadow:0 0 0 2px rgba(10,14,12,.65), 0 0 10px 2px rgba(255,231,163,.55); }
+.map.far .pin.minor { visibility:hidden; }

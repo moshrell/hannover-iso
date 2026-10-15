@@ -76,7 +76,11 @@ def num(v):
     try: return float(str(v).replace(',', '.').split()[0])
     except: return None
 LM_IDS = {'w5121355': 'marktkirche', 'w5121356': 'altesRathaus', 'r1170793': 'leineschloss', 'r313173': 'neuesRathaus',
-          'w4816458': 'opernhaus', 'w265614713': 'hauptbahnhof', 'r7359339': 'aegidienkirche'}
+          'w4816458': 'opernhaus', 'w265614713': 'hauptbahnhof', 'r7359339': 'aegidienkirche',
+          'w304133007': 'anzeiger', 'r2479829': 'nordlb', 'r364529': 'landesmuseum', 'w4816460': 'kestner', 'r5162749': 'wangenheim',
+          'w29348078': 'kreuzkirche', 'w29173386': 'neustaedter', 'w31290856': 'beginenturm', 'w10677757': 'leibnizhaus', 'w140254020': 'waterloo'}
+# Wahrzeichen ohne eigenen OSM-Umriss (Punkt, Lage aus dem Stadtplan): Name → (lat, lon, Kantenlänge m)
+LM_POINTS = {'kroepcke': (52.37444, 9.73812, 3)}
 B, LM = [], {}
 for e in d['elements']:
     t = e.get('tags', {})
@@ -108,11 +112,21 @@ for e in d['elements']:
                     b['h'] = round(h, 1); b['rf'] = [kind, round(he, 1), round(rh, 1), round(cx, 1), round(cy, 1), round(th, 4), round(w, 1), round(dd, 1)]
         B.append(b)
 LMI = {}
+for k, (la, lo, e) in LM_POINTS.items():
+    x, y = proj([{'lat': la, 'lon': lo}])[0]; LM[k] = [[(x - e / 2, y - e / 2), (x + e / 2, y - e / 2), (x + e / 2, y + e / 2), (x - e / 2, y + e / 2)]]
 for k, rs in LM.items():
     pts = [p for r in rs for p in r]
     A, th, w, hh, cx, cy = mar(pts)
     LMI[k] = {'th': th, 'w': w, 'd': hh, 'cx': cx, 'cy': cy, 'hull': hull(pts)}
     print(k, 'theta %.1f°' % math.degrees(th), 'size %.0f x %.0f' % (w, hh), 'c %.0f,%.0f' % (cx, cy), file=sys.stderr)
+# Häuser, deren Mitte im Rechteck eines Wahrzeichens liegt, entfallen (sonst überdecken Reste des OSM-Komplexes das Modul)
+def inside_mar(px, py, v, pad=2):
+    c, s_ = math.cos(-v['th']), math.sin(-v['th']); dx, dy = px - v['cx'], py - v['cy']
+    u, w_ = dx * c - dy * s_, dx * s_ + dy * c
+    return abs(u) <= v['w'] / 2 + pad and abs(w_) <= v['d'] / 2 + pad
+def cen(r): return sum(p[0] for p in r) / len(r), sum(p[1] for p in r) / len(r)
+_n = len(B); B = [b for b in B if not any(inside_mar(*cen(b['p']), v) for v in LMI.values())]
+print('entfernt im Bereich der Wahrzeichen:', _n - len(B), file=sys.stderr)
 # Straßen, Wasser, Parks, Bäume
 RD = collections.defaultdict(list); WA, PK, TR = [], [], []
 for e in d['elements']:
@@ -141,7 +155,8 @@ B = [b for b in B if any(inb(p) for p in b['p'])]
 TR = [t for t in TR if inb(t)]
 # ---------- Sortierung (Malerverfahren) ----------
 items = [{'k': 'b', 'i': i, 'hull': hull([tuple(p) for p in b['p']]), 'h': b['h']} for i, b in enumerate(B)]
-LMH = {'neuesRathaus': 99, 'marktkirche': 99, 'altesRathaus': 40, 'leineschloss': 26, 'opernhaus': 40, 'hauptbahnhof': 39, 'aegidienkirche': 57}
+LMH = {'neuesRathaus': 99, 'marktkirche': 99, 'altesRathaus': 40, 'leineschloss': 26, 'opernhaus': 40, 'hauptbahnhof': 39, 'aegidienkirche': 57,
+       'anzeiger': 56, 'nordlb': 74, 'landesmuseum': 32, 'kestner': 21, 'wangenheim': 18, 'kreuzkirche': 59, 'neustaedter': 68, 'beginenturm': 27, 'leibnizhaus': 32, 'waterloo': 47, 'kroepcke': 8}
 for k, v in LMI.items(): items.append({'k': 'l', 'i': k, 'hull': v['hull'], 'h': LMH[k]})
 for ti, (x, y) in enumerate(TR): items.append({'k': 't', 'i': ti, 'hull': [(x - 2, y - 2), (x + 2, y - 2), (x + 2, y + 2), (x - 2, y + 2)], 'h': 11})
 for it in items:
@@ -190,7 +205,12 @@ seq = [items[i]['i'] if items[i]['k'] == 'b' else ('L:' + items[i]['i'] if items
 R = lambda v: round(v, 1)
 def phi_of(k, v):
     tl = v['th'] if v['w'] >= v['d'] else v['th'] + math.pi / 2   # reale Längsachse
-    long_y = k in ('leineschloss', 'opernhaus')                    # Modul-Längsachse lokal y
+    long_y = k in ('leineschloss', 'opernhaus')
+    if k not in ('neuesRathaus', 'marktkirche', 'altesRathaus', 'leineschloss', 'hauptbahnhof', 'aegidienkirche'):
+        # wie in der Detailansicht: unter den echten Ausrichtungen (Längsachse bleibt Längsachse) die mit der kleinsten Drehung
+        norm = lambda a: (a + math.pi) % (2 * math.pi) - math.pi
+        if k == 'opernhaus': return 0.0       # frei auf dem Opernplatz: genau wie in der Detailansicht (Säulenhalle schräg zum Betrachter)
+        return min((norm(tl + i * math.pi / 2) for i in range(4)), key=abs)   # an Straßen ausgerichtet, höchstens 45° von der Detailansicht                    # Modul-Längsachse lokal y
     cands = [tl - math.pi / 2, tl + math.pi / 2] if long_y else [tl, tl + math.pi]
     if max(v['w'], v['d']) / min(v['w'], v['d']) < 1.2: cands = [tl + i * math.pi / 2 for i in range(4)]   # fast quadratisch: alle vier Richtungen erlaubt
     rot = lambda ph, x, y: (x * math.cos(ph) - y * math.sin(ph), x * math.sin(ph) + y * math.cos(ph))
@@ -199,10 +219,10 @@ def phi_of(k, v):
         'marktkirche': lambda ph: -rot(ph, -1, 0)[0],                    # Turm nach Westen
         'altesRathaus': lambda ph: sum(rot(ph, 0, 1)),                       # Arkadenseite zum Betrachter
         'leineschloss': lambda ph: -rot(ph, -1, 0)[0] + rot(ph, -1, 0)[1],           # Flussseite (lokal -x) nach Südwesten
-        'opernhaus': lambda ph: rot(ph, 0, 1)[1] + .3 * rot(ph, 0, 1)[0],              # Vorhalle zur Georgstraße (Süden) – bewusst zum Betrachter gedreht, s. README
+        'opernhaus': lambda ph: math.cos(ph),                                          # wie in der Detailansicht (Drehung nahe 0)
         'hauptbahnhof': lambda ph: rot(ph, 0, 1)[1],                                   # Front zum Ernst-August-Platz (Süden)
         'aegidienkirche': lambda ph: -rot(ph, -1, 0)[0],                               # Turm nach Westen
-    }[k]
+    }.get(k, lambda ph: math.cos(ph))                                                  # neue Wahrzeichen: wie in der Detailansicht
     return max(cands, key=score)
 flat = lambda r: [R(c) for p in r for c in p]
 data = {
