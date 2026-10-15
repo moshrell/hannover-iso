@@ -1,8 +1,9 @@
 # OSM → lokale Meter (x Ost, y Süd), Sortierung für die Iso-Ansicht, Ausgabe data/mitte.js
-# Aufruf: python3 prep.py osm.json mitte.js   (osm.json = Overpass-Abfrage aus q.txt)
+# Aufruf: python3 prep.py osm.json.gz mitte.js   (osm.json.gz = Overpass-Abfrage aus q.txt, gzip)
 import json, math, sys, collections
 src, out = sys.argv[1], sys.argv[2]
-d = json.load(open(src))
+import gzip
+d = json.load(gzip.open(src, 'rt') if src.endswith('.gz') else open(src))
 LAT0, LON0 = 52.3710, 9.7375
 KX = math.cos(math.radians(LAT0)) * 111320; KY = 110540
 C, S = math.cos(math.pi / 6), .5
@@ -181,7 +182,7 @@ for e in d['elements']:
         for r in outer(e):
             if r: PK.append(r)
 # Ausschnitt begrenzen
-X0, X1, Y0, Y1 = -760, 760, -800, 800
+X0, X1, Y0, Y1 = -1500, 1500, -1500, 1500
 inb = lambda p: X0 <= p[0] <= X1 and Y0 <= p[1] <= Y1
 B = [b for b in B if any(inb(p) for p in b['p'])]
 TR = [t for t in TR if inb(t) and not in_clear(*t)]
