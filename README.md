@@ -25,7 +25,7 @@
 ## Устройство
 - `core/iso-core.js` — общий движок: проекция, «ядро» модуля (поворот, масштаб, перенос на место), стены/крыши/купола/фронтоны, сортировка частей, часы.
 - `core/iso.css` — все материалы, цвета и переходы света.
-- `landmarks/*.js` — достопримечательности: `ISO.landmark('имя', H => ({ mods, lc, len, label, top }))`. Новая = новый файл + строка в `prep.py` (OSM-id) + `<script>` в `karte.html`.
+- `landmarks/<имя>.js` + `landmarks/meta/<имя>.json` — достопримечательности, **одно здание = свои файлы** (код модуля `ISO.landmark(...)`, метаданные: заголовок, тексты, OSM-id или точка, высота, сторона фасада). Общие файлы `landmarks/all.js` и `landmarks/meta.js` генерирует `tools/build-landmarks.py` (их не править руками). Новое здание: `python3 tools/new-landmark.py`. Работа в нескольких чатах — см. **`ARBEIT.md`**.
 - `data/q.txt` — запрос Overpass; `data/osm.json.gz` — сырые данные OSM (сжаты; Overpass из облака закрыт — запрос выполнялся через компьютер Степана); `data/prep.py` — превращает их в `data/mitte.js` (метры, поворот, сортировка «дальше → ближе» по разделяющим осям). Пересборка: `python3 prep.py osm.json.gz mitte.js`.
 
 ## Студии (подробно)
@@ -79,7 +79,8 @@
 2. ✅ Altstadt v1.
 2a. ✅ Opernhaus, Hauptbahnhof (+ Ernst-August-Denkmal), Aegidienkirche v1.
 2b. ✅ 11 второстепенных (`landmarks/mitte2.js`, фото `ref/mitte2/`) v1 «узнаваемо» → ждут оценки; детали доводить позже. Их точки меньше и появляются при приближении ≥ 0,8: Anzeiger-Hochhaus, NORD/LB, Landesmuseum, Museum August Kestner, Wangenheimpalais, Kreuzkirche, Neustädter Hof- und Stadtkirche, Beginenturm, Leibnizhaus, Waterloosäule, Kröpcke-Uhr.
-2c. ✅ Herrenhausen (v1): Galerie + Orangerie (`galerie`, жёлтая штукатурка/мансарда и красная черепица) и Große Fontäne (`fontaene`, струя ~60 м) — две точки у входа в Großer Garten; Schloss Herrenhausen, Berggarten, Georgengarten, Welfenschloss — пока без модулей. Карта расширена на запад до Herrenhausen (≈ 21 700 зданий); плитки `render-tiles.mjs` пропускают пустые блоки (маска по `data/q.txt`).
+2c. ❌ Galerie/Orangerie и Große Fontäne в Herrenhausen убраны (по замечанию Степана: «два барака», не утверждали). Парк Herrenhausen остаётся из OSM. Карта расширена на запад до Herrenhausen (≈ 21 700 зданий); плитки пропускают пустые блоки (маска по `data/q.txt`).
+2d. 🔶 Welfenschloss (Leibniz Universität) v1 (`landmarks/welfenschloss.js`, фото `ref/welfenschloss/`): массивы по фото, но не «идеал» — нужны полировка фасадов, портал с львами, башни, зубцы, отдельная ориентация. Следующий приоритет Степана: довести до идеала на карте и в карточке.
 3. ✅ Карта Mitte на OSM v1 (`karte.html`) → ждёт оценки. Расширена до ≈3×3 км (X/Y ±1500 м в `prep.py`). Дальше: края карты мягче, LOD, детальные крыши фона, достопримечательности новых районов по одной и детально.
 4. Hauptbahnhof + Ernst-August, Opernhaus, Welfenschloss (ур. 2), Herrenhäuser Gärten + Große Fontäne, Maschsee, Telemax, Expo-Dach (ур. 3). Без логотипов (96, üstra).
 5. Домики клиентов из JSON (имя, координаты, ссылка) — только с письменного согласия.

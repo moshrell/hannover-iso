@@ -7,7 +7,7 @@ find "$D" -mindepth 1 ! -name .htaccess -exec rm -rf {} + 2>/dev/null || true
 mkdir -p "$D"
 cp karte.html "$D/index.html"; cp karte.css karte.js embed.js rathaus.html rathaus.css rathaus.js altstadt.html altstadt.css altstadt.js "$D/"
 cp -r tiles "$D/tiles"; rm -f "$D/tiles/meta.json"
-cp studio.html studio.js studio.css "$D/"; mkdir -p "$D/core" "$D/landmarks"; cp core/iso-core.js core/iso.css "$D/core/"; cp landmarks/mitte.js landmarks/mitte2.js "$D/landmarks/"
+cp studio.html studio.js studio.css "$D/"; mkdir -p "$D/core" "$D/landmarks"; cp core/iso-core.js core/iso.css "$D/core/"; cp landmarks/all.js landmarks/meta.js "$D/landmarks/"
 cat > "$D/.htaccess" <<'H'
 # Entwurf Hannover-Karte (privat): eigene Sicherheitsregeln, nicht in Suchmaschinen
 <IfModule mod_headers.c>

@@ -1,5 +1,5 @@
-# Lädt Referenzfotos von Wikimedia Commons: python3 dl.py "Suchbegriff" name [anzahl]
-import sys, json, urllib.request, urllib.parse, time
+# Referenzfotos von Wikimedia Commons laden: python3 tools/ref-dl.py "Suchbegriff" ref/<gebäude>/<name> [anzahl]  (legt <name>_1.jpg … und ref/<gebäude>/quellen.txt an)
+import sys, os, json, urllib.request, urllib.parse, time
 def get(u):
     for i in range(5):
         try:
@@ -16,6 +16,6 @@ for p in pages:
     if ii['mime'] != 'image/jpeg' or ii['width'] < 1200: continue
     k += 1; fn = f'{name}_{k}.jpg'
     open(fn, 'wb').write(get(ii['thumburl'])); print(fn, p['title'], ii['width'], ii['height'])
-    open('quellen.txt', 'a').write(f"{fn}  https://commons.wikimedia.org/wiki/{p['title'].replace(' ', '_')}\n")
+    open(os.path.join(os.path.dirname(name) or '.', 'quellen.txt'), 'a').write(f"{fn}  https://commons.wikimedia.org/wiki/{p['title'].replace(' ', '_')}\n")
     time.sleep(2)
     if k >= n: break

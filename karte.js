@@ -5,26 +5,10 @@
   'use strict';
   const BASE = 'tiles/';
   // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): Altstadt = ein Punkt für alle drei Bauten
-  const FACTS = {
-    neuesRathaus: { t: 'Neues Rathaus', f: 'Erbaut 1901–1913 am Maschteich, Kuppel 97,73 m, Bogenaufzug bis zur Aussicht.', d: 'rathaus.html', from: ['neuesRathaus'] },
-    opernhaus: { t: 'Opernhaus', f: 'Staatsoper von Georg Ludwig Friedrich Laves (1845–1852): Vorhalle mit Terrasse, Giebel mit Figurengruppe.', d: 'studio.html?lm=opernhaus', from: ['opernhaus'] },
-    hauptbahnhof: { t: 'Hauptbahnhof', f: 'Empfangsgebäude von 1879 aus gelbem Backstein; davor das Ernst-August-Denkmal – Treffpunkt „unterm Schwanz“.', d: 'studio.html?lm=hauptbahnhof', from: ['hauptbahnhof'] },
-    aegidienkirche: { t: 'Aegidienkirche', f: 'Gotische Kirchenruine, seit 1952 Mahnmal; im Turm die Friedensglocke aus Hiroshima.', d: 'studio.html?lm=aegidienkirche', from: ['aegidienkirche'] },
-    anzeiger: { t: 'Anzeiger-Hochhaus', f: 'Expressionistischer Klinkerbau von Fritz Höger (1928) mit grüner Kuppel – einst Planetarium, heute Kino.', d: 'studio.html?lm=anzeiger', from: ['anzeiger'], minor: 1 },
-    nordlb: { t: 'NORD/LB', f: 'Bankgebäude von Behnisch, Behnisch & Partner (2002): gestapelte, versetzte Glaskörper über einem Hof.', d: 'studio.html?lm=nordlb', from: ['nordlb'], minor: 1 },
-    landesmuseum: { t: 'Landesmuseum', f: 'Niedersächsisches Landesmuseum (1897–1902) am Maschpark: Natur, Kunst und Kulturen.', d: 'studio.html?lm=landesmuseum', from: ['landesmuseum'], minor: 1 },
-    kestner: { t: 'Museum August Kestner', f: 'Antike, Münzen und Design hinter der Wabenfassade aus Glasbausteinen.', d: 'studio.html?lm=kestner', from: ['kestner'], minor: 1 },
-    wangenheim: { t: 'Wangenheimpalais', f: 'Klassizistisches Palais von Laves (1829–1833), heute Wirtschaftsministerium.', d: 'studio.html?lm=wangenheim', from: ['wangenheim'], minor: 1 },
-    kreuzkirche: { t: 'Kreuzkirche', f: 'Älteste Kirche der Altstadt (geweiht 1333), Backsteingotik mit hohem grünem Turmhelm.', d: 'studio.html?lm=kreuzkirche', from: ['kreuzkirche'], minor: 1 },
-    neustaedter: { t: 'Neustädter Hof- und Stadtkirche', f: 'Barocke Kirche St. Johannis (1666–1670) – Grabstätte von Gottfried Wilhelm Leibniz.', d: 'studio.html?lm=neustaedter', from: ['neustaedter'], minor: 1 },
-    beginenturm: { t: 'Beginenturm', f: 'Wehrturm der Stadtmauer (um 1357), heute Teil des Historischen Museums.', d: 'studio.html?lm=beginenturm', from: ['beginenturm'], minor: 1 },
-    leibnizhaus: { t: 'Leibnizhaus', f: 'Renaissance-Bürgerhaus, in dem Leibniz bis 1716 lebte; Fassade 1983 am Holzmarkt wiederaufgebaut.', d: 'studio.html?lm=leibnizhaus', from: ['leibnizhaus'], minor: 1 },
-    waterloo: { t: 'Waterloosäule', f: 'Siegessäule von Laves (1832), 46 m hoch, oben die Viktoria.', d: 'studio.html?lm=waterloo', from: ['waterloo'], minor: 1 },
-    kroepcke: { t: 'Kröpcke-Uhr', f: 'Hannovers Treffpunkt Nummer eins: „Wir treffen uns unter der Uhr.“', d: 'studio.html?lm=kroepcke', from: ['kroepcke'], minor: 1 },
-    galerie: { t: 'Herrenhäuser Gärten', f: 'Galerie und Orangerie am Eingang des Großen Gartens, einer der bedeutendsten Barockgärten Europas.', d: 'studio.html?lm=galerie', from: ['galerie'] },
-    fontaene: { t: 'Große Fontäne', f: 'Bis zu 70 m hoch – die höchste Gartenfontäne Europas.', d: 'studio.html?lm=fontaene', from: ['fontaene'] },
-    altstadt: { t: 'Altstadt', f: 'Marktkirche (Backsteingotik, 14. Jh., Turm 97 m), Altes Rathaus mit Treppengiebeln und das Leineschloss – heute Sitz des Niedersächsischen Landtags.', d: 'altstadt.html', from: ['marktkirche', 'altesRathaus', 'leineschloss'] },
-  };
+  // Pins aus landmarks/meta/*.json (window.LMETA, von tools/build-landmarks.py erzeugt); Altstadt = Sammelpunkt für drei Bauten
+  const FACTS = {};
+  Object.entries(window.LMETA || {}).forEach(([n, m]) => { if (m.pin === false) return; FACTS[n] = { t: m.title, f: m.fact, d: m.detail, from: [n], minor: !!m.minor }; });
+  FACTS.altstadt = { t: 'Altstadt', f: 'Marktkirche (Backsteingotik, 14. Jh., Turm 97 m), Altes Rathaus mit Treppengiebeln und das Leineschloss – heute Sitz des Niedersächsischen Landtags.', d: 'altstadt.html', from: ['marktkirche', 'altesRathaus', 'leineschloss'] };
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
   const labelsEl = document.getElementById('labels');
   const v = { x: 0, y: 0, z: 1 };

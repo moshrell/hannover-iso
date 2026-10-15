@@ -1,0 +1,23 @@
+{
+ "title": "Kreuzkirche",
+ "fact": "Älteste Kirche der Altstadt (geweiht 1333), Backsteingotik mit hohem grünem Turmhelm.",
+ "studio": "Älteste Kirche der Altstadt (geweiht 1333), Backsteingotik mit hohem, grünem Turmhelm.",
+ "detail": "studio.html?lm=kreuzkirche",
+ "minor": true,
+ "osm": [
+  "w29348078"
+ ],
+ "h": 59,
+ "rank": 9,
+ "face": [
+  "compass",
+  [
+   -1,
+   0
+  ],
+  [
+   -1,
+   0
+  ]
+ ]
+}

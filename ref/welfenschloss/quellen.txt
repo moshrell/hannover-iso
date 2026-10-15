@@ -1,0 +1,6 @@
+ref/welfenschloss/ansicht_1.jpg  https://commons.wikimedia.org/wiki/File:Universität_Hannover_-_Hauptgebäude_-_B.jpg
+ref/welfenschloss/ansicht_2.jpg  https://commons.wikimedia.org/wiki/File:Universität_Hannover_-_Hauptgebäude_-_B02.jpg
+ref/welfenschloss/ansicht_3.jpg  https://commons.wikimedia.org/wiki/File:Universität_Hannover_-_Hauptgebäude_-_A.jpg
+ref/welfenschloss/ansicht_4.jpg  https://commons.wikimedia.org/wiki/File:Universität_Hannover_-_Hauptgebäude_-_A02.jpg
+ref/welfenschloss/ansicht_5.jpg  https://commons.wikimedia.org/wiki/File:Löwen_vor_dem_Eingang_zum_Welfenschloss_1.jpg
+ref/welfenschloss/ansicht_6.jpg  https://commons.wikimedia.org/wiki/File:2022-03-18_Ukrainische_Flagge_(Hannover_LUH).jpg

@@ -4,24 +4,8 @@
   'use strict';
   const { f2 } = ISO;
   const q = new URLSearchParams(location.search), name = q.get('lm') || 'opernhaus';
-  const FACTS = {
-    opernhaus: 'Staatsoper Hannover, erbaut 1845–1852 von Georg Ludwig Friedrich Laves; Vorhalle mit Terrasse, Giebel mit Figurengruppe.',
-    hauptbahnhof: 'Empfangsgebäude von 1879 in gelbem Backstein mit roten Bändern; davor das Ernst-August-Denkmal, Treffpunkt „unterm Schwanz“.',
-    anzeiger: 'Expressionistisches Hochhaus von Fritz Höger (1928) aus dunklem Klinker; unter der grünen Kuppel war einst ein Planetarium, heute ein Kino.',
-    nordlb: 'Bankgebäude von Behnisch, Behnisch & Partner (2002): gläserne Randbebauung um einen Hof, darüber gestapelte, versetzte Glaskörper.',
-    landesmuseum: 'Niedersächsisches Landesmuseum (1897–1902) am Maschpark: Natur, Kunst und Kulturen unter einem Dach.',
-    kestner: 'Museum August Kestner: Antike, Münzen und Design; die Wabenfassade aus Glasbausteinen prägt den Platz der Menschenrechte.',
-    wangenheim: 'Klassizistisches Palais von Laves (1829–1833), zeitweise Rathaus, heute Sitz des Wirtschaftsministeriums.',
-    kreuzkirche: 'Älteste Kirche der Altstadt (geweiht 1333), Backsteingotik mit hohem, grünem Turmhelm.',
-    neustaedter: 'Barocke Hof- und Stadtkirche St. Johannis (1666–1670); hier ist Gottfried Wilhelm Leibniz begraben.',
-    beginenturm: 'Rest der mittelalterlichen Stadtbefestigung (um 1357), heute Teil des Historischen Museums.',
-    leibnizhaus: 'Renaissance-Bürgerhaus, in dem Leibniz bis zu seinem Tod 1716 lebte; die Fassade wurde 1983 am Holzmarkt wiederaufgebaut.',
-    waterloo: 'Waterloosäule von Laves (1832), 46 m hoch, zur Erinnerung an die Schlacht bei Waterloo; oben die Siegesgöttin Viktoria.',
-    galerie: 'Galerie und Orangerie am Eingang der Herrenhäuser Gärten (Ende 17. Jh.): gelber Putz, Mansarddach – hier beginnt der Große Garten, eine der bedeutendsten Barockgartenanlagen Europas.',
-    fontaene: 'Die Große Fontäne im Großen Garten springt bis zu 70 m hoch – die höchste Gartenfontäne Europas, von Kurfürstin Sophie 1720 erstmals gebaut.',
-    kroepcke: 'Die Kröpcke-Uhr – Hannovers Treffpunkt Nummer eins: „Wir treffen uns unter der Uhr.“',
-    aegidienkirche: 'Gotische Kirche, 1943 zerstört und seit 1952 Mahnmal für die Opfer von Krieg und Gewalt; im Turm die Friedensglocke aus Hiroshima.',
-  };
+  const FACTS = {};
+  Object.entries(window.LMETA || {}).forEach(([n, m]) => { FACTS[n] = m.studio || m.fact || ''; });
   if (!ISO.LM[name]) { console.error('studio: unbekanntes Wahrzeichen', name); return; }
   const def = ISO.LM[name](ISO.H);
   document.getElementById('title').textContent = def.label;

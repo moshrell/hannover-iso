@@ -76,12 +76,13 @@ DEF_H = {'house': 9, 'garage': 3, 'garages': 3, 'shed': 3, 'kiosk': 3.5, 'hut': 
 def num(v):
     try: return float(str(v).replace(',', '.').split()[0])
     except: return None
-LM_IDS = {'w5121355': 'marktkirche', 'w5121356': 'altesRathaus', 'r1170793': 'leineschloss', 'r313173': 'neuesRathaus',
-          'w4816458': 'opernhaus', 'w265614713': 'hauptbahnhof', 'r7359339': 'aegidienkirche',
-          'w304133007': 'anzeiger', 'r2479829': 'nordlb', 'r364529': 'landesmuseum', 'w4816460': 'kestner', 'r5162749': 'wangenheim',
-          'w29348078': 'kreuzkirche', 'w29173386': 'neustaedter', 'w31290856': 'beginenturm', 'w10677757': 'leibnizhaus', 'w140254020': 'waterloo', 'w10142072': 'galerie', 'w10142074': 'galerie'}
-# Wahrzeichen ohne eigenen OSM-Umriss (Punkt, Lage aus dem Stadtplan): Name → (lat, lon, Kantenlänge m)
-LM_POINTS = {'kroepcke': (52.37444, 9.73812, 3), 'fontaene': (52.38601, 9.69596, 4)}
+# Wahrzeichen: OSM-Ids, Punkt-Lage, Höhe und Ausrichtung stehen je Gebäude in landmarks/meta/<name>.json (jeder Chat pflegt nur sein eigenes)
+import glob, os
+META = {}
+for f in sorted(glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'landmarks', 'meta', '*.json'))):
+    META[os.path.basename(f)[:-5]] = json.load(open(f))
+LM_IDS = {i: n for n, m in META.items() for i in m.get('osm', [])}
+LM_POINTS = {n: tuple(m['point']) for n, m in META.items() if m.get('point')}   # ohne eigenen OSM-Umriss: (lat, lon, Kantenlänge m)
 B, LM = [], {}
 for e in d['elements']:
     t = e.get('tags', {})
@@ -121,7 +122,7 @@ for k, rs in LM.items():
     LMI[k] = {'th': th, 'w': w, 'd': hh, 'cx': cx, 'cy': cy, 'hull': hull(pts)}
     print(k, 'theta %.1f°' % math.degrees(th), 'size %.0f x %.0f' % (w, hh), 'c %.0f,%.0f' % (cx, cy), file=sys.stderr)
 # Ausrichtung einzelner Module nach der Wirklichkeit: ('street', lokale Front, Straßenname) bzw. ('compass', lokale Richtung, Kompassvektor Ost/Süd)
-FACE = {'landesmuseum': ('street', (0, 1), 'Willy-Brandt-Allee'), 'kreuzkirche': ('compass', (-1, 0), (-1, 0))}
+FACE = {n: (m['face'][0], tuple(m['face'][1]), tuple(m['face'][2]) if isinstance(m['face'][2], list) else m['face'][2]) for n, m in META.items() if m.get('face')}
 _sp = {}
 def street_pt(name, v):
     if name not in _sp:
@@ -210,8 +211,7 @@ B = [b for b in B if any(inb(p) for p in b['p'])]
 TR = [t for t in TR if inb(t) and not in_clear(*t)]
 # ---------- Sortierung (Malerverfahren) ----------
 items = [{'k': 'b', 'i': i, 'hull': hull([tuple(p) for p in b['p']]), 'h': b['h']} for i, b in enumerate(B)]
-LMH = {'neuesRathaus': 99, 'marktkirche': 99, 'altesRathaus': 40, 'leineschloss': 26, 'opernhaus': 40, 'hauptbahnhof': 39, 'aegidienkirche': 57,
-       'anzeiger': 56, 'nordlb': 74, 'landesmuseum': 32, 'kestner': 21, 'wangenheim': 18, 'kreuzkirche': 59, 'neustaedter': 68, 'beginenturm': 27, 'leibnizhaus': 32, 'waterloo': 47, 'kroepcke': 8, 'galerie': 18, 'fontaene': 60}
+LMH = {n: m.get('h', 20) for n, m in META.items()}
 for k, v in LMI.items(): items.append({'k': 'l', 'i': k, 'hull': v['hull'], 'h': LMH[k]})
 for ti, (x, y) in enumerate(TR): items.append({'k': 't', 'i': ti, 'hull': [(x - 2, y - 2), (x + 2, y - 2), (x + 2, y + 2), (x - 2, y + 2)], 'h': 11})
 for it in items:

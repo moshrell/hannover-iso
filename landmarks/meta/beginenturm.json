@@ -1,0 +1,12 @@
+{
+ "title": "Beginenturm",
+ "fact": "Wehrturm der Stadtmauer (um 1357), heute Teil des Historischen Museums.",
+ "studio": "Rest der mittelalterlichen Stadtbefestigung (um 1357), heute Teil des Historischen Museums.",
+ "detail": "studio.html?lm=beginenturm",
+ "minor": true,
+ "osm": [
+  "w31290856"
+ ],
+ "h": 27,
+ "rank": 11
+}
