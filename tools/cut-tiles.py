@@ -20,6 +20,7 @@ for f in sorted(glob.glob(os.path.join(tmp, 'L*_*_*.png'))):
             t.save(os.path.join(out, str(li), f'{tx}_{ty}.webp'), 'WEBP', quality=78, method=6)
             tiles.setdefault(str(li), []).append(f'{tx}_{ty}')
 meta['tiles'] = tiles
+import time; meta['v'] = int(time.time())
 json.dump(meta, open(os.path.join(out, 'meta.json'), 'w'), separators=(',', ':'))
 open(os.path.join(out, 'meta.js'), 'w').write('window.TILES=' + json.dumps(meta, separators=(',', ':')) + ';\n')
 # Poster = Stufe 0 als ein Bild

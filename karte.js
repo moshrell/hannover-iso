@@ -64,7 +64,7 @@
         const im = new Image(); im.decoding = 'async'; im.alt = ''; im.className = 't';
         im.style.left = tx * T + 'px'; im.style.top = ty * T + 'px';
         im.onload = () => im.classList.add('in');
-        im.src = `${BASE}${i}/${key}.webp`;
+        im.src = `${BASE}${i}/${key}.webp?v=${M.v}`;
         ly.el.appendChild(im); ly.imgs.set(key, im);
       }
       // weit entfernte Kacheln freigeben (Speicher auf dem Telefon)

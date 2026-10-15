@@ -141,7 +141,7 @@ def phi_of(k, v):
     }.get(k, lambda ph: math.cos(ph))                                                  # neue Wahrzeichen: wie in der Detailansicht
     return max(cands, key=score)
 # Freiräume vor Wahrzeichen (lokale Koordinaten relativ zur Modulmitte: x quer, y nach vorn): Ernst-August-Platz vor dem Hauptbahnhof
-CLEAR = {'hauptbahnhof': (-62, 62, 14, 95)}
+CLEAR = {'hauptbahnhof': (-80, 80, 14, 110)}
 def in_clear(px, py):
     for k, (x0, x1, y0, y1) in CLEAR.items():
         v = LMI.get(k)
@@ -150,13 +150,14 @@ def in_clear(px, py):
         rx, ry = dx * c + dy * s_, -dx * s_ + dy * c
         if x0 <= rx <= x1 and y0 <= ry <= y1: return True
     return False
+def in_clear_poly(pts): return sum(in_clear(*q) for q in pts) * 2 >= len(pts)   # mindestens die Hälfte der Ecken im Freiraum
 # Häuser, deren Mitte im Rechteck eines Wahrzeichens liegt, entfallen (sonst überdecken Reste des OSM-Komplexes das Modul)
 def inside_mar(px, py, v, pad=2):
     c, s_ = math.cos(-v['th']), math.sin(-v['th']); dx, dy = px - v['cx'], py - v['cy']
     u, w_ = dx * c - dy * s_, dx * s_ + dy * c
     return abs(u) <= v['w'] / 2 + pad and abs(w_) <= v['d'] / 2 + pad
 def cen(r): return sum(p[0] for p in r) / len(r), sum(p[1] for p in r) / len(r)
-_n = len(B); B = [b for b in B if not any(inside_mar(*cen(b['p']), v) for v in LMI.values()) and not in_clear(*cen(b['p']))]
+_n = len(B); B = [b for b in B if not any(inside_mar(*cen(b['p']), v) for v in LMI.values()) and not in_clear(*cen(b['p'])) and not in_clear_poly(b['p'])]
 print('entfernt im Bereich der Wahrzeichen:', _n - len(B), file=sys.stderr)
 # Straßen, Wasser, Parks, Bäume
 RD = collections.defaultdict(list); WA, PK, TR = [], [], []

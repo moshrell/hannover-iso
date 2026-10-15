@@ -14,7 +14,7 @@ cat > "$D/.htaccess" <<'H'
   Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'"
   Header always set X-Robots-Tag "noindex, nofollow"
   Header set Cache-Control "no-cache"
-  <If "%{REQUEST_URI} =~ m#/tiles/#">
+  <If "%{REQUEST_URI} =~ m#/tiles/[0-9]/#">
     Header set Cache-Control "public, max-age=3600"
   </If>
 </IfModule>
