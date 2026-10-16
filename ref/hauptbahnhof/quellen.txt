@@ -1,0 +1,11 @@
+ref/hauptbahnhof/ansicht_1.jpg  https://commons.wikimedia.org/wiki/File:Hannover,_der_Hauptbahnhof_Dm_IMG_4576_2018-07-01_17.37.jpg
+ref/hauptbahnhof/ansicht_2.jpg  https://commons.wikimedia.org/wiki/File:Hannover_Hauptbahnhof_Vorplatz.jpg
+ref/hauptbahnhof/ansicht_3.jpg  https://commons.wikimedia.org/wiki/File:Hannover_Hauptbahnhof_2022.jpg
+ref/hauptbahnhof/ansicht_4.jpg  https://commons.wikimedia.org/wiki/File:2020-11-03_Hannover_Hauptbahnhof_04.JPG
+ref/hauptbahnhof/ansicht_5.jpg  https://commons.wikimedia.org/wiki/File:2020-11-03_Hannover_Hauptbahnhof_01.JPG
+ref/hauptbahnhof/ansicht_6.jpg  https://commons.wikimedia.org/wiki/File:2020-11-03_Hannover_Hauptbahnhof_02.JPG
+ref/hauptbahnhof/denkmal_1.jpg  https://commons.wikimedia.org/wiki/File:Hannover,_das_Ernst-August-Denkmal_bij_het_station_IMG_4492_2018-07-01_11.04.jpg
+ref/hauptbahnhof/denkmal_2.jpg  https://commons.wikimedia.org/wiki/File:Hannover,_der_Hauptbahnhof_Dm_IMG_4576_2018-07-01_17.37.jpg
+ref/hauptbahnhof/denkmal_3.jpg  https://commons.wikimedia.org/wiki/File:Ernst-August-Denkmal_Hannover_(02).jpg
+ref/hauptbahnhof/denkmal_4.jpg  https://commons.wikimedia.org/wiki/File:Postament_(Hannover-Ernst-August-Denkmal,_2024).jpg
+ref/hauptbahnhof/denkmal_5.jpg  https://commons.wikimedia.org/wiki/File:Ernst-August-Denkmal_in_Hannover_(2026).jpg
