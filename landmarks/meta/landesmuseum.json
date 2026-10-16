@@ -1,13 +1,13 @@
 {
  "title": "Landesmuseum",
- "fact": "Niedersächsisches Landesmuseum (1897–1902) am Maschpark: Natur, Kunst und Kulturen.",
- "studio": "Niedersächsisches Landesmuseum (1897–1902) am Maschpark: Natur, Kunst und Kulturen unter einem Dach.",
+ "fact": "Niedersächsisches Landesmuseum (1897–1902, Architekt Hubert Stier) am Maschpark: Natur, Kunst und Kulturen.",
+ "studio": "Niedersächsisches Landesmuseum (1897–1902) am Maschpark: vier Flügel um einen Hof, in der Mitte der Risalit mit drei hohen Bogenfenstern, an den Ecken die Pavillons mit geschweiften Dächern.",
  "detail": "studio.html?lm=landesmuseum",
  "minor": true,
  "osm": [
   "r364529"
  ],
- "h": 32,
+ "h": 29.0,
  "rank": 6,
  "face": [
   "street",

@@ -1,0 +1,6 @@
+ref/landesmuseum/ansicht_1.jpg  https://commons.wikimedia.org/wiki/File:Lower_Saxony_State_Museum_Willy-Brandt-Allee_Mitte_Hannover_Germany.jpg
+ref/landesmuseum/ansicht_2.jpg  https://commons.wikimedia.org/wiki/File:2022-07-24_Niedersächsisches_Landesmuseum_(Hannover).jpg
+ref/landesmuseum/ansicht_3.jpg  https://commons.wikimedia.org/wiki/File:2026-01-10_Niedersächsisches_Landesmuseum_im_Schnee_0238.JPG
+ref/landesmuseum/ansicht_4.jpg  https://commons.wikimedia.org/wiki/File:2021-01-31_Niedersächsisches_Landesmuseum.JPG
+ref/landesmuseum/ansicht_5.jpg  https://commons.wikimedia.org/wiki/File:Karl_F._Wunder_PC_0990_Hannover._Leinepartie._Blick_auf_Niedersächsisches_Landesmuseum_und_den_späteren_Bauplatz_der_Wilhelm.Raabe-Schule,_Bildseite.jpg
+ref/landesmuseum/ansicht_6.jpg  https://commons.wikimedia.org/wiki/File:Niedersächsisches_Landesmuseum_(75).JPG
