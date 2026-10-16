@@ -26,6 +26,8 @@
 3. `sh tools/sync-vorschau.sh ../kravets-site`, коммит в kravets-site (по-русски, `git diff --stat` перед коммитом), push в `master` → https://kravets-webdesign.de/vorschau/karte-ksn0/ (деплой по FTP идёт десятки минут).
 4. Обновить README (на месте, устаревшее убрать).
 
+Готовые задания по зданиям лежат в `prompts/<имя>.md` (чату достаточно сказать: «Прочитай prompts/<имя>.md в репозитории moshrell/hannover-iso (ветка main) и выполни»).
+
 ## Промпт для нового чата-здания (скопировать в новый чат, подставив имя)
 ```
 Ты работаешь над проектом hannover-iso (репозиторий moshrell/hannover-iso, изометрическая ночная карта Ганновера). Сначала прочитай README.md, CLAUDE.md и ARBEIT.md — там правила и пайплайн.
