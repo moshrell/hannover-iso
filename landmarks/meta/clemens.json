@@ -1,0 +1,23 @@
+{
+ "title": "Basilika St. Clemens",
+ "fact": "Katholische Basilika mit Kuppel, 1712–1718 nach Plänen von Tommaso Giusti erbaut",
+ "studio": "Die Basilika St. Clemens (Hauptkirche des Bistums-Dekanats Hannover, seit 1998 «Basilica minor») wurde 1712–1718 im venezianisch geprägten Barock nach Plänen von Tommaso Giusti gebaut und am 4. November 1718 geweiht. Im Krieg 1943 fast zerstört, wurde sie ab 1946 wiederaufgebaut; Kuppel und Glockentürme entstanden erst nach dem Krieg, 1957 wurde die Kirche neu geweiht. Das Hauptportal zeigt Bronzetüren von Heinrich Gerhard Bücker. Auf der Karte: Hauptfassade mit Giebel nach Osten zum Platz an der Basilika, Kupferkuppel mit leuchtender Laterne, zwei Türme im Westen.",
+ "detail": "studio.html?lm=clemens",
+ "minor": false,
+ "h": 47,
+ "rank": 50,
+ "osm": [
+  "w357786647"
+ ],
+ "face": [
+  "compass",
+  [
+   1,
+   0
+  ],
+  [
+   1,
+   0
+  ]
+ ]
+}
