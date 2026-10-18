@@ -13,17 +13,17 @@
   const labelsEl = document.getElementById('labels');
   const v = { x: 0, y: 0, z: 1 };
   let M = null, zMin = .2, zMax = 4.5, raf = 0;
-  const layers = [];
+  const cv = document.createElement('canvas'), ctx = cv.getContext('2d', { alpha: false });
+  let DPR = 1, cw = 0, ch = 0;
+  const cache = new Map(); let fno = 0, fading = false;   // Kacheln: geladene Bilder (Stufe 0 bleibt immer im Speicher)
 
   /* ---------- Kacheln ---------- */
   function setup(meta) {
     M = meta; M.box = M.box || [0, 0, M.VW, M.VH];
     M.have = M.levels.map((_, i) => new Set(M.tiles[i] || []));
-    M.levels.forEach((lv, i) => {
-      const el = document.createElement('div'); el.className = 'lv'; el.style.width = lv.w + 'px'; el.style.height = lv.h + 'px';
-      world.appendChild(el); layers.push({ el, s: lv.s, imgs: new Map() });
-    });
-    poster.style.width = M.VW + 'px'; poster.style.height = M.VH + 'px';
+    world.appendChild(cv); fit();
+    poster.addEventListener('load', apply); if (poster.complete) apply();
+    M.levels[0] && [...M.have[0]].forEach(k => want(0, k));   // grobe Stufe komplett laden: Rückfall ohne schwarze Lücken
     // Punkte aus den gerenderten Positionen der Bauten (Mittelwert bei Gruppen)
     M.pins = Object.entries(FACTS).map(([name, F]) => {
       const ls = F.from.map(n => M.labels.find(l => l.name === n)).filter(Boolean);
@@ -33,33 +33,49 @@
     });
   }
   const levelFor = z => { const dpr = Math.min(2, window.devicePixelRatio || 1); for (let i = 0; i < M.levels.length; i++) if (M.levels[i].s * 2 >= z * dpr * .9) return i; return M.levels.length - 1; };
+  /* Zeichnen auf EINE Leinwand statt riesiger Ebenen: nie schwarz (Poster + grobe Stufen liegen immer darunter), kein Bild-Ziehen am PC */
+  function fit() {
+    const W = map.clientWidth, H = map.clientHeight; DPR = Math.min(2, window.devicePixelRatio || 1);
+    if (W * H * DPR * DPR > 4.5e6) DPR = Math.max(1, Math.sqrt(4.5e6 / (W * H)));
+    cw = W; ch = H; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  }
+  function want(i, key) {
+    const id = i + '/' + key; let e = cache.get(id);
+    if (e) { e.u = fno; return e; }
+    const im = new Image(); im.alt = ''; e = { im, ok: false, t0: 0, u: fno }; cache.set(id, e);
+    im.src = `${BASE}${i}/${key}.webp?v=${M.v}`;
+    (im.decode ? im.decode() : new Promise((res, rej) => { im.onload = res; im.onerror = rej; }))
+      .then(() => { e.ok = true; e.t0 = performance.now(); apply(); })
+      .catch(() => { cache.delete(id); });
+    return e;
+  }
   function tiles() {
-    const W = map.clientWidth, H = map.clientHeight, L = levelFor(v.z), T = M.tile;
-    layers.forEach((ly, i) => {
-      const k = v.z / ly.s;
-      ly.el.style.transform = `translate3d(${v.x.toFixed(1)}px, ${v.y.toFixed(1)}px, 0) scale(${k.toFixed(5)})`;
-      ly.el.style.visibility = i <= L ? 'visible' : 'hidden';
-      if (i !== L && i !== 0 && i !== L - 1) return;
-      // sichtbarer Bereich in Kachelkoordinaten dieser Stufe (+1 Rand)
-      const x0 = Math.max(0, Math.floor(-v.x / k / T) - 1), y0 = Math.max(0, Math.floor(-v.y / k / T) - 1);
-      const x1 = Math.ceil((W - v.x) / k / T) + 1, y1 = Math.ceil((H - v.y) / k / T) + 1;
-      if (i !== L) return;
-      for (let ty = y0; ty <= y1; ty++) for (let tx = x0; tx <= x1; tx++) {
+    fno++;
+    const L = levelFor(v.z), T = M.tile, now = performance.now();
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#0A0E0C'; ctx.fillRect(0, 0, cv.width, cv.height);
+    if (poster.complete && poster.naturalWidth) ctx.drawImage(poster, Math.round(v.x * DPR), Math.round(v.y * DPR), Math.ceil(M.VW * v.z * DPR), Math.ceil(M.VH * v.z * DPR));
+    fading = false;
+    for (let i = 0; i <= L; i++) {
+      if (i !== 0 && i < L - 1) continue;                 // gezeichnet: Stufe 0, die Stufe darunter und die aktuelle
+      const k = v.z / M.levels[i].s, ts = T * k, mg = i === L ? 1 : 0;
+      const x0 = Math.max(0, Math.floor(-v.x / ts)), y0 = Math.max(0, Math.floor(-v.y / ts));
+      const x1 = Math.ceil((cw - v.x) / ts), y1 = Math.ceil((ch - v.y) / ts);
+      for (let ty = y0 - mg; ty <= y1 + mg; ty++) for (let tx = x0 - mg; tx <= x1 + mg; tx++) {
         const key = tx + '_' + ty;
-        if (!M.have[i].has(key) || ly.imgs.has(key)) continue;
-        const im = new Image(); im.decoding = 'async'; im.alt = ''; im.className = 't';
-        im.style.left = tx * T + 'px'; im.style.top = ty * T + 'px';
-        im.onload = () => im.classList.add('in');
-        im.src = `${BASE}${i}/${key}.webp?v=${M.v}`;
-        ly.el.appendChild(im); ly.imgs.set(key, im);
+        if (tx < 0 || ty < 0 || !M.have[i].has(key)) continue;
+        const e = want(i, key), inView = tx >= x0 && tx <= x1 && ty >= y0 && ty <= y1;
+        if (!e.ok || !inView) continue;
+        const a = Math.min(1, (now - e.t0) / 220); if (a < 1) fading = true;
+        const dx = Math.floor((v.x + tx * ts) * DPR), dy = Math.floor((v.y + ty * ts) * DPR);
+        ctx.globalAlpha = a; ctx.drawImage(e.im, dx, dy, Math.ceil((v.x + (tx + 1) * ts) * DPR) - dx, Math.ceil((v.y + (ty + 1) * ts) * DPR) - dy);
       }
-      // weit entfernte Kacheln freigeben (Speicher auf dem Telefon)
-      if (ly.imgs.size > 160) ly.imgs.forEach((im, key) => { const [tx, ty] = key.split('_').map(Number);
-        if (tx < x0 - 3 || tx > x1 + 3 || ty < y0 - 3 || ty > y1 + 3) { im.remove(); ly.imgs.delete(key); } });
-    });
+    }
+    ctx.globalAlpha = 1;
+    if (cache.size > 260) { const old = [...cache.entries()].filter(([id, e]) => !id.startsWith('0/') && e.u < fno - 30).sort((a, b) => a[1].u - b[1].u);
+      for (let n = 0; n < old.length && cache.size > 200; n++) cache.delete(old[n][0]); }
     map.classList.toggle('far', v.z < .8);
-    poster.style.transform = `translate3d(${v.x.toFixed(1)}px, ${v.y.toFixed(1)}px, 0) scale(${v.z.toFixed(5)})`;
     M.pins.forEach(p => { p.el.style.transform = `translate3d(${(v.x + p.x * v.z).toFixed(1)}px, ${(v.y + p.y * v.z).toFixed(1)}px, 0) translate(-50%, -50%)`; });
+    if (fading) apply();
   }
   const apply = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; tiles(); }); };
 
@@ -97,12 +113,13 @@
   });
   const up = e => { pts.delete(e.pointerId); last = null; if (!pts.size) map.classList.remove('drag'); };
   map.addEventListener('pointerup', up); map.addEventListener('pointercancel', up);
+  map.addEventListener('dragstart', e => e.preventDefault());
   map.addEventListener('wheel', e => { e.preventDefault(); const r = map.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0016), e.clientX - r.left, e.clientY - r.top); }, { passive: false });
   map.addEventListener('dblclick', e => { if (e.target.closest('button')) return; const r = map.getBoundingClientRect(); zoomAt(1.8, e.clientX - r.left, e.clientY - r.top); });
   document.getElementById('zin').addEventListener('click', () => zoomAt(1.5, map.clientWidth / 2, map.clientHeight / 2));
   document.getElementById('zout').addEventListener('click', () => zoomAt(1 / 1.5, map.clientWidth / 2, map.clientHeight / 2));
   document.getElementById('zall').addEventListener('click', () => fly((M.box[0] + M.box[2]) / 2, (M.box[1] + M.box[3]) / 2, zMin));
-  window.addEventListener('resize', () => { if (M) { zMin = Math.min(map.clientWidth / (M.box[2] - M.box[0]), map.clientHeight / (M.box[3] - M.box[1])) * .95; clamp(); apply(); } });
+  window.addEventListener('resize', () => { if (M) { fit(); zMin = Math.min(map.clientWidth / (M.box[2] - M.box[0]), map.clientHeight / (M.box[3] - M.box[1])) * .95; clamp(); apply(); } });
 
   /* ---------- Detailansicht eines Wahrzeichens (eigene Seite im Rahmen, mit Abendlicht) ---------- */
   const dlg = document.getElementById('detail'), frame = document.getElementById('detail-frame'), dTitle = document.getElementById('detail-title'), dFact = document.getElementById('detail-fact');

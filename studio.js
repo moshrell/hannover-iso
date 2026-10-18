@@ -51,7 +51,7 @@
   let prep = null;
   function prepare() {
     const inClk = el => !!el.closest('.clk');
-    const walls = [...svg.querySelectorAll('.bld .st, .bld .tl, .bld .cu, .bld .bk, .bld .sl, .bld .gz, .bld .lv, .bld .dt, .bld .mul, .bld .gb, .bld .rs, .bld .brz, .bld .gl')].filter(el => !inClk(el));
+    const walls = [...svg.querySelectorAll('.bld .st, .bld .tl, .bld .cu, .bld .bk, .bld .sl, .bld .gz, .bld .lv, .bld .dt, .bld .mul, .bld .gb, .bld .rs, .bld .brz, .bld .gl, .bld .pl, .bld .kc, .bld .kz, .bld .kr, .bld .iron, .bld .glb')].filter(el => !inClk(el));
     const rects = walls.map(el => el.getBoundingClientRect());
     const top = Math.min(...rects.map(q => q.top)), base = Math.max(...rects.map(q => q.bottom)), span = Math.max(1, base - top);
     let s2 = 11; const r2 = () => (s2 = (s2 * 16807) % 2147483647) / 2147483647;

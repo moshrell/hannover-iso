@@ -14,8 +14,8 @@ h1 { font:400 clamp(1.8rem, 5vw, 3rem)/1.05 "Palatino Linotype", Palatino, Georg
 .map.drag { cursor:grabbing; }
 .poster, .lv { position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform; }
 .map:not(.ready) .poster { width:100% !important; height:100% !important; object-fit:cover; }
-.lv .t { position:absolute; width:256px; height:256px; opacity:0; transition:opacity .25s; }
-.lv .t.in { opacity:1; }
+canvas { position:absolute; left:0; top:0; display:block; }
+.map.ready .poster { visibility:hidden; }
 .world { position:absolute; inset:0; }
 .labels { position:absolute; inset:0; pointer-events:none; }
 /* Leuchtpunkte statt Schildern: verdecken nichts; Name nur beim Zeigen (Maus) und in der Detailansicht */

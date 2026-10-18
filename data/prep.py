@@ -208,7 +208,7 @@ for e in d['elements']:
 X0, X1, Y0, Y1 = -4500, 2100, -3500, 2820
 inb = lambda p: X0 <= p[0] <= X1 and Y0 <= p[1] <= Y1
 B = [b for b in B if any(inb(p) for p in b['p'])]
-TR = [t for t in TR if inb(t) and not in_clear(*t)]
+TR = [t for t in TR if inb(t) and not in_clear(*t) and not any(inside_mar(*t, v, 1) for v in LMI.values())]   # keine Bäume auf Dächern der Wahrzeichen
 # ---------- Sortierung (Malerverfahren) ----------
 items = [{'k': 'b', 'i': i, 'hull': hull([tuple(p) for p in b['p']]), 'h': b['h']} for i, b in enumerate(B)]
 LMH = {n: m.get('h', 20) for n, m in META.items()}

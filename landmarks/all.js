@@ -345,6 +345,9 @@ ISO.landmark('christuskirche', H => {
     const E = (l, h) => groupM('bk', crs(l, h, 2.4, TW - 1, 1.5) + band('sd', l, h, 2.3, .3) + band('sd', l, h, TW - .5, .5));
     let s = K.box(TX0b, 0.1, Zh(0), TX1b - TX0b, 28.4, TW, 'bk', { E: E }, false);
     s += roofPlane(K, [[TX1b, .1, Zh(TW)], [TX1b, 28.5, Zh(TW)], [TXM, 28.5, Zh(RT)], [TXM, .1, Zh(RT)]], 'sl', 2.2);
+    // Schiffsdach läuft bis zur Querhausfirst weiter: Dreieck der Südfläche zwischen Schiffsfirst, Querhauswand und Kehle (sonst klafft hier ein Loch im Dach)
+    const yv = AY - (TW - AW) * (AY - YC) / (RN - AW);   // y, wo die Schiffsfläche die Höhe der Querhauswand erreicht
+    s += K.face([[TX0b, yv, Zh(TW)], [TXM, YC, Zh(RN)], [TX0b, YC, Zh(RN)]], 'sl');
     return s;
   } });
   add({ id: 'arm', fp: [TX0b, 28.5, TX1b, TYS], parent: 'cross', side: 'S', above: 'choir', draw: K => {
