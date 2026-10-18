@@ -94,8 +94,12 @@
       };
       let s = K.wall(a, b, 0, ZF, 'pl', deco);
       // Dreiecksgiebel mit Fenster, Kupferdach dahinter
-      const pz = ZF, pa = ZC + .3, e0 = AY + 7.1, e1 = AY - 7.1, X = 42.4;
+      const pz = ZF, pa = ZC - .5, e0 = AY + 7.1, e1 = AY - 7.1, X = 42.4;
       const rs = [[X, e0, pz], [X, AY, pa], [X - 6.2, AY, pa], [X - 6.2, e0 - .4, pz]], rn = [[X, AY, pa], [X, e1, pz], [X - 6.2, e1 + .4, pz], [X - 6.2, AY, pa]];
+      // Rückwand über dem Vorbau (x=X-6.2): Kernkörper steigt bis ZC, Giebeldächer lehnen daran; Eckzonen bekommen ein flaches Kupferdach auf ZF
+      const XB = X - 6.2;
+      s += K.poly([[XB, AY + 9.1, ZF], [39.5, AY + 9.1, ZF], [X, AY + 6.4, ZF], [X, e0, ZF], [XB, e0 - .4, ZF]], 'cu') + K.poly([[XB, e1 + .4, ZF], [X, e1, ZF], [X, AY - 6.4, ZF], [39.5, AY - 9.1, ZF], [XB, AY - 9.1, ZF]], 'cu');
+      s += K.wall([XB, AY + 9.1], [XB, AY - 9.1], ZF, ZC, 'pl', (l, h) => ashlar(l, h, 1.1, false) + hl(0, l, .35) + hl(0, l, h - .4));
       s += K.face(rs, 'cu') + K.face(rn, 'cu');
       s += K.face([[X, e1, pz], [X, e0, pz], [X, AY, pa]], 'pl', `<path class="dt" d="${K.path([[X, e0, pz], [X, AY, pa], [X, e1, pz]])}"/><path class="dt" d="${K.path([[X, e0 - .7, pz + .35], [X, AY, pa - .6], [X, e1 + .7, pz + .35]])}"/>`);
       s += onWall(K, [X, AY + 1.3], [X, AY - 1.3], ZF + 3.7, wins(winA(0, 0, 2.6, 3.2, 3, ' dim')) + line(`M-.35 3.3h3.3`));
@@ -118,9 +122,9 @@
       s += K.wall([13.2, AY - 9.1], [13.2, AY + 9.1], 0, ZC, 'pl', (l, h) => ashlar(l, h, 1.1, false));
       s += front(K);
       // Oberseite: flaches Kupferdach rund um den Tambour (Nähte quer)
-      const ring = [[13.2, AY + 9.1, ZC], [39.5, AY + 9.1, ZC], [42.4, AY + 6.4, ZC], [42.4, AY - 6.4, ZC], [39.5, AY - 9.1, ZC], [13.2, AY - 9.1, ZC]];
+      const ring = [[13.2, AY + 9.1, ZC], [36.2, AY + 9.1, ZC], [36.2, AY - 9.1, ZC], [13.2, AY - 9.1, ZC]];
       let seams = '';
-      for (let dy = -8.5; dy <= 8.6; dy += 2.1) { const ax = Math.abs(dy), xm = ax <= 6.4 ? 42.4 : 42.4 - (ax - 6.4) * (2.9 / 2.7); seams += K.path([[13.2, AY + dy, ZC], [xm, AY + dy, ZC]]); }
+      for (let dy = -8.5; dy <= 8.6; dy += 2.1) { const ax = Math.abs(dy), xm = 36.2; seams += K.path([[13.2, AY + dy, ZC], [xm, AY + dy, ZC]]); }
       s += K.poly(ring, 'cu') + `<path class="dt cu-d" d="${seams}"/>`;
       // hintere Eckfiguren (stehen hinter dem Tambour)
       s += statue(K, 14.4, AY + 8.2) + statue(K, 14.4, AY - 8.2);
@@ -236,7 +240,7 @@
       const bz = zl + 10.7, bp = K.P(cx, cy, bz);
       s += `<circle class="cu" cx="${f2(bp[0])}" cy="${f2(bp[1])}" r=".55"/>` + line(K.path([[cx, cy, bz + .5], [cx, cy, bz + 3.0]]) + K.path([[cx - .6, cy, bz + 2.2], [cx + .6, cy, bz + 2.2]]));
       // vordere Eckfiguren (stehen vor dem Tambour)
-      s += statue(K, 30.0, AY + 8.2) + statue(K, 30.0, AY - 8.2) + statue(K, 40.4, AY + 7.3) + statue(K, 40.4, AY - 7.3);
+      s += statue(K, 30.0, AY + 8.2) + statue(K, 30.0, AY - 8.2) + statue(K, 37.8, AY + 8.0, ZF) + statue(K, 37.8, AY - 8.0, ZF);
       return s;
     } });
 
