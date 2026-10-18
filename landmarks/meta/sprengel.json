@@ -1,0 +1,11 @@
+{
+  "title": "Sprengel Museum Hannover",
+  "fact": "Museum für Kunst der Moderne am Maschsee: Altbau 1979 (Trint, Quast, Quast), Erweiterung 1992 und Anbau 2015 (Meili Peter) aus anthrazitfarbenem Beton.",
+  "studio": "Drei Bauteile in drei Jahrzehnten: heller Paneelbau von 1979, Erweiterung 1992 und der dunkle Betonanbau von 2015 mit auskragendem Obergeschoss über Glassockel.",
+  "detail": "studio.html?lm=sprengel",
+  "minor": false,
+  "h": 14.0,
+  "rank": 50,
+  "osm": ["w560955703"],
+  "face": ["street", [1, 0], "Kurt-Schwitters-Platz"]
+}
