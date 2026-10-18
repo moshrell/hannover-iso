@@ -1,0 +1,23 @@
+{
+ "title": "Christuskirche Hannover",
+ "fact": "Neugotische Backsteinkirche (1859–1864, Conrad Wilhelm Hase) mit rund 70 m hohem Turm, heute Chorzentrum der Universität.",
+ "studio": "Christuskirche in der Nordstadt, 1859–1864 von Conrad Wilhelm Hase als neugotische Backsteinkirche (Backsteingotik mit Sandsteinzier) gebaut. Der Westturm mit dunklem Spitzhelm ist rund 70 m hoch, an der Südseite sitzen Querhaus mit Portal, Rosette und Wimperg (Ziergiebel) sowie das Seitenschiff mit drei Giebeln; der Chor im Osten schließt als Vieleck.",
+ "detail": "studio.html?lm=christuskirche",
+ "minor": false,
+ "h": 72.0,
+ "rank": 50,
+ "osm": [
+  "w7655778"
+ ],
+ "face": [
+  "compass",
+  [
+   -1,
+   0
+  ],
+  [
+   -1,
+   0
+  ]
+ ]
+}
