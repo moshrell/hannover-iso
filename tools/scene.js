@@ -87,42 +87,52 @@
     return `<g class="lm" data-b="${name}" data-o="${LM_OFF[name] || 0}">${r.svg}</g>`;
   }
 
-  /* ---------- Szene ---------- */
-  function render() {
-    let s = `<defs>
+  /* ---------- Szene: alle Teile vorab als Text mit Rechteck (Weltbild-Pixel); aufgebaut wird bereichsweise (ganze Stadt = sehr viele Teile) ---------- */
+  const bbOf = (flat, zt = 0) => { let a0 = 1e9, a1 = -1e9, b0 = 1e9, b1 = -1e9;
+    for (let i = 0; i < flat.length; i += 2) { const a = (flat[i] - flat[i + 1]) * C, b = (flat[i] + flat[i + 1]) * S; if (a < a0) a0 = a; if (a > a1) a1 = a; if (b < b0) b0 = b; if (b > b1) b1 = b; }
+    return [a0 - bx0 - 2, b0 - zt - by0 - 2, a1 - bx0 + 2, b1 - by0 + 2]; };
+  const DEFS = `<defs>
       <filter id="wglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       <filter id="bloom" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
       <linearGradient id="hallglow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7A3" stop-opacity="0"/><stop offset=".5" stop-color="#FFE7A3" stop-opacity=".35"/><stop offset="1" stop-color="#FFE7A3" stop-opacity="0"/></linearGradient>
       ${patterns()}
-    </defs><g transform="translate(${f2(-bx0)} ${f2(-by0)})">`;
-    s += `<path class="gnd" d="${pth([X0, Y0, X1, Y0, X1, Y1, X0, Y1])}"/>`;
-    s += D.pk.map(r => `<path class="park" d="${pth(r)}"/>`).join('');
-    s += D.wa.map(r => `<path class="water" d="${pth(r)}"/>`).join('');
-    s += (D.rd.area || []).map(r => `<path class="area" d="${pth(r)}"/>`).join('');
-    ['f', 'd', 'p', 'c', 'b', 'a'].forEach(k => { if (D.rd[k]) s += `<path class="rd r-${k}" d="${D.rd[k].map(l => pth(l, 0, false)).join('')}"/>`; });
+    </defs>`;
+  const GND = `<path class="gnd" d="${pth([X0, Y0, X1, Y0, X1, Y1, X0, Y1])}"/>`;
+  const PK = D.pk.map(r => ({ s: `<path class="park" d="${pth(r)}"/>`, q: bbOf(r) }));
+  const WA = D.wa.map(r => ({ s: `<path class="water" d="${pth(r)}"/>`, q: bbOf(r) }));
+  const AR = (D.rd.area || []).map(r => ({ s: `<path class="area" d="${pth(r)}"/>`, q: bbOf(r) }));
+  const RD = {}; ['f', 'd', 'p', 'c', 'b', 'a'].forEach(k => { RD[k] = (D.rd[k] || []).map(l => ({ d: pth(l, 0, false), q: bbOf(l) })); });
+  const SEQ = D.seq.map(v => {
+    if (typeof v === 'string') { const n = v.slice(2), L = D.lm[n], r = (L.w + L.d) * .9;   // Wahrzeichen: großzügiges Rechteck (Türme bis 300 m)
+      return { s: landmark(n), q: bbOf([L.cx - r, L.cy - r, L.cx + r, L.cy - r, L.cx + r, L.cy + r, L.cx - r, L.cy + r], 320) }; }
+    if (v >= 0) { const [p, h, , rf] = D.b[v]; return { s: building(v), q: bbOf(p, (rf ? rf[1] + rf[2] : h) + 2) }; }
+    const i = -1 - v, x = D.tr[2 * i], y = D.tr[2 * i + 1]; return { s: tree(i), q: bbOf([x - 4, y - 4, x + 4, y + 4], 12) };
+  });
+  function render(r) {
+    const hit = o => !r || !(o.q[2] < r[0] || o.q[0] > r[2] || o.q[3] < r[1] || o.q[1] > r[3]);
+    let s = DEFS + `<g transform="translate(${f2(-bx0)} ${f2(-by0)})">` + GND;
+    PK.forEach(o => { if (hit(o)) s += o.s; }); WA.forEach(o => { if (hit(o)) s += o.s; }); AR.forEach(o => { if (hit(o)) s += o.s; });
+    const dk = {}; Object.keys(RD).forEach(k => { dk[k] = RD[k].filter(hit).map(o => o.d).join(''); });
+    ['f', 'd', 'p', 'c', 'b', 'a'].forEach(k => { if (dk[k]) s += `<path class="rd r-${k}" d="${dk[k]}"/>`; });
     // Straßenlaternen: Lichtpunkte entlang der Straßen
-    ['c', 'b', 'a', 'p'].forEach((k, i) => { if (D.rd[k]) { const d = D.rd[k].map(l => pth(l, 0, false)).join('');
-      s += `<path class="rlh" data-d="${f2(i * .25)}" d="${d}"/><path class="rl" data-d="${f2(i * .25)}" d="${d}"/>`; } });
-    s += D.seq.map(v => typeof v === 'string' ? landmark(v.slice(2)) : v >= 0 ? building(v) : tree(-1 - v)).join('');
-    s += '</g>';
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', `0 0 ${f2(VW)} ${f2(VH)}`);
-    svg.setAttribute('width', f2(VW)); svg.setAttribute('height', f2(VH));
-    svg.setAttribute('class', 'rh'); svg.setAttribute('role', 'img');
-    svg.setAttribute('aria-label', 'Isometrische Karte von Hannover Mitte mit Neuem Rathaus, Marktkirche, Altem Rathaus und Leineschloss');
-    svg.innerHTML = s;
-    return svg;
+    ['c', 'b', 'a', 'p'].forEach((k, i) => { if (dk[k]) s += `<path class="rlh" data-d="${f2(i * .25)}" d="${dk[k]}"/><path class="rl" data-d="${f2(i * .25)}" d="${dk[k]}"/>`; });
+    SEQ.forEach(o => { if (hit(o)) s += o.s; });
+    return s + '</g>';
   }
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', `0 0 ${f2(VW)} ${f2(VH)}`);
+  svg.setAttribute('width', f2(VW)); svg.setAttribute('height', f2(VH));
+  svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'Isometrische Karte von Hannover am Abend');
 
   /* ---------- Rendermodus: ganze Szene, Ansicht von außen steuerbar ---------- */
   const stage = document.getElementById('stage');
-  const svg = render();
   svg.setAttribute('class', 'rh lamps win lit crown instant');
   stage.appendChild(svg);
-  ISO.clock(svg);
+  const region = r => { svg.innerHTML = render(r); ISO.clock(svg); };
   const labels = Object.entries(LMS).map(([name, { K, def }]) => { const [x, y] = toV(K.P(...def.top)); return { name, label: def.label, x: +f2(x), y: +f2(y) }; });
   window.SCENE = {
     VW, VH, labels,
+    region,   // Bereich [x0, y0, x1, y1] in Weltbild-Pixeln aufbauen (nur Teile, die hineinragen)
     view(x, y, s) { svg.style.transform = `translate(${-x * s}px, ${-y * s}px) scale(${s})`; },
     ready: true,
   };

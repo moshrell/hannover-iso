@@ -1,5 +1,5 @@
 # OSM → lokale Meter (x Ost, y Süd), Sortierung für die Iso-Ansicht, Ausgabe data/mitte.js
-# Aufruf: python3 prep.py osm.json.gz mitte.js   (osm.json.gz = Overpass-Abfrage aus q.txt, gzip)
+# Aufruf: python3 prep.py osm.json.gz mitte.js   (osm.json.gz = tools/osm-extract.py aus dem BBBike-PBF für data/bbox.json → all; früher Overpass mit q.txt)
 import json, math, sys, collections
 src, out = sys.argv[1], sys.argv[2]
 import gzip
@@ -205,7 +205,15 @@ for e in d['elements']:
         for r in outer(e):
             if r: PK.append(r)
 # Ausschnitt begrenzen
-X0, X1, Y0, Y1 = -4500, 2100, -3500, 2820
+import os
+_bb = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bbox.json')
+if os.path.exists(_bb):   # Ausschnitt = ganze Stadt aus data/bbox.json (gedrehtes Rechteck → achsparallele Hülle)
+    _S, _W, _N, _E = json.load(open(_bb))['all']
+    _c = proj([{'lat': la, 'lon': lo} for la in (_S, _N) for lo in (_W, _E)])
+    X0, X1 = math.floor(min(p[0] for p in _c)) - 60, math.ceil(max(p[0] for p in _c)) + 60
+    Y0, Y1 = math.floor(min(p[1] for p in _c)) - 60, math.ceil(max(p[1] for p in _c)) + 60
+else:
+    X0, X1, Y0, Y1 = -4500, 2100, -3500, 2820
 inb = lambda p: X0 <= p[0] <= X1 and Y0 <= p[1] <= Y1
 B = [b for b in B if any(inb(p) for p in b['p'])]
 TR = [t for t in TR if inb(t) and not in_clear(*t) and not any(inside_mar(*t, v, 1) for v in LMI.values())]   # keine Bäume auf Dächern der Wahrzeichen

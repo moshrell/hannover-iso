@@ -23,7 +23,6 @@
     M.have = M.levels.map((_, i) => new Set(M.tiles[i] || []));
     world.appendChild(cv); fit();
     poster.addEventListener('load', apply); if (poster.complete) apply();
-    M.levels[0] && [...M.have[0]].forEach(k => want(0, k));   // grobe Stufe komplett laden: Rückfall ohne schwarze Lücken
     // Punkte aus den gerenderten Positionen der Bauten (Mittelwert bei Gruppen)
     M.pins = Object.entries(FACTS).map(([name, F]) => {
       const ls = F.from.map(n => M.labels.find(l => l.name === n)).filter(Boolean);
@@ -56,7 +55,7 @@
     if (poster.complete && poster.naturalWidth) ctx.drawImage(poster, Math.round(v.x * DPR), Math.round(v.y * DPR), Math.ceil(M.VW * v.z * DPR), Math.ceil(M.VH * v.z * DPR));
     fading = false;
     for (let i = 0; i <= L; i++) {
-      if (i !== 0 && i < L - 1) continue;                 // gezeichnet: Stufe 0, die Stufe darunter und die aktuelle
+      if (i < L - 2) continue;                           // gezeichnet: aktuelle Stufe + zwei gröbere darunter (Rückfall, nie schwarz; außerhalb der Innenstadt gibt es nur grobe)
       const k = v.z / M.levels[i].s, ts = T * k, mg = i === L ? 1 : 0;
       const x0 = Math.max(0, Math.floor(-v.x / ts)), y0 = Math.max(0, Math.floor(-v.y / ts));
       const x1 = Math.ceil((cw - v.x) / ts), y1 = Math.ceil((ch - v.y) / ts);
@@ -97,6 +96,15 @@
       if (t < 1) requestAnimationFrame(step); else { clamp(); apply(); } };
     requestAnimationFrame(step);
   }
+  // Außerhalb der Innenstadt gibt es nur grobe Stufen: nach dem Bewegen sanft auf deren Schärfe zurückzoomen
+  let settleT = 0;
+  const settle = () => { clearTimeout(settleT); settleT = setTimeout(() => {
+    if (!M.core || pts.size) return;
+    const cx = (map.clientWidth / 2 - v.x) / v.z, cy = (map.clientHeight / 2 - v.y) / v.z, [a, b, c, d] = M.core;
+    if (cx >= a && cx <= c && cy >= b && cy <= d) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1), zo = M.levels[M.outerMax].s * 2 / (dpr * .9) * .98;
+    if (v.z > zo) fly(cx, cy, zo);
+  }, 350); };
   const pts = new Map(); let last = null, moved = 0;
   map.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; map.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); map.classList.add('drag'); last = null; moved = 0; });
   map.addEventListener('pointermove', e => {
@@ -111,12 +119,12 @@
     }
     last = cur;
   });
-  const up = e => { pts.delete(e.pointerId); last = null; if (!pts.size) map.classList.remove('drag'); };
+  const up = e => { pts.delete(e.pointerId); last = null; if (!pts.size) { map.classList.remove('drag'); settle(); } };
   map.addEventListener('pointerup', up); map.addEventListener('pointercancel', up);
   map.addEventListener('dragstart', e => e.preventDefault());
-  map.addEventListener('wheel', e => { e.preventDefault(); const r = map.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0016), e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+  map.addEventListener('wheel', e => { e.preventDefault(); const r = map.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0016), e.clientX - r.left, e.clientY - r.top); settle(); }, { passive: false });
   map.addEventListener('dblclick', e => { if (e.target.closest('button')) return; const r = map.getBoundingClientRect(); zoomAt(1.8, e.clientX - r.left, e.clientY - r.top); });
-  document.getElementById('zin').addEventListener('click', () => zoomAt(1.5, map.clientWidth / 2, map.clientHeight / 2));
+  document.getElementById('zin').addEventListener('click', () => { zoomAt(1.5, map.clientWidth / 2, map.clientHeight / 2); settle(); });
   document.getElementById('zout').addEventListener('click', () => zoomAt(1 / 1.5, map.clientWidth / 2, map.clientHeight / 2));
   document.getElementById('zall').addEventListener('click', () => fly((M.box[0] + M.box[2]) / 2, (M.box[1] + M.box[3]) / 2, zMin));
   window.addEventListener('resize', () => { if (M) { fit(); zMin = Math.min(map.clientWidth / (M.box[2] - M.box[0]), map.clientHeight / (M.box[3] - M.box[1])) * .95; clamp(); apply(); } });
