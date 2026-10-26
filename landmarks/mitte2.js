@@ -1,6 +1,6 @@
 /* Mitte, zweite Reihe — Module (Stufe „erkennbar“, Details später):
    Anzeiger-Hochhaus, NORD/LB, Museum August Kestner, Wangenheimpalais, Kreuzkirche, Neustädter Hof- und Stadtkirche,
-   Beginenturm, Leibnizhaus, Waterloosäule, Kröpcke-Uhr. Lokal: x Ost, y Süd, z Höhe, Gelände z = 1. Vorbilder: ref/mitte2/ (Quellen in quellen.txt). */
+   Leibnizhaus, Waterloosäule, Kröpcke-Uhr. Lokal: x Ost, y Süd, z Höhe, Gelände z = 1. Vorbilder: ref/mitte2/ (Quellen in quellen.txt). */
 (() => {
   const Z0 = 1;
   const grid = (H, len, h, step, rows, f0, cls = '') => { // Fensterraster: rows = [[v, h, f], …]
@@ -104,21 +104,6 @@
       return s;
     } });
     return { mods: M, lc: [36, 11], z0: 0, top: [12, 11, 68], label: 'Neustädter Hof- und Stadtkirche', h: 68, len: 60 };
-  });
-
-  /* --- Beginenturm (um 1357): runder Wehrturm aus Bruchstein mit Kegeldach --- */
-  ISO.landmark('beginenturm', H => {
-    const { f2, lathe } = H, M = [];
-    M.push({ id: 'bt', fp: [0, 0, 10, 10], draw: K => {
-      let s = lathe(K, 5, 5, [[Z0, 5], [Z0 + 19, 5]], 'rs fr', 0, [0, 1]);
-      // Schießscharten und Rillen (nur sichtbare Seite)
-      [[.6, 4], [1.2, 9], [.2, 14]].forEach(([a, z]) => { const p = K.P(5 + 5.05 * Math.cos(a), 5 + 5.05 * Math.sin(a), Z0 + z);
-        s += `<rect class="wn dim" data-f="${Math.floor(z / 5)}" x="${f2(p[0] - .25)}" y="${f2(p[1] - 1)}" width=".5" height="2"/>`; });
-      s += lathe(K, 5, 5, [[Z0 + 19, 5.4], [Z0 + 20, 5.4]], 'rs', 0);
-      s += lathe(K, 5, 5, [[Z0 + 20, 5.6], [Z0 + 26, .2]], 'tl', 6);
-      return s;
-    } });
-    return { mods: M, lc: [5, 5], z0: 0, top: [5, 5, 27], label: 'Beginenturm', h: 27, len: 10 };
   });
 
   /* --- Waterloosäule (Laves 1832): 46 m, Sockel, kannelierte Säule, Plattform mit Geländer, Viktoria --- */
