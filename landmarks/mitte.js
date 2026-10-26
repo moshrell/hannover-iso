@@ -1,4 +1,4 @@
-/* Mitte — Module: Opernhaus (Laves, 1845–1852). (Aegidienkirche: jetzt landmarks/aegidienkirche.js) */
+/* Mitte — Module: Opernhaus (Laves, 1845–1852). (Aegidienkirche: jetzt landmarks/aegidienkirche.js)
    Lokal: x Ost, y Süd, z Höhe, Gelände z = 1. Vorbilder: ref/oper-hbf-aegi/ (Wikimedia Commons, Quellen in quellen.txt). */
 
 /* === Opernhaus: Sandstein, Arkaden-Vorhalle mit Terrasse, Mittelbau mit Giebel, lange Seitenflügel, Bühnenhaus === */
