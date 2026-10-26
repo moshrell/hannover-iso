@@ -25,4 +25,4 @@
 | welfenschloss | manuell | Welfenschloss, v2 → доработка по видео |
 | wangenheim | ready | Wangenheimpalais, v1 в mitte2.js |
 | beginenturm | ready | Beginenturm, малая точка, v1 в mitte2.js |
-| georgenpalais | wartet | Georgenpalais, видео ещё нет |
+| georgenpalais | ready | Georgenpalais (Wilhelm-Busch-Museum), новое |
