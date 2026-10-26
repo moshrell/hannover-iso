@@ -1,5 +1,5 @@
 // Rendert die Karte (tools/render.html) in WebP-Kacheln: tiles/<Stufe>/<x>_<y>.webp + tiles/meta.json + tiles/poster.webp
-// Aufruf: node tools/render-tiles.mjs   (Playwright + Chromium; Zerschneiden mit Python/Pillow: tools/cut-tiles.py)
+// Aufruf: node tools/render-tiles.mjs [--at lat,lon,radius_m]…   (ohne --at: ganze Karte; mit --at nur die Blöcke um diese Orte, Ergebnis wird in tiles/ eingemischt)  (Playwright + Chromium; Zerschneiden mit Python/Pillow: tools/cut-tiles.py)
 import { chromium } from 'playwright';
 import { readFileSync } from 'node:fs';
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
@@ -33,6 +33,10 @@ const BX0 = Math.min(...ec.map(p => p[0])), BY0 = Math.min(...ec.map(p => p[1]))
 const quadOf = bb => [[bb[0], bb[1]], [bb[0], bb[3]], [bb[2], bb[3]], [bb[2], bb[1]]].map(([la, lo]) => { const [x, y] = wp(la, lo); return [(x - y) * CC - BX0, (x + y) / 2 - BY0]; });
 const quadAll = quadOf(BB.all), quadCore = quadOf(BB.core);
 let quad = quadAll;
+// Teilrender: --at lat,lon,radius_m (mehrfach). Rechteck im Weltbild = Grundpunkt ± Radius, nach oben um Radius·1,3 (Gebäudehöhe)
+const AT = process.argv.flatMap((a, i, A) => a === '--at' ? [A[i + 1].split(',').map(Number)] : []);
+const RECTS = AT.length ? AT.map(([la, lo, r]) => { const [x, y] = wp(la, lo), px = (x - y) * CC - BX0, py = (x + y) / 2 - BY0; return [px - r, py - r * 1.3, px + r, py + r * .6]; }) : null;
+if (RECTS) console.log('Teilrender, Rechtecke:', JSON.stringify(RECTS.map(r => r.map(Math.round))));
 function hits(x0, y0, x1, y1) {            // Rechteck gegen konvexes Viereck (Trennachsen)
   const R = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
   for (const P of [R, quad]) for (let i = 0; i < 4; i++) {
@@ -49,6 +53,7 @@ for (const [li, s] of LEVELS.entries()) {
   quad = li > OUTER_MAX ? quadCore : quadAll;
   const blocks = [];
   for (let y = 0; y < by; y++) for (let x = 0; x < bx; x++) {
+    if (RECTS && !RECTS.some(r => x * U < r[2] && (x + 1) * U > r[0] && y * U < r[3] && (y + 1) * U > r[1])) continue;
     if (li > 0 && !hits(x * U - 40, y * U - 40, (x + 1) * U + 40, (y + 1) * U + 40)) continue;
     blocks.push([x, y]);
   }
@@ -75,4 +80,4 @@ const box = [Math.max(0, Math.min(...qx) - 40), Math.max(0, Math.min(...qy) - 80
 const core = [Math.min(...cx), Math.min(...cy), Math.max(...cx), Math.max(...cy)].map(v => +v.toFixed(1));   // Innenstadt: hier gibt es alle Stufen
 const meta = { box, core, outerMax: OUTER_MAX, VW: +VW.toFixed(2), VH: +VH.toFixed(2), tile: 256, block: BLOCK, dpr: DPR, levels: LEVELS.map(s => ({ s, w: Math.ceil(VW * s), h: Math.ceil(VH * s) })), labels };
 writeFileSync(`${tmp}/meta.json`, JSON.stringify(meta));
-execFileSync('python3', ['-I', path.join(root, 'tools/cut-tiles.py'), tmp, path.join(root, 'tiles')], { stdio: 'inherit' });
+execFileSync('python3', ['-I', path.join(root, 'tools/cut-tiles.py'), tmp, path.join(root, 'tiles'), ...(RECTS ? ['--merge'] : [])], { stdio: 'inherit' });

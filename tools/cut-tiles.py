@@ -2,8 +2,11 @@
 import json, os, sys, glob, shutil
 from PIL import Image, ImageStat
 tmp, out = sys.argv[1], sys.argv[2]
+MERGE = '--merge' in sys.argv   # Teilrender: vorhandene Kacheln behalten, nur die neu gerenderten Blöcke ersetzen
 meta = json.load(open(os.path.join(tmp, 'meta.json')))
-shutil.rmtree(out, ignore_errors=True); os.makedirs(out)
+old = json.load(open(os.path.join(out, 'meta.json'))) if MERGE else None
+if not MERGE: shutil.rmtree(out, ignore_errors=True)
+os.makedirs(out, exist_ok=True)
 B, T, D = meta['block'], meta['tile'], meta['dpr']
 per = B // T; tiles = {}
 for f in sorted(glob.glob(os.path.join(tmp, 'L*_*_*.png'))):
@@ -16,16 +19,27 @@ for f in sorted(glob.glob(os.path.join(tmp, 'L*_*_*.png'))):
             if tx * T >= lv['w'] or ty * T >= lv['h']: continue
             t = im.crop((i * T * D, j * T * D, (i + 1) * T * D, (j + 1) * T * D))
             st = ImageStat.Stat(t)
-            if max(st.stddev) < 1.2: continue          # nur Hintergrund
+            fn = os.path.join(out, str(li), f'{tx}_{ty}.webp')
+            if max(st.stddev) < 1.2:                   # nur Hintergrund
+                if MERGE and os.path.exists(fn): os.remove(fn)
+                continue
             t.save(os.path.join(out, str(li), f'{tx}_{ty}.webp'), 'WEBP', quality=78, method=6)
             tiles.setdefault(str(li), []).append(f'{tx}_{ty}')
+if MERGE:   # neue Blöcke ersetzen ihre Kacheln; die übrigen aus dem Dateibestand
+    tiles = {}
+    for li in range(len(meta['levels'])):
+        tiles[str(li)] = sorted(os.path.basename(f)[:-5] for f in glob.glob(os.path.join(out, str(li), '*.webp')))
 meta['tiles'] = tiles
 import time; meta['v'] = int(time.time())
 json.dump(meta, open(os.path.join(out, 'meta.json'), 'w'), separators=(',', ':'))
 open(os.path.join(out, 'meta.js'), 'w').write('window.TILES=' + json.dumps(meta, separators=(',', ':')) + ';\n')
 # Poster = Stufe 0 als ein Bild
 lv = meta['levels'][0]; P = Image.new('RGB', (lv['w'] * D, lv['h'] * D), (10, 14, 12))
-for f in glob.glob(os.path.join(tmp, 'L0_*_*.png')):
+if MERGE:   # Poster aus den Kacheln der Stufe 0 (bei Teilrender liegen nicht alle Blöcke vor)
+    for f in glob.glob(os.path.join(out, '0', '*.webp')):
+        tx, ty = map(int, os.path.basename(f)[:-5].split('_')); P.paste(Image.open(f).convert('RGB'), (tx * T * D, ty * T * D))
+else:
+  for f in glob.glob(os.path.join(tmp, 'L0_*_*.png')):
     _, bx, by = map(int, os.path.basename(f)[1:-4].split('_')); P.paste(Image.open(f).convert('RGB'), (bx * B * D, by * B * D))
 P = P.crop((0, 0, lv['w'] * D, lv['h'] * D))
 if P.width > 1800: P = P.resize((1800, round(P.height * 1800 / P.width)), Image.LANCZOS)   # Telefon-Speicher: Poster höchstens 1800 px breit
