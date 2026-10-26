@@ -1,0 +1,23 @@
+{
+ "title": "Heinz von Heiden Arena",
+ "fact": "Stadion von Hannover 96, eröffnet 1954 als Niedersachsenstadion, 2003–04 umgebaut, rund 49.000 überdachte Plätze, seit 2022 Heinz von Heiden Arena.",
+ "studio": "Heinz von Heiden Arena am Maschsee, Heimstadion von Hannover 96: 1954 als Niedersachsenstadion eröffnet, 2002–2013 AWD-Arena, 2013–2022 HDI-Arena, seit 2022 mit dem heutigen Namen. Beim Umbau 2003–04 (Schulitz & Partner) entstand das neue Dach: außen grau, am Spielfeldrand ein lichtdurchlässiges Kissendach aus ETFE-Folie, darüber ein Kabelring auf Stäben. Das Stadion fasst rund 49.000 Zuschauer auf zwei Rängen; auf der Westtribüne steht der Schriftzug HEINZ VON HEIDEN, unten an der Fassade laufen Fensterbänder und acht Treppentürme.",
+ "detail": "studio.html?lm=heinzvonheidenarena",
+ "minor": false,
+ "h": 35,
+ "rank": 50,
+ "osm": [
+  "r92928"
+ ],
+ "face": [
+  "compass",
+  [
+   1,
+   0
+  ],
+  [
+   0.14988,
+   -0.9887
+  ]
+ ]
+}
