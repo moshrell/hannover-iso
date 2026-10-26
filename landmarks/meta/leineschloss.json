@@ -1,13 +1,13 @@
 {
- "title": "leineschloss",
- "fact": "",
- "studio": "",
+ "title": "Leineschloss (Niedersächsischer Landtag)",
+ "fact": "Stadtschloss der Welfen, ab 1816 von Laves umgebaut, 1943 zerstört, 1957–62 als Landtag wiederaufgebaut.",
+ "studio": "Das Leineschloss (Stadtschloss) an der Leine: Georg Ludwig Friedrich Laves baute es ab 1816 zum Residenzschloss um und schuf den Säulenportikus zum Platz. 1943 brannte es aus; Dieter Oesterlen baute es 1957–1962 als Sitz des Niedersächsischen Landtags wieder auf. Der Plenarsaal wurde 2014–2017 neu gestaltet. Lange Mansardfassade zur Leine, Portikus mit sechs Säulen zum Hannah-Arendt-Platz.",
  "detail": "studio.html?lm=leineschloss",
  "minor": false,
  "osm": [
   "r1170793"
  ],
- "h": 26,
+ "h": 24,
  "rank": 90,
  "pin": false,
  "group": "altstadt"
