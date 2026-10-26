@@ -6,8 +6,8 @@
     --tl-f:#2B1814; --tl-s:#21120F; --tl-l:#4A2A22;
     --cu-f:#13221F; --cu-s:#0E1917; --cu-l:#2B4842;
     --win:#0C0E0E; --win-l:#2E2C26;
-    --st-f-on:#7C6842; --st-s-on:#514329; --st-t-on:#635436; --st-l-on:#C9AE72;
-    --tl-f-on:#6A2C1F; --tl-s-on:#4E2118; --tl-l-on:#93503A;
+    --st-f-on:#85703F; --st-s-on:#4A3D25; --st-t-on:#5F5035; --st-l-on:#A68E58;
+    --tl-f-on:#7B3523; --tl-s-on:#57291C; --tl-l-on:#A55C42;
     --cu-f-on:#2E5A50; --cu-s-on:#21443D; --cu-l-on:#5E9C8C;
     --bk-f:#26150F; --bk-s:#1C0F0B; --bk-t:#2C1912; --bk-l:#46281E;
     --bk-f-on:#8E4A30; --bk-s-on:#5F3020; --bk-t-on:#6E3926; --bk-l-on:#C8805C;
@@ -55,6 +55,7 @@
     /* Abendablauf im Studio doppelt so schnell wie in iso.css */
   .rh .st, .rh .tl, .rh .cu, .rh .bk, .rh .sl, .rh .gz, .rh .lv, .rh .dt, .rh .mul, .rh .clockface, .rh .hand, .rh .gb, .rh .rs, .rh .brz, .rh .gl { transition:fill .92s var(--soft) var(--d, 0s), stroke .92s var(--soft) var(--d, 0s); }
   .rh .wn { transition:fill .61s var(--soft) var(--d, 0s), stroke .61s var(--soft) var(--d, 0s), opacity .61s var(--soft) var(--d, 0s); }
+  .rh .wsh, .rh .wsl { transition:opacity .92s var(--soft) var(--d, 0s); }
   .rh .lamp, .rh .lant { transition:fill .69s var(--soft) var(--d, 0s); }
   .rh .lamp-g, .rh .lamp-r, .rh .lant-h { transition:opacity .77s var(--soft) var(--d, 0s); }
   /* Einbettung in die Karte (?embed): nur Zeichnung + Knopf */
@@ -66,3 +67,10 @@
   /* Bedienleiste in der Einbettung: mittig und fest, damit nichts springt */
   html.embed .ctrl { flex-direction:column; justify-content:center; align-items:center; gap:8px; }
   html.embed .read { flex:none; width:100%; text-align:center; min-height:1.5em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* Abendlicht-Ablauf: Fenster flackern kurz auf, dann ruhiges Leben (einzelne Fenster, Sterne, Laternenkrone atmen) */
+  @keyframes wflick { 20% { opacity:.3; } 38% { opacity:1; } 52% { opacity:.45; } 70% { opacity:1; } }
+  @keyframes wtw { 0%, 84%, 100% { opacity:1; } 88% { opacity:.25; } 92% { opacity:1; } 95% { opacity:.45; } }
+  @keyframes star { from { fill-opacity:.3; } to { fill-opacity:1; } }
+  @keyframes breathe { from { opacity:.5; } to { opacity:.85; } }
+  .rh.win:not(.instant) .wn { animation:wflick .8s linear var(--d, 0s) backwards; }

@@ -56,7 +56,7 @@ for (const [li, s] of LEVELS.entries()) {
       await page.evaluate(([x0, y0, s]) => SCENE.view(x0, y0, s), [x * U, y * U, s]);
       await page.waitForTimeout(80);
       const f = `${tmp}/L${li}_${x}_${y}.png`;
-      await page.screenshot({ path: f });
+      await page.screenshot({ path: f, timeout: 300000 });
       jobs.push({ li, x, y, f }); shots++;
     }
   }

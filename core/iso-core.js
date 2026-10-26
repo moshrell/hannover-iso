@@ -31,7 +31,10 @@
       const dx = R[0] - L[0], dy = R[1] - L[1], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
       if (facing(nx, ny) <= 1e-6) return '';
       const t = plane([L[0], L[1], z1], [dx / len, dy / len, 0], [0, 0, -1]);
-      return `<g transform="${t}"><rect class="${mat} ${shadeOf(nx, ny)}" width="${f2(len)}" height="${f2(z1 - z0_)}"/>${deco ? deco(len, z1 - z0_) : ''}</g>`;
+      const h = z1 - z0_;
+      // Anstrahlung von unten: Oberkante abgedunkelt, Sockel leicht erwärmt (Opazität kommt aus dem CSS, nur bei Abendlicht)
+      const sh = `<rect class="wsh" fill="#000" opacity="0" width="${f2(len)}" height="${f2(h * .5)}"/><rect class="wsh" fill="#000" opacity="0" width="${f2(len)}" height="${f2(h * .22)}"/><rect class="wsl" fill="#FFCF73" opacity="0" y="${f2(h * .78)}" width="${f2(len)}" height="${f2(h * .22)}"/>`;
+      return `<g transform="${t}"><rect class="${mat} ${shadeOf(nx, ny)}" width="${f2(len)}" height="${f2(h)}"/>${sh}${deco ? deco(len, h) : ''}</g>`;
     }
     const wallVisible = (L, R) => { const dx = R[0] - L[0], dy = R[1] - L[1]; return facing(-dy, dx) > 1e-6; };
     function box(x, y, z, w, d, h, mat, deco = {}, top = true) {
@@ -52,7 +55,8 @@
   }
 
   /* ---------- Hilfen in Wandkoordinaten (u nach rechts, v nach unten ab Oberkante) ---------- */
-  const vari = () => { const r = rnd(); return r < .14 ? ' dim' : r < .32 ? ' hi' : ''; };
+  // Fenster am Abend: manche dunkel, manche gedimmt, wenige strahlend (sonst verschmelzen dichte Fassaden zu einer hellen Fläche)
+  const vari = () => { const r = rnd(); return r < .22 ? ' off' : r < .42 ? ' dim' : r < .56 ? ' hi' : ''; };
   const arch = (x, y, w, h) => `M${f2(x)} ${f2(y + h)}V${f2(y + w / 2)}A${f2(w / 2)} ${f2(w / 2)} 0 0 1 ${f2(x + w)} ${f2(y + w / 2)}V${f2(y + h)}Z`;
   const hl = (x0, x1, y) => `<path class="dt" d="M${f2(x0)} ${f2(y)}H${f2(x1)}"/>`;
   const vl = (x, y0, y1) => `<path class="dt" d="M${f2(x)} ${f2(y0)}V${f2(y1)}"/>`;

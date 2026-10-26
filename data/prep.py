@@ -7,7 +7,7 @@ d = json.load(gzip.open(src, 'rt') if src.endswith('.gz') else open(src))
 LAT0, LON0 = 52.3710, 9.7375
 KX = math.cos(math.radians(LAT0)) * 111320; KY = 110540
 C, S = math.cos(math.pi / 6), .5
-# Welt so gedreht, dass das Neue Rathaus achsparallel steht (wie die Studie rathaus.html); Winkel aus dessen OSM-Umriss
+# Welt so gedreht, dass das Neue Rathaus achsparallel steht (wie die Studie studio.html?lm=neuesRathaus); Winkel aus dessen OSM-Umriss
 ALPHA = -0.2757948
 ROT = [math.cos(ALPHA), math.sin(ALPHA)]
 def proj(g):

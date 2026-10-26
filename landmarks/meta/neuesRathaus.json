@@ -1,8 +1,8 @@
 {
  "title": "Neues Rathaus",
  "fact": "Erbaut 1901–1913 am Maschteich, Kuppel 97,73 m, Bogenaufzug bis zur Aussicht.",
- "studio": "",
- "detail": "rathaus.html",
+ "studio": "Neues Rathaus, 1901–1913 von Hermann Eggert und Gustav Halmhuber am Maschteich: Kuppelturm mit 97,73 m, Eingangsportal zum Trammplatz mit zwei Achtecktürmen, zur Teichseite Risalit und Volutengiebel. Der Bogenaufzug in der Kuppel führt bis zur Aussicht.",
+ "detail": "studio.html?lm=neuesRathaus",
  "minor": false,
  "osm": [
   "r313173"

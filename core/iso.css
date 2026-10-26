@@ -6,8 +6,8 @@
     --tl-f:#2B1814; --tl-s:#21120F; --tl-l:#4A2A22;
     --cu-f:#13221F; --cu-s:#0E1917; --cu-l:#2B4842;
     --win:#0C0E0E; --win-l:#2E2C26;
-    --st-f-on:#7C6842; --st-s-on:#514329; --st-t-on:#635436; --st-l-on:#C9AE72;
-    --tl-f-on:#6A2C1F; --tl-s-on:#4E2118; --tl-l-on:#93503A;
+    --st-f-on:#85703F; --st-s-on:#4A3D25; --st-t-on:#5F5035; --st-l-on:#A68E58;
+    --tl-f-on:#7B3523; --tl-s-on:#57291C; --tl-l-on:#A55C42;
     --cu-f-on:#2E5A50; --cu-s-on:#21443D; --cu-l-on:#5E9C8C;
     --bk-f:#26150F; --bk-s:#1C0F0B; --bk-t:#2C1912; --bk-l:#46281E;
     --bk-f-on:#8E4A30; --bk-s-on:#5F3020; --bk-t-on:#6E3926; --bk-l-on:#C8805C;
@@ -16,7 +16,7 @@
     --gb-f:#272010; --gb-s:#1D170B; --gb-t:#2C2513; --gb-l:#453A1E; --gb-f-on:#A4823F; --gb-s-on:#6E5526; --gb-t-on:#86693A; --gb-l-on:#DDB86A;
     --rs-f:#1A1713; --rs-s:#13110E; --rs-t:#1F1B16; --rs-l:#35302A; --rs-f-on:#6A5A44; --rs-s-on:#4A3E2F; --rs-t-on:#5A4C3A; --rs-l-on:#A08C6C;
     --pl-f:#24221C; --pl-s:#1A1915; --pl-t:#2A2822; --pl-l:#3C392F; --pl-f-on:#B9AD8C; --pl-s-on:#857B62; --pl-t-on:#9D9276; --pl-l-on:#E6DCBC;
-    --kc-f:#1E1F1C; --kc-s:#161714; --kc-l:#33342F; --kc-f-on:#8E8C80; --kc-s-on:#66655C; --kc-l-on:#C8C5B6;
+    --kc-f:#1E1F1C; --kc-s:#161714; --kc-l:#33342F; --kc-f-on:#77756A; --kc-s-on:#55544C; --kc-l-on:#A8A597;
     --ease:cubic-bezier(.2,.7,.2,1); --soft:cubic-bezier(.45,0,.25,1);
   }
   /* ---------- Zeichnung ---------- */
@@ -29,7 +29,7 @@
   .rh .lamp-g, .rh .lamp-r, .rh .lant-h { transition:opacity 1.53s var(--soft) var(--d, 0s); }
   .rh .flood { transition:opacity 2.75s var(--soft) var(--d, 0s); }
   .rh .wins { filter:url(#wglow); }
-  .rh.instant * { transition:none !important; }
+  .rh.instant * { transition:none !important; animation:none !important; }
   @media (prefers-reduced-motion:reduce) { .rh * { transition-duration:.01s !important; transition-delay:0s !important; } }
   .rh .st { stroke:var(--st-l); stroke-width:.8; stroke-linejoin:round; }
   .rh .st.fr { fill:var(--st-f); } .rh .st.sd { fill:var(--st-s); } .rh .st.tp { fill:var(--st-t); }
@@ -78,9 +78,13 @@
   .rh.lit .on-bk .dt { stroke:var(--bk-l-on); } .rh.lit .dt.sl-d { stroke:var(--sl-l-on); }
   .rh.lit .gz { stroke:#6C9C80; } .rh.lit .lv { stroke:var(--bk-l-on); }
   .rh.lamps .lamp-r { opacity:.32; } .rh.lit .dt.tl-d { stroke:var(--tl-l-on); } .rh.lit .dt.cu-d { stroke:var(--cu-l-on); }
-  .rh.win .wn { fill:var(--glow); stroke:var(--glow-hi); }
-  .rh.win .wn.hi { fill:var(--glow-hi); }
-  .rh.win .wn.dim { fill:#E8C77E; opacity:.75; }
+  .rh.win .wn { fill:#F6D58A; stroke:#FFE6AE; }
+  .rh.win .wn.hi { fill:var(--glow-hi); stroke:var(--glow-hi); }
+  .rh.win .wn.dim { fill:#D9A957; stroke:#E8C77E; opacity:.82; }
+  .rh.win .wn.off { fill:#1B170F; stroke:#3A3426; opacity:1; }
+  /* Anstrahlung: weicher Verlauf auf jeder Wand */
+  .rh .wsh, .rh .wsl { pointer-events:none; transition:opacity 1.84s var(--soft) var(--d, 0s); }
+  .rh.lit .wsh { opacity:.1; } .rh.lit .wsl { opacity:.11; }
   .rh.lit .mul { stroke:#7A6338; }
   .rh.lit .flood { opacity:1; }
   .rh.lit .clockface { fill:var(--glow-hi); stroke:var(--glow); }
