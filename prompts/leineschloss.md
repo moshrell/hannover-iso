@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `leineschloss`; название: Leineschloss (Landtag Niedersachsen)
 - OSM: r1170793 (в `landmarks/meta/leineschloss.json`); высота ориентировочно 26 м (проверь по двум источникам)
 - Состояние в коде: в `landmarks/altstadt.js` есть заглушка — вырезать и перерисовать
-- Материал Степана: `D:\Webdesign\hannover-iso\_fotos\leineschloss\` — leineschloss.mp4 (файл Степана назывался votum.mp4; кадры показывают здание с колонным портиком и стеклянной крышей внутри — скорее всего Landtag/Leineschloss; ПОДТВЕРДИ по контуру OSM и улицам)
+- Материал: кадры из видео уже в репозитории `ref/leineschloss/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\leineschloss\` — leineschloss.mp4 (файл Степана назывался votum.mp4; кадры показывают здание с колонным портиком и стеклянной крышей внутри — скорее всего Landtag/Leineschloss; ПОДТВЕРДИ по контуру OSM и улицам)
 
 ## Особенности
 Если окажется другое здание, скажи Степану, переименуй id и папку и отметь это в отчёте. `pin`/`group` в meta сейчас выключены: реши с сборщиком, нужна ли точка на карте.

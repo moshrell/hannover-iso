@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `welfenschloss`; название: Welfenschloss (Leibniz Universität)
 - OSM: см. `landmarks/meta/welfenschloss.json`; высота ориентировочно ~40 м (проверь по двум источникам)
 - Состояние в коде: v2 в `landmarks/welfenschloss.js` — перерисовать по видео, не потеряв то, что уже верно
-- Материал Степана: `D:\Webdesign\hannover-iso\_fotos\welfenschloss\` — welfenschloss.mp4
+- Материал: кадры из видео уже в репозитории `ref/welfenschloss/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\welfenschloss\` — welfenschloss.mp4
 
 ## Особенности
 Проверь пропорции башен и Ostbau, портал с львами, пологие крыши.

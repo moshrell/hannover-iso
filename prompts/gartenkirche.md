@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `gartenkirche`; название: Gartenkirche St. Marien
 - OSM: w138392040; высота ориентировочно ~45 м (проверь по двум источникам)
 - Состояние в коде: новое здание (старого модуля нет)
-- Материал Степана: `D:\Webdesign\hannover-iso\_fotos\gartenkirche\` — gartenkirche.mp4 + gartenkirche-foto.png
+- Материал: кадры из видео уже в репозитории `ref/gartenkirche/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\gartenkirche\` — gartenkirche.mp4 + gartenkirche-foto.png
 
 ## Особенности
 Стиль, год и высоту определи по кадрам и источникам (минимум два): форма башни, кровля, фасад.

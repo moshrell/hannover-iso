@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `altesRathaus`; название: Altes Rathaus
 - OSM: w5121356; высота ориентировочно ~38 м (проверь по двум источникам)
 - Состояние в коде: v1 в `landmarks/altstadt.js` — вырезать и перерисовать
-- Материал Степана: `D:\Webdesign\hannover-iso\_fotos\altesRathaus\` — altesRathaus.mp4 + altesRathaus-foto.png
+- Материал: кадры из видео уже в репозитории `ref/altesRathaus/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\altesRathaus\` — altesRathaus.mp4 + altesRathaus-foto.png
 
 ## Особенности
 Бранденбургская готика, красный кирпич, ступенчатые щипцы, декоративные ленты и майолика. Рядом Marktkirche — не рисуй её здесь.

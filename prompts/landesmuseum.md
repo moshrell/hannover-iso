@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `landesmuseum`; название: Niedersächsisches Landesmuseum
 - OSM: r364529; высота ориентировочно ~25 м (проверь по двум источникам)
 - Состояние в коде: v2 в `landmarks/landesmuseum.js` — перерисовать по видео, старое взять как заготовку контура
-- Материал Степана: `D:\Webdesign\hannover-iso\_fotos\landesmuseum\` — landesmuseum.mp4
+- Материал: кадры из видео уже в репозитории `ref/landesmuseum/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\landesmuseum\` — landesmuseum.mp4
 
 ## Особенности
 В v2 не хватало: тыловые/боковые фасады, ротонда, детали двора. Теперь они есть на видео.
