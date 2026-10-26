@@ -44,6 +44,9 @@ if sys.argv[1] == 'claim':
         r = sh('git', 'push', '-q', *(['--force-with-lease=lm/%s:%s' % (i, old)] if old else []), 'origin', f'lm/{i}', check=False)
         if r.returncode == 0:
             print(f'ВЗЯТО: {i} ({what}). Ветка lm/{i} создана и запушена. Дальше: prompts/{i}.md и prompts/VIDEO-ARBEIT.md'); sys.exit()
-        sh('git', 'checkout', '-q', '--detach', 'origin/main'); sh('git', 'branch', '-q', '-D', 'lm/' + i, check=False)   # занято другим: следующее
+        sh('git', 'checkout', '-q', '--detach', 'origin/main'); sh('git', 'branch', '-q', '-D', 'lm/' + i, check=False)
+        if not re.search(r'rejected|fetch first|non-fast-forward|already exists|stale info', r.stderr):   # не «занято», а настоящая ошибка (например, нет прав на push): не прячем
+            print(f'ОШИБКА при создании ветки lm/{i} (это не «занято»):\n{r.stderr}\nСообщи Степану текст ошибки; здание не придумывай.'); sys.exit(2)
+        # иначе занято другим агентом: следующее
         heads[('lm/' + i)] = heads.get('lm/' + i, 'x')
     print('СВОБОДНЫХ ЗДАНИЙ НЕТ. Ничего не бери, сообщи Степану.'); sys.exit(1)
