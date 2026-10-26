@@ -11,7 +11,7 @@
 - Материал: готовая нарезка кадров в репозитории `ref/aegidienkirche/foto/v_*.jpg`
 
 ## Особенности
-Это руина (Mahnmal, мемориал): рисуй ровно то, что стоит сейчас по видео, без «достройки» утраченных частей.
+Это руина (Mahnmal, мемориал): рисуй ровно то, что стоит сейчас по кадрам, без «достройки» утраченных частей.
 
 ## Итог
 Нарисованное здание в `landmarks/aegidienkirche.js` + `landmarks/meta/aegidienkirche.json`, кадры и таблицы в `ref/aegidienkirche/`, отчёт `ref/aegidienkirche/README.md`, всё запушено в `lm/aegidienkirche`.
