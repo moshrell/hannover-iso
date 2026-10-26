@@ -1,12 +1,23 @@
 {
  "title": "Aegidienkirche",
- "fact": "Gotische Kirchenruine, seit 1952 Mahnmal; im Turm die Friedensglocke aus Hiroshima.",
- "studio": "Gotische Kirche, 1943 zerstört und seit 1952 Mahnmal für die Opfer von Krieg und Gewalt; im Turm die Friedensglocke aus Hiroshima.",
+ "fact": "Gotische Kirchenruine (um 1347), im Krieg 1943 zerstört und als Mahnmal erhalten; im Turm hängt die Friedensglocke aus Hiroshima.",
+ "studio": "Die Aegidienkirche, eine dreischiffige gotische Hallenkirche um 1347, wurde 1943 bei Luftangriffen zerstört und nie wieder aufgebaut. Heute ist die Ruine ein Mahnmal für die Opfer von Krieg und Gewalt: Stehen geblieben sind die Außenwände mit Spitzbogenöffnungen und Jochgiebeln, der Polygonchor im Osten und der Westturm mit barocker Fassade (Anfang des 18. Jahrhunderts) und Kupferaufsatz mit Glockenspiel von 1958. Im Turmeingang hängt die Friedensglocke aus Hiroshima, die jedes Jahr am 6. August läutet.",
  "detail": "studio.html?lm=aegidienkirche",
  "minor": false,
  "osm": [
   "r7359339"
  ],
  "h": 57,
- "rank": 3
+ "rank": 3,
+ "face": [
+  "compass",
+  [
+   -1,
+   0
+  ],
+  [
+   -1,
+   0
+  ]
+ ]
 }
