@@ -14,8 +14,11 @@ queue = []
 for l in subprocess.run(['git', 'show', 'origin/main:prompts/QUEUE.md'], capture_output=True, text=True, check=True).stdout.splitlines():
     m = re.match(r'\|\s*([A-Za-z0-9_]+)\s*\|\s*(ready|wartet|fertig)\s*\|\s*(.*?)\s*\|', l)
     if m and m.group(1) != 'id': queue.append(m.groups())
-heads = {l.split('refs/heads/')[1] for l in sh('git', 'ls-remote', '--heads', 'origin', 'lm/*').stdout.splitlines()}
-def taken(i): return 'lm/' + i in heads
+heads = {}
+for l in sh('git', 'ls-remote', '--heads', 'origin', 'lm/*').stdout.splitlines():
+    sha, ref = l.split(); heads[ref.split('refs/heads/')[1]] = sha
+def merged(b): return sh('git', 'merge-base', '--is-ancestor', 'origin/' + b, 'origin/main', check=False).returncode == 0
+def taken(i): return 'lm/' + i in heads and not merged('lm/' + i)   # старая ветка, уже влитая в main, не считается занятой
 def when(i): return sh('git', 'log', '-1', '--format=%cr, %s', 'origin/lm/' + i, check=False).stdout.strip()
 if len(sys.argv) < 2:
     for i, st, what in queue:
@@ -30,9 +33,10 @@ if sys.argv[1] == 'claim':
         open(f'ref/{i}/CLAIM.md', 'w').write(f'Взято в работу {time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())} (метка {secrets.token_hex(4)}). Агент здания {i}.\n')
         sh('git', 'add', f'ref/{i}/CLAIM.md')
         sh('git', '-c', 'user.name=lm-agent', '-c', 'user.email=lm-agent@invalid', 'commit', '-q', '-m', f'Взято в работу: {i}')
-        r = sh('git', 'push', '-q', 'origin', f'lm/{i}', check=False)
+        old = heads.get('lm/' + i)   # влитая старая ветка перезаписывается только если за это время никто её не менял (force-with-lease)
+        r = sh('git', 'push', '-q', *(['--force-with-lease=lm/%s:%s' % (i, old)] if old else []), 'origin', f'lm/{i}', check=False)
         if r.returncode == 0:
             print(f'ВЗЯТО: {i} ({what}). Ветка lm/{i} создана и запушена. Дальше: prompts/{i}.md и prompts/VIDEO-ARBEIT.md'); sys.exit()
         sh('git', 'checkout', '-q', '--detach', 'origin/main'); sh('git', 'branch', '-q', '-D', 'lm/' + i, check=False)   # занято другим: следующее
-        heads.add('lm/' + i)
+        heads[('lm/' + i)] = heads.get('lm/' + i, 'x')
     print('СВОБОДНЫХ ЗДАНИЙ НЕТ. Ничего не бери, сообщи Степану.'); sys.exit(1)
