@@ -26,3 +26,6 @@
 | wangenheim | fertig | Wangenheimpalais, v1 в mitte2.js |
 | beginenturm | fertig | Beginenturm, малая точка, v1 в mitte2.js |
 | georgenpalais | ready | Georgenpalais (Wilhelm-Busch-Museum), новое |
+| anzeiger | ready | Anzeiger-Hochhaus (Höger 1928, клинкер, зелёный купол), v1 в mitte2.js |
+| ihmezentrum | ready | Ihme-Zentrum (бруталистский комплекс, Linden), новое, большое |
+| hcc | ready | HCC / Stadthalle с Kuppelsaal, новое, вне зоны плиток |
