@@ -48,22 +48,6 @@
     return { mods: M, lc: [35, 30], z0: 0, top: [34, 24, 74], label: 'NORD/LB', h: 74, len: 70 };
   });
 
-  /* --- Museum August Kestner: Würfel mit Wabenfassade aus Glasbausteinen über dunklem Sockel, rotes Band --- */
-  ISO.landmark('kestner', H => {
-    const { hl, wins } = H, M = [], add = m => (M.push(m), m);
-    const fac = (len, h) => {
-      let s = `<rect class="wn dim" data-f="2" x=".3" y=".6" width="${(len - .6).toFixed(2)}" height="${(h - 6.6).toFixed(2)}"/>`;
-      // Waben: Raster aus Betonrahmen
-      let d = ''; for (let v = .6; v <= h - 6; v += 1.6) d += `M0 ${v.toFixed(2)}H${len.toFixed(2)}`; for (let u = .3; u <= len; u += 1.6) d += `M${u.toFixed(2)} .6V${(h - 6).toFixed(2)}`;
-      s += `<path class="kz" d="${d}"/><path class="kr" d="M0 ${(h * .42).toFixed(2)}H${len.toFixed(2)}"/>`;
-      s += `<rect class="sl fr" x="0" y="${(h - 6).toFixed(2)}" width="${len.toFixed(2)}" height="6"/>`;
-      let w = ''; for (let u = 2; u < len - 2; u += 4) w += H.winR(u, h - 4.6, 2.2, 2.6, 0);
-      return wins(s + w) + hl(0, len, .3);
-    };
-    add({ id: 'kb', fp: [0, 0, 36, 36], draw: K => K.box(0, 0, Z0, 36, 36, 19, 'kc', { S: fac, E: fac, N: fac, W: fac }) });
-    return { mods: M, lc: [18, 18], z0: 0, top: [18, 18, 21], label: 'Museum August Kestner', h: 21, len: 36 };
-  });
-
   /* --- Wangenheimpalais (Laves): heller Putz, zwei Geschosse, Säulenvorbau mit Balkon, flaches Walmdach --- */
   ISO.landmark('wangenheim', H => {
     const { hl, vl, winR, wins, lathe, hip } = H, M = [], add = m => (M.push(m), m);
@@ -135,25 +119,6 @@
       return s;
     } });
     return { mods: M, lc: [5, 5], z0: 0, top: [5, 5, 27], label: 'Beginenturm', h: 27, len: 10 };
-  });
-
-  /* --- Leibnizhaus: schmales Renaissance-Bürgerhaus, hoher Volutengiebel, mittlerer Erker (Utlucht) --- */
-  ISO.landmark('leibnizhaus', H => {
-    const { hl, vl, winR, wins, gable, saddle } = H, M = [], add = m => (M.push(m), m);
-    const fac = (len, h) => { let q = hl(0, len, .5); for (let v = 3.6; v < h; v += 3.6) q += hl(0, len, v) + hl(0, len, v + .4); let w = '';
-      for (let r = 0; r < 4; r++) [1.6, 4.4, len - 6.2, len - 3.4].forEach(u => { w += winR(u, 1 + r * 3.6, 1.6, 2.4, Math.min(4, 3 - r + 1)); });
-      return q + wins(w); };
-    add({ id: 'lh', fp: [0, 0, 20, 18], draw: K => {
-      let s = K.box(0, 0, Z0, 20, 18, 16, 'st', { S: fac, E: (l, h) => hl(0, l, .5) + wins(winR(3, 2, 1.6, 2.4, 3) + winR(8, 2, 1.6, 2.4, 3)) });
-      s += saddle(K, [0, 18], [20, 18], [0, -18], Z0 + 16, Z0 + 28);
-      s += K.wall([0, 18], [20, 18], Z0 + 16, Z0 + 16.01, 'st', () => gable(20, 15, wins(winR(6.2, -6.4, 1.6, 2.4, 4) + winR(12.2, -6.4, 1.6, 2.4, 4) + winR(9.2, -11, 1.6, 2, 4))));
-      return s;
-    } });
-    add({ id: 'lhErker', fp: [7, 18, 13, 20], parent: 'lh', side: 'S', draw: K => {
-      const f = (len, h) => { let q = hl(0, len, .5); let w = ''; for (let r = 0; r < 3; r++) { q += hl(0, len, 3.4 + r * 3.6); w += winR(.7, 1 + r * 3.6, len - 1.4, 2.4, 4 - r); } return q + wins(w); };
-      return K.box(7, 18, Z0 + 4, 6, 2, 11.5, 'st', { S: f, E: (l, h) => hl(0, l, .5), W: (l, h) => hl(0, l, .5) }) + K.box(6.8, 17.8, Z0 + 15.5, 6.4, 2.4, .8, 'st');
-    } });
-    return { mods: M, lc: [10, 9], z0: 0, top: [10, 18, 32], label: 'Leibnizhaus', h: 32, len: 20 };
   });
 
   /* --- Waterloosäule (Laves 1832): 46 m, Sockel, kannelierte Säule, Plattform mit Geländer, Viktoria --- */

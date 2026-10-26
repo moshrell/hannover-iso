@@ -10,7 +10,7 @@ Datei: `landmarks/neues-rathaus.js` (Meta: `landmarks/meta/neuesRathaus.json`). 
 
 ## Licht (gilt für alle Wahrzeichen, core/)
 - Fenster am Abend: 22 % dunkel (`off`), 20 % gedimmt, 14 % strahlend, Rest warmgelb. Vorher leuchteten fast alle gleich hell → dichte Fassaden wirkten überbelichtet.
-- Wandverlauf: jede Wand bekommt drei Overlay-Rechtecke (`wsh` oben abgedunkelt, `wsl` Sockel erwärmt), Opazität nur bei Abendlicht (`core/iso.css`). Stein-/Dachfarben und Linienfarbe gedämpft (Linien #A68E58 statt #C9AE72). Kestner-Beton etwas dunkler.
+- Wandverlauf: jede Wand bekommt drei Overlay-Rechtecke (`wsh` oben abgedunkelt, `wsl` Sockel erwärmt), Opazität nur bei Abendlicht (`core/iso.css`). Stein-/Dachfarben und Linienfarbe gedämpft (Linien #A68E58 statt #C9AE72). 
 - Neue Animation (`studio.js`): Laternen → Fenster flackern etagenweise auf (`wflick`) → Anstrahlung wandert von unten nach oben → Laternenkrone zuletzt. Danach Ruhezustand mit Leben: Laternenkrone „atmet“, Sterne funkeln, ein Dutzend Fenster flackert gelegentlich. Alles per `element.style` (CSP). Bleibt am Ende an; der Knopf schaltet auf Nacht zurück.
 
 ## Bekannte Lücken

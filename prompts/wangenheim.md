@@ -1,0 +1,17 @@
+# Задание: Wangenheimpalais (ветка `lm/wangenheim`)
+
+Ты — агент здания проекта hannover-iso (изометрическая ночная карта Ганновера, репозиторий `moshrell/hannover-iso`, ветка `main`). Общайся со Степаном по-русски, кратко, немецкие слова сразу переводи в скобках.
+
+**Сначала прочитай в репозитории:** `CLAUDE.md`, `ARBEIT.md` и **`prompts/VIDEO-ARBEIT.md`** (там весь порядок: доступ к видео, нарезка на кадры, разбор, рисование, сверка, сдача). Ниже только данные по этому зданию.
+
+## Здание
+- id в проекте и имя папки: `wangenheim`; название: Wangenheimpalais
+- OSM: осмотри `landmarks/meta/wangenheim.json`; высота ориентировочно ~20 м (проверь по двум источникам)
+- Состояние в коде: v1 в `landmarks/mitte2.js` — вырезать и перерисовать
+- Материал Степана: `D:\Webdesign\hannover-iso\_fotos\wangenheim\` — wangenheim.mp4
+
+## Особенности
+Проверь по видео и контуру OSM, что показано именно это здание; если не совпадает с метой — скажи Степану.
+
+## Итог
+Нарисованное здание в `landmarks/wangenheim.js` + `landmarks/meta/wangenheim.json`, кадры и таблицы в `ref/wangenheim/`, отчёт `ref/wangenheim/README.md`, всё запушено в `lm/wangenheim`.
