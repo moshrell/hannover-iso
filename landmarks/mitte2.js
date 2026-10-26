@@ -1,6 +1,6 @@
 /* Mitte, zweite Reihe — Module (Stufe „erkennbar“, Details später):
-   Anzeiger-Hochhaus, NORD/LB, Museum August Kestner, Wangenheimpalais, Kreuzkirche,
-   Beginenturm, Leibnizhaus, Waterloosäule, Kröpcke-Uhr. Lokal: x Ost, y Süd, z Höhe, Gelände z = 1. Vorbilder: ref/mitte2/ (Quellen in quellen.txt). */
+   Anzeiger-Hochhaus, NORD/LB, Kreuzkirche,
+   Beginenturm, Waterloosäule, Kröpcke-Uhr. Lokal: x Ost, y Süd, z Höhe, Gelände z = 1. Vorbilder: ref/mitte2/ (Quellen in quellen.txt). */
 (() => {
   const Z0 = 1;
   const grid = (H, len, h, step, rows, f0, cls = '') => { // Fensterraster: rows = [[v, h, f], …]
@@ -46,24 +46,6 @@
     const cube = (id, x, y, z, w, d, h) => add({ id, fp: [x, y, x + w, y + d], above: 'nbRing', draw: K => K.box(x, y, z, w, d, h, 'glb', { S: glass, E: glass, N: glass, W: glass }) });
     cube('nb1', 22, 18, Z0 + 24, 22, 20, 14); cube('nb2', 26, 14, Z0 + 38, 22, 20, 13); cube('nb3', 20, 20, Z0 + 51, 22, 18, 12); cube('nb4', 25, 16, Z0 + 63, 18, 16, 9);
     return { mods: M, lc: [35, 30], z0: 0, top: [34, 24, 74], label: 'NORD/LB', h: 74, len: 70 };
-  });
-
-  /* --- Wangenheimpalais (Laves): heller Putz, zwei Geschosse, Säulenvorbau mit Balkon, flaches Walmdach --- */
-  ISO.landmark('wangenheim', H => {
-    const { hl, vl, winR, wins, lathe, hip } = H, M = [], add = m => (M.push(m), m);
-    const fac = (len, h) => { let q = hl(0, len, .5) + hl(0, len, 1.1) + hl(0, len, 6.4) + hl(0, len, h - 1.4), w = '';
-      const n = Math.floor((len - 2) / 4), off = (len - n * 4) / 2 + 2;
-      for (let i = 0; i < n; i++) { const u = off + i * 4; w += winR(u - .9, 1.9, 1.8, 3.4, 1) + winR(u - .9, 7.6, 1.8, 3.2, 0); }
-      return q + wins(w); };
-    add({ id: 'wp', fp: [0, 0, 60, 24], draw: K => K.box(0, 0, Z0, 60, 24, 13, 'pl', { S: fac, E: fac, W: fac }) + hip(K, 0, 0, 60, 24, Z0 + 13, Z0 + 17, 'sl') });
-    add({ id: 'wpPort', fp: [22, 24, 38, 28.5], parent: 'wp', side: 'S', draw: K => {
-      let s = K.box(22, 24, Z0, 16, 4.5, .8, 'st');
-      for (let i = 0; i < 4; i++) s += lathe(K, 23.6 + i * 4.27, 27.6, [[Z0 + .8, .6], [Z0 + 6, .5], [Z0 + 6.4, .7]], 'st fr', 2);
-      s += K.box(22, 24, Z0 + 6.4, 16, 4.5, .9, 'st', { S: l => hl(0, l, .4) });
-      s += K.wall([22, 28.5], [38, 28.5], Z0 + 7.3, Z0 + 8.5, 'st', len => hl(0, len, .2) + Array.from({ length: Math.floor(len / .8) }, (_, i) => vl(.4 + i * .8, .2, 1.2)).join(''));
-      return s;
-    } });
-    return { mods: M, lc: [30, 13], z0: 0, top: [30, 14, 18], label: 'Wangenheimpalais', h: 18, len: 60 };
   });
 
   /* --- Kreuzkirche (geweiht 1333): Backsteingotik, Westturm mit hohem, grünem Helm --- */

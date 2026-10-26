@@ -1,12 +1,23 @@
 {
  "title": "Wangenheimpalais",
- "fact": "Klassizistisches Palais von Laves (1829–1833), heute Wirtschaftsministerium.",
- "studio": "Klassizistisches Palais von Laves (1829–1833), zeitweise Rathaus, heute Sitz des Wirtschaftsministeriums.",
+ "fact": "Klassizistisches Palais von Laves (1829–1833), 1863–1913 Rathaus, seit 1957 Sitz des Wirtschaftsministeriums.",
+ "studio": "Das Wangenheimpalais am Friedrichswall ließ Georg Ludwig Friedrich Laves 1829–1833 für Georg von Wangenheim bauen – ein Hauptwerk des hannoverschen Klassizismus. Die helle, dreigeschossige Front trägt ein leicht vorspringendes Mittelrisalit mit viersäuligem Portikus und Balkon, darüber einen Dreiecksgiebel mit dem Stadtwappen vor dem Walmdach; an der Westseite sitzt ein Erker mit grüner Kupferhaube. Unter König Georg V. königliche Residenz, 1863–1913 Rathaus der Stadt, 1943 ausgebrannt und danach wieder aufgebaut; seit 1957 hat hier das niedersächsische Wirtschaftsministerium seinen Sitz.",
  "detail": "studio.html?lm=wangenheim",
  "minor": true,
- "osm": [
-  "r5162749"
+ "osm": [],
+ "h": 19,
+ "rank": 8,
+ "face": [
+  "street",
+  [
+   0,
+   1
+  ],
+  "Friedrichswall"
  ],
- "h": 18,
- "rank": 8
+ "point": [
+  52.369136,
+  9.734905,
+  24
+ ]
 }
