@@ -13,7 +13,7 @@ def sh(*a, check=True):
 sh('git', 'fetch', '-q', 'origin')
 queue = []
 for l in subprocess.run(['git', 'show', 'origin/main:prompts/QUEUE.md'], capture_output=True, text=True, check=True).stdout.splitlines():
-    m = re.match(r'\|\s*([A-Za-z0-9_]+)\s*\|\s*(ready|wartet|fertig)\s*\|\s*(.*?)\s*\|', l)
+    m = re.match(r'\|\s*([A-Za-z0-9_]+)\s*\|\s*(ready|wartet|fertig|manuell)\s*\|\s*(.*?)\s*\|', l)
     if m and m.group(1) != 'id': queue.append(m.groups())
 heads = {}
 for l in sh('git', 'ls-remote', '--heads', 'origin', 'lm/*').stdout.splitlines():
@@ -23,7 +23,7 @@ def taken(i): return 'lm/' + i in heads and not merged('lm/' + i)   # стара
 def when(i): return sh('git', 'log', '-1', '--format=%cr, %s', 'origin/lm/' + i, check=False).stdout.strip()
 if len(sys.argv) < 2:
     for i, st, what in queue:
-        s = 'ЗАНЯТО (' + when(i) + ')' if taken(i) and st != 'fertig' else {'ready': 'свободно', 'wartet': 'ждёт материал', 'fertig': 'готово'}[st]
+        s = 'ЗАНЯТО (' + when(i) + ')' if taken(i) and st != 'fertig' else {'ready': 'свободно', 'wartet': 'ждёт материал', 'fertig': 'готово', 'manuell': 'ведёт Степан вручную'}[st]
         print(f'{i:22} {s:50} {what}')
     sys.exit()
 if sys.argv[1] == 'release':   # освободить здание: ветка lm/<id> перематывается на main (считается влитой/свободной); удалять ветку не нужно

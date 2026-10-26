@@ -3,7 +3,8 @@
 Таблицу читает `tools/queue.py`. Статус здесь ставит сборщик (главный чат), агенты его не правят:
 - `ready` — материал есть, можно брать;
 - `wartet` — ждёт материал от Степана;
-- `fertig` — сделано и влито в `main`.
+- `fertig` — сделано и влито в `main`;
+- `manuell` — Степан уже ведёт это здание вручную в своём чате (ветки ещё может не быть), `claim` его не берёт.
 
 «Занято» определяется не этой таблицей, а наличием ветки `lm/<id>` в репозитории: её создаёт команда `python3 tools/queue.py claim` (создание ветки атомарно, два агента не возьмут одно здание). Порядок строк = приоритет.
 
@@ -20,8 +21,8 @@
 | vwtower | ready | VW-Tower (старая радиобашня), новое |
 | heizkraftwerklinden | ready | Heizkraftwerk Linden, новое |
 | telemax | ready | Telemax (282 м, вне зоны плиток), новое |
-| landesmuseum | ready | Landesmuseum, v2 → доработка по видео |
-| welfenschloss | ready | Welfenschloss, v2 → доработка по видео |
+| landesmuseum | manuell | Landesmuseum, v2 → доработка по видео |
+| welfenschloss | manuell | Welfenschloss, v2 → доработка по видео |
 | wangenheim | ready | Wangenheimpalais, v1 в mitte2.js |
 | beginenturm | ready | Beginenturm, малая точка, v1 в mitte2.js |
 | georgenpalais | wartet | Georgenpalais, видео ещё нет |
