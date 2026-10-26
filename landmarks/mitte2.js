@@ -1,5 +1,5 @@
 /* Mitte, zweite Reihe — Module (Stufe „erkennbar“, Details später):
-   Anzeiger-Hochhaus, NORD/LB, Museum August Kestner, Wangenheimpalais, Kreuzkirche, Neustädter Hof- und Stadtkirche,
+   Anzeiger-Hochhaus, NORD/LB, Museum August Kestner, Wangenheimpalais, Kreuzkirche,
    Beginenturm, Leibnizhaus, Waterloosäule, Kröpcke-Uhr. Lokal: x Ost, y Süd, z Höhe, Gelände z = 1. Vorbilder: ref/mitte2/ (Quellen in quellen.txt). */
 (() => {
   const Z0 = 1;
@@ -82,28 +82,6 @@
       return s;
     } });
     return { mods: M, lc: [24, 10], z0: 0, top: [5, 10, 59], label: 'Kreuzkirche', h: 59, len: 46 };
-  });
-
-  /* --- Neustädter Hof- und Stadtkirche St. Johannis (1670): Sandsteinturm mit barocker Kupferhaube, heller Saal mit Ziegeldach und Gauben --- */
-  ISO.landmark('neustaedter', H => {
-    const { f2, hl, vl, winA, winR, wins, lathe, hip, saddle } = H, M = [], add = m => (M.push(m), m);
-    add({ id: 'nsTower', fp: [6, 5, 18, 17], parent: 'nsNave', side: 'W', draw: K => {
-      const f = (len, h) => hl(0, len, .5) + hl(0, len, 1.2) + hl(0, len, 10) + hl(0, len, 20) + hl(0, len, 30) + wins(winA(len / 2 - 1, 2, 2, 5.6, 4) + winA(len / 2 - 1, 12, 2, 6, 3) + winA(len / 2 - .7, 22, 1.4, 5, 2)) + H.clockSVG(len / 2, 9.2 - 1.4 + 1, 1.4);
-      let s = K.box(6, 5, Z0, 12, 12, 40, 'rs', { S: f, E: f, N: f, W: f }) + K.box(5.6, 4.6, Z0 + 40, 12.8, 12.8, .8, 'rs');
-      s += lathe(K, 12, 11, [[Z0 + 40.8, 4.6], [Z0 + 47, 4.6]], 'rs fr', 4, [1]);
-      s += lathe(K, 12, 11, [[Z0 + 47, 5], [Z0 + 48, 4.6], [Z0 + 50.5, 3.4], [Z0 + 52, 1.8], [Z0 + 53, 1.6]], 'cu', 4, [1]);
-      s += `<g class="lant-h" filter="url(#bloom)">${lathe(K, 12, 11, [[Z0 + 53, 2.2], [Z0 + 57, 2.2]], '')}</g>` + lathe(K, 12, 11, [[Z0 + 53, 1.6], [Z0 + 57, 1.6]], 'lant', 4);
-      s += lathe(K, 12, 11, [[Z0 + 57, 2], [Z0 + 58.4, 1.6], [Z0 + 60, .9], [Z0 + 61, 1.2], [Z0 + 62.4, .6], [Z0 + 68, .12]], 'cu', 3);
-      return s;
-    } });
-    add({ id: 'nsNave', fp: [18, 0, 66, 22], draw: K => {
-      const side = (len, h) => { let q = hl(0, len, .5) + hl(0, len, h - .8), w = ''; for (let u = 4; u < len - 2; u += 5.6) w += winA(u - 1.2, 2.2, 2.4, h - 4.4, 1, ' dim'); return q + wins(w); };
-      let s = K.box(18, 0, Z0, 48, 22, 14, 'pl', { S: side, E: side });
-      s += hip(K, 18, 0, 66, 22, Z0 + 14, Z0 + 25);
-      for (let x = 24; x < 62; x += 7) { s += K.box(x - 1, 18.6, Z0 + 16.4, 2, 1.6, 2.2, 'pl', { S: () => wins(winR(.3, .3, 1.4, 1.5, 3)) }, false) + saddle(K, [x - 1.2, 20.2], [x + 1.2, 20.2], [0, -1.6], Z0 + 18.6, Z0 + 19.8); }
-      return s;
-    } });
-    return { mods: M, lc: [36, 11], z0: 0, top: [12, 11, 68], label: 'Neustädter Hof- und Stadtkirche', h: 68, len: 60 };
   });
 
   /* --- Beginenturm (um 1357): runder Wehrturm aus Bruchstein mit Kegeldach --- */
