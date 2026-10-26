@@ -1,13 +1,13 @@
 {
- "title": "altesRathaus",
- "fact": "",
- "studio": "",
+ "title": "Altes Rathaus",
+ "fact": "Backsteingotik seit 1410: Treppengiebel, Tonfries und glasüberdachter Hof – Conrad Wilhelm Hase rettete es im 19. Jahrhundert vor dem Abriss.",
+ "studio": "Das Alte Rathaus wurde ab 1410 in norddeutscher Backsteingotik gebaut; der älteste Teil an der Schmiedestraße stammt von etwa 1420, der Marktflügel folgte bald danach. Der Abriss war 1844 beschlossen, eine Bürgerinitiative um den Architekten Conrad Wilhelm Hase rettete es, und Hase stellte es im 19. Jahrhundert wieder her. Prägend sind die gotischen Treppengiebel mit Fialen und der Tonfries. Auf der Karte: der Bau mit rotem Dach, zwei Treppengiebeln zur Südwestseite, Mittelgiebel zur Südostseite und dem Innenhof unter einem Glasdach; die Marktfront mit den drei Zwerchhäusern liegt auf der abgewandten Seite zur Marktkirche.",
  "detail": "studio.html?lm=altesRathaus",
  "minor": false,
  "osm": [
   "w5121356"
  ],
- "h": 40,
+ "h": 26,
  "rank": 90,
  "pin": false,
  "group": "altstadt"
