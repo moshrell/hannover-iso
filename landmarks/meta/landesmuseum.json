@@ -1,13 +1,13 @@
 {
  "title": "Landesmuseum",
- "fact": "Niedersächsisches Landesmuseum (1897–1902, Architekt Hubert Stier) am Maschpark: Natur, Kunst und Kulturen.",
- "studio": "Niedersächsisches Landesmuseum (1897–1902) am Maschpark: vier Flügel um einen Hof, in der Mitte der Risalit mit drei hohen Bogenfenstern, an den Ecken die Pavillons mit geschweiften Dächern.",
+ "fact": "Niedersächsisches Landesmuseum (1897–1902, Hubert Stier, Neorenaissance) am Maschpark: Vierflügelanlage mit Glasdächern, Kuppel und Rotunde am Mittelrisalit – die Kuppel brannte 1943 ab.",
+ "studio": "Niedersächsisches Landesmuseum, 1897–1902 von Hubert Stier im Stil der Neorenaissance gebaut. Vier Flügel mit flachen Dachterrassen und Glasoberlichtern (ursprünglich sieben Glasdächer) umschließen einen Hof; in der Mitte der Front der Risalit mit drei hohen Bogenfenstern und flachem Pyramidendach (die Kuppel darüber brannte beim Luftangriff vom 8. Oktober 1943 ab), dahinter im Hof die runde Rotunde. An den Ecken stehen Pavillons mit geschweiften Schieferdächern, Segmentgiebeln und grünen Kupfer-Gauben.",
  "detail": "studio.html?lm=landesmuseum",
  "minor": true,
  "osm": [
   "r364529"
  ],
- "h": 29.0,
+ "h": 27.5,
  "rank": 6,
  "face": [
   "street",
