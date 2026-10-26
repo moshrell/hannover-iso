@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Очередь зданий (prompts/QUEUE.md).
 #   python3 tools/queue.py          — показать, что свободно/занято (занято = есть ветка lm/<id> на сервере)
+#   python3 tools/queue.py release <id> — освободить здание (сборщик/Степан): ветка перематывается на main
 #   python3 tools/queue.py claim    — взять первое свободное здание со статусом ready: создаёт ветку lm/<id> от origin/main,
 #                                     кладёт туда ref/<id>/CLAIM.md и пушит. Создание ветки атомарно: если её уже создал другой агент, пуш отклоняется и берётся следующее.
 import subprocess, sys, re, os, time, secrets
@@ -25,6 +26,11 @@ if len(sys.argv) < 2:
         s = 'ЗАНЯТО (' + when(i) + ')' if taken(i) and st != 'fertig' else {'ready': 'свободно', 'wartet': 'ждёт материал', 'fertig': 'готово'}[st]
         print(f'{i:22} {s:50} {what}')
     sys.exit()
+if sys.argv[1] == 'release':   # освободить здание: ветка lm/<id> перематывается на main (считается влитой/свободной); удалять ветку не нужно
+    i = sys.argv[2]; old = heads.get('lm/' + i)
+    if not old: print('ветки lm/%s нет' % i); sys.exit(1)
+    r = sh('git', 'push', '-q', '--force-with-lease=lm/%s:%s' % (i, old), 'origin', 'origin/main:refs/heads/lm/' + i, check=False)
+    print('освобождено: ' + i if r.returncode == 0 else 'не удалось: ' + r.stderr); sys.exit(r.returncode)
 if sys.argv[1] == 'claim':
     for i, st, what in queue:
         if st != 'ready' or taken(i): continue
