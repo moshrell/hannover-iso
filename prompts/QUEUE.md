@@ -12,17 +12,17 @@
 |---|---|---|
 | nordlb | ready | NORD/LB (стеклянная башня и квартал), v1 в mitte2.js |
 | marktkirche | ready | Marktkirche, v1 в altstadt.js |
-| altesRathaus | ready | Altes Rathaus, v1 в altstadt.js |
-| leineschloss | ready | Leineschloss / Landtag (файл Степана назывался votum) |
-| heinzvonheidenarena | ready | стадион Hannover 96 (бывш. HDI-Arena) |
-| aegidienkirche | ready | Aegidienkirche (руина-мемориал), v1 в mitte.js |
-| neustaedter | ready | Neustädter Hof- und Stadtkirche, v1 в mitte2.js |
-| gartenkirche | ready | Gartenkirche St. Marien, новое |
-| vwtower | ready | VW-Tower (старая радиобашня), новое |
-| heizkraftwerklinden | ready | Heizkraftwerk Linden, новое |
-| telemax | ready | Telemax (282 м, вне зоны плиток), новое |
+| altesRathaus | fertig | Altes Rathaus, v1 в altstadt.js |
+| leineschloss | fertig | Leineschloss / Landtag (файл Степана назывался votum) |
+| heinzvonheidenarena | fertig | стадион Hannover 96 (бывш. HDI-Arena) |
+| aegidienkirche | fertig | Aegidienkirche (руина-мемориал), v1 в mitte.js |
+| neustaedter | fertig | Neustädter Hof- und Stadtkirche, v1 в mitte2.js |
+| gartenkirche | fertig | Gartenkirche St. Marien, новое |
+| vwtower | fertig | VW-Tower (старая радиобашня), новое |
+| heizkraftwerklinden | fertig | Heizkraftwerk Linden, новое |
+| telemax | fertig | Telemax (282 м, вне зоны плиток), новое |
 | landesmuseum | ready | Landesmuseum, v2 → доработка по кадрам |
 | welfenschloss | ready | Welfenschloss, v2 → доработка по кадрам |
-| wangenheim | ready | Wangenheimpalais, v1 в mitte2.js |
-| beginenturm | ready | Beginenturm, малая точка, v1 в mitte2.js |
+| wangenheim | fertig | Wangenheimpalais, v1 в mitte2.js |
+| beginenturm | fertig | Beginenturm, малая точка, v1 в mitte2.js |
 | georgenpalais | ready | Georgenpalais (Wilhelm-Busch-Museum), новое |

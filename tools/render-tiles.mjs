@@ -32,12 +32,13 @@ const ec = [[ext[0], ext[2]], [ext[1], ext[2]], [ext[0], ext[3]], [ext[1], ext[3
 const BX0 = Math.min(...ec.map(p => p[0])), BY0 = Math.min(...ec.map(p => p[1])) - 120;
 const quadOf = bb => [[bb[0], bb[1]], [bb[0], bb[3]], [bb[2], bb[3]], [bb[2], bb[1]]].map(([la, lo]) => { const [x, y] = wp(la, lo); return [(x - y) * CC - BX0, (x + y) / 2 - BY0]; });
 const quadAll = quadOf(BB.all), quadCore = quadOf(BB.core);
-let quad = quadAll;
+let quadCur = quadAll;
+const quadsExtra = (BB.extra || []).map(quadOf);   // Zusatzzonen mit allen Stufen (z. B. Telemax)
 // Teilrender: --at lat,lon,radius_m (mehrfach). Rechteck im Weltbild = Grundpunkt ± Radius, nach oben um Radius·1,3 (Gebäudehöhe)
 const AT = process.argv.flatMap((a, i, A) => a === '--at' ? [A[i + 1].split(',').map(Number)] : []);
 const RECTS = AT.length ? AT.map(([la, lo, r]) => { const [x, y] = wp(la, lo), px = (x - y) * CC - BX0, py = (x + y) / 2 - BY0; return [px - r, py - r * 1.3, px + r, py + r * .6]; }) : null;
 if (RECTS) console.log('Teilrender, Rechtecke:', JSON.stringify(RECTS.map(r => r.map(Math.round))));
-function hits(x0, y0, x1, y1) {            // Rechteck gegen konvexes Viereck (Trennachsen)
+function hits(x0, y0, x1, y1, quad = quadCur) {            // Rechteck gegen konvexes Viereck (Trennachsen)
   const R = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
   for (const P of [R, quad]) for (let i = 0; i < 4; i++) {
     const a = P[i], b = P[(i + 1) % 4], n = [b[1] - a[1], a[0] - b[0]];
@@ -50,11 +51,11 @@ const jobs = [];
 let shots = 0; const t0 = Date.now();
 for (const [li, s] of LEVELS.entries()) {
   const W = VW * s, H = VH * s, bx = Math.ceil(W / BLOCK), by = Math.ceil(H / BLOCK), U = BLOCK / s;
-  quad = li > OUTER_MAX ? quadCore : quadAll;
+  quadCur = li > OUTER_MAX ? quadCore : quadAll;
   const blocks = [];
   for (let y = 0; y < by; y++) for (let x = 0; x < bx; x++) {
     if (RECTS && !RECTS.some(r => x * U < r[2] && (x + 1) * U > r[0] && y * U < r[3] && (y + 1) * U > r[1])) continue;
-    if (li > 0 && !hits(x * U - 40, y * U - 40, (x + 1) * U + 40, (y + 1) * U + 40)) continue;
+    if (li > 0 && !(hits(x * U - 40, y * U - 40, (x + 1) * U + 40, (y + 1) * U + 40) || (li > OUTER_MAX && quadsExtra.some(q => hits(x * U - 40, y * U - 40, (x + 1) * U + 40, (y + 1) * U + 40, q))))) continue;
     blocks.push([x, y]);
   }
   // Bereiche: Szene nur mit den Teilen aufbauen, die in die Blöcke dieses Bereichs ragen (sonst ist das SVG der ganzen Stadt zu schwer)

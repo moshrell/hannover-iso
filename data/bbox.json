@@ -1,5 +1,24 @@
 {
-  "all":  [52.305, 9.605, 52.455, 9.918],
-  "core": [52.3542, 9.6820, 52.3995, 9.7618],
-  "_": "all = ganze Stadt (Stufen bis 0,75 px/m), core = Innenstadt mit allen Stufen bis 3 px/m. Quelle: tools/osm-extract.py (BBBike-Auszug), S,W,N,E"
+  "all": [
+    52.305,
+    9.605,
+    52.455,
+    9.918
+  ],
+  "core": [
+    52.3542,
+    9.682,
+    52.3995,
+    9.7618
+  ],
+  "_": "all = ganze Stadt (Stufen bis 0,75 px/m), core = Innenstadt mit allen Stufen bis 3 px/m. Quelle: tools/osm-extract.py (BBBike-Auszug), S,W,N,E",
+  "extra": [
+    [
+      52.3895,
+      9.7945,
+      52.3975,
+      9.806
+    ]
+  ],
+  "_extra": "Zusätzliche Detailzonen außerhalb von core (S,W,N,E), z. B. Telemax: auch dort alle Stufen bis 3 px/m"
 }
