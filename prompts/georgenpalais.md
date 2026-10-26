@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `georgenpalais`; название: Georgenpalais (Wilhelm-Busch-Museum)
 - OSM: w5121415; высота ориентировочно 10 м (проверь по двум источникам)
 - Состояние в коде: новое здание
-- Материал: кадры из видео в репозитории `ref/georgenpalais/foto/v_*.jpg` (8 шт.); исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\georgenpalais\georgenpalais.mp4`
+- Материал: кадры из видео в репозитории `ref/georgenpalais/foto/v_*.jpg` (8 шт.)
 
 ## Особенности
 Малое здание в парке Georgengarten, это не пересекается с Herrenhausen.

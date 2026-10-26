@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `heinzvonheidenarena`; название: Heinz von Heiden Arena (Stadion Hannover 96, früher HDI-Arena)
 - OSM: контур стадиона найди по координатам ≈ 52.3600, 9.7314 (Arthur-Menge-Ufer, рядом с Maschsee, Stadionbad): `python3 tools/osm-find.py "Stadion"` может не найти (контур без имени), ищи в `data/osm.json.gz` по `leisure=stadium`/`building` рядом с этой точкой; высоту проверь по двум источникам
 - Состояние в коде: новое здание
-- Материал: кадры из видео уже в репозитории `ref/heinzvonheidenarena/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\heinzvonheidenarena\` — heinzvonheidenarena.mp4
+- Материал: готовая нарезка кадров в репозитории `ref/heinzvonheidenarena/foto/v_*.jpg`
 
 ## Особенности
 Это футбольный стадион (чаша трибун, кровля над трибунами, мачты/прожекторы, фасадные элементы). Внутри зоны детальных плиток (`core`). Крыша — главный силуэт: рисуй её по кадрам, а не «коробкой».

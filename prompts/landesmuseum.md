@@ -7,11 +7,13 @@
 ## Здание
 - id в проекте и имя папки: `landesmuseum`; название: Niedersächsisches Landesmuseum
 - OSM: r364529; высота ориентировочно ~25 м (проверь по двум источникам)
-- Состояние в коде: v2 в `landmarks/landesmuseum.js` — перерисовать по видео, старое взять как заготовку контура
-- Материал: кадры из видео уже в репозитории `ref/landesmuseum/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\landesmuseum\` — landesmuseum.mp4
+- Состояние в коде: v2 в `landmarks/landesmuseum.js` — перерисовать по кадрам, старое взять как заготовку контура
+- Материал: готовая нарезка кадров в репозитории `ref/landesmuseum/foto/v_*.jpg`
 
 ## Особенности
-В v2 не хватало: тыловые/боковые фасады, ротонда, детали двора. Теперь они есть на видео.
+В v2 не хватало: тыловые/боковые фасады, ротонда, детали двора. Теперь они есть на кадрах (`ref/landesmuseum/foto/v_*.jpg`).
+
+Состояние предыдущей версии: Уже есть: `ref/landesmuseum/README.md` (отчёт предыдущего агента: что сделано и что не хватало) и старые фото `ref/landesmuseum/ansicht_*.jpg`; прочитай их, но проверяй всё по кадрам. Старая ветка `lm/landesmuseum` уже влита в `main`, команда `claim` создаст её заново от свежего `main`.
 
 ## Итог
 Нарисованное здание в `landmarks/landesmuseum.js` + `landmarks/meta/landesmuseum.json`, кадры и таблицы в `ref/landesmuseum/`, отчёт `ref/landesmuseum/README.md`, всё запушено в `lm/landesmuseum`.

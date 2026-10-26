@@ -21,8 +21,8 @@
 | vwtower | ready | VW-Tower (старая радиобашня), новое |
 | heizkraftwerklinden | ready | Heizkraftwerk Linden, новое |
 | telemax | ready | Telemax (282 м, вне зоны плиток), новое |
-| landesmuseum | manuell | Landesmuseum, v2 → доработка по видео |
-| welfenschloss | manuell | Welfenschloss, v2 → доработка по видео |
+| landesmuseum | ready | Landesmuseum, v2 → доработка по видео |
+| welfenschloss | ready | Welfenschloss, v2 → доработка по видео |
 | wangenheim | ready | Wangenheimpalais, v1 в mitte2.js |
 | beginenturm | ready | Beginenturm, малая точка, v1 в mitte2.js |
 | georgenpalais | ready | Georgenpalais (Wilhelm-Busch-Museum), новое |

@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `wangenheim`; название: Wangenheimpalais
 - OSM: осмотри `landmarks/meta/wangenheim.json`; высота ориентировочно ~20 м (проверь по двум источникам)
 - Состояние в коде: v1 в `landmarks/mitte2.js` — вырезать и перерисовать
-- Материал: кадры из видео уже в репозитории `ref/wangenheim/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\wangenheim\` — wangenheim.mp4
+- Материал: готовая нарезка кадров в репозитории `ref/wangenheim/foto/v_*.jpg`
 
 ## Особенности
 Проверь по видео и контуру OSM, что показано именно это здание; если не совпадает с метой — скажи Степану.

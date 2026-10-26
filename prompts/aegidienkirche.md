@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `aegidienkirche`; название: Aegidienkirche (Kirchenruine, Mahnmal)
 - OSM: r7359339; высота ориентировочно 57 м (проверь по двум источникам)
 - Состояние в коде: v1 в `landmarks/mitte.js` — вырезать и перерисовать
-- Материал: кадры из видео уже в репозитории `ref/aegidienkirche/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\aegidienkirche\` — aegidienkirche.mp4
+- Материал: готовая нарезка кадров в репозитории `ref/aegidienkirche/foto/v_*.jpg`
 
 ## Особенности
 Это руина (Mahnmal, мемориал): рисуй ровно то, что стоит сейчас по видео, без «достройки» утраченных частей.
