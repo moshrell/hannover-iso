@@ -11,10 +11,16 @@ const LEVELS = [0.09375, 0.375, 0.75, 1.5, 3], BLOCK = 1024, DPR = 2;
 const OUTER_MAX = 2;   // außerhalb der Innenstadt (data/bbox.json → core) nur Stufen bis 0,75 px/m: ganze Stadt bei kleinem Speicherbedarf
 const tmp = '/tmp/iso-render'; rmSync(tmp, { recursive: true, force: true }); mkdirSync(tmp, { recursive: true });
 const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
-const page = await browser.newPage({ viewport: { width: BLOCK, height: BLOCK }, deviceScaleFactor: DPR });
-page.on('pageerror', e => console.error('pageerror', e.message));
-await page.goto('file://' + path.join(root, 'tools/render.html'));
-await page.waitForFunction(() => window.SCENE && window.SCENE.ready, null, { timeout: 60000 });
+// frische Seite je Bereich: bei vielen Regionswechseln in einer Seite wächst der Renderer-Speicher und Screenshots hängen
+let page = null;
+async function freshPage() {
+  if (page) await page.close();
+  page = await browser.newPage({ viewport: { width: BLOCK, height: BLOCK }, deviceScaleFactor: DPR });
+  page.on('pageerror', e => console.error('pageerror', e.message));
+  await page.goto('file://' + path.join(root, 'tools/render.html'));
+  await page.waitForFunction(() => window.SCENE && window.SCENE.ready, null, { timeout: 60000 });
+}
+await freshPage();
 const { VW, VH, labels } = await page.evaluate(() => ({ VW: SCENE.VW, VH: SCENE.VH, labels: SCENE.labels }));
 
 // Blöcke ganz außerhalb des Datengebiets werden nicht gerendert; feine Stufen nur in der Innenstadt (data/bbox.json: all / core, je S,W,N,E)
@@ -51,6 +57,7 @@ for (const [li, s] of LEVELS.entries()) {
   blocks.forEach(([x, y]) => { const k = Math.floor((x + .5) * U / RS) + '_' + Math.floor((y + .5) * U / RS); if (!groups.has(k)) groups.set(k, []); groups.get(k).push([x, y]); });
   for (const g of groups.values()) {
     const r = [Math.min(...g.map(b => b[0])) * U - 4, Math.min(...g.map(b => b[1])) * U - 4, (Math.max(...g.map(b => b[0])) + 1) * U + 4, (Math.max(...g.map(b => b[1])) + 1) * U + 4];
+    await freshPage();
     await page.evaluate(r => SCENE.region(r), r);
     for (const [x, y] of g) {
       await page.evaluate(([x0, y0, s]) => SCENE.view(x0, y0, s), [x * U, y * U, s]);
