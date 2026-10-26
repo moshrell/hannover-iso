@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `marktkirche`; название: Marktkirche St. Georgii et Jacobi
 - OSM: w5121355; высота ориентировочно ~98 м (проверь по двум источникам)
 - Состояние в коде: v1 в `landmarks/altstadt.js` — вырезать и перерисовать
-- Материал Степана: `D:\Webdesign\hannover-iso\_fotos\marktkirche\` — marktkirche.mp4
+- Материал: кадры из видео уже в репозитории `ref/marktkirche/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\marktkirche\` — marktkirche.mp4
 
 ## Особенности
 Кирпичная готика, одна высокая башня с восьмигранным шпилем, трёхнефная зальная церковь.

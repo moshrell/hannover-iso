@@ -8,7 +8,7 @@
 - id в проекте и имя папки: `neustaedter`; название: Neustädter Hof- und Stadtkirche
 - OSM: w29173386; высота ориентировочно ~45 м (проверь по двум источникам)
 - Состояние в коде: v1 в `landmarks/mitte2.js` — вырезать и перерисовать
-- Материал Степана: `D:\Webdesign\hannover-iso\_fotos\neustaedter\` — neustaedter.mp4
+- Материал: кадры из видео уже в репозитории `ref/neustaedter/foto/v_*.jpg`; исходник на компьютере Степана `D:\Webdesign\hannover-iso\_fotos\neustaedter\` — neustaedter.mp4
 
 ## Особенности
 Барочная церковь с башней; сверь материалы, форму шпиля и крышу нефа.

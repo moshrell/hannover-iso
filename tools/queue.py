@@ -11,6 +11,7 @@ def sh(*a, check=True):
     if check and r.returncode: raise RuntimeError(' '.join(a) + '\n' + r.stderr)
     return r
 sh('git', 'fetch', '-q', 'origin')
+sh('git', 'fetch', '-q', 'origin', '+refs/heads/lm/*:refs/remotes/origin/lm/*', check=False)   # клон может быть single-branch: lm/*-ветки забираем явно
 queue = []
 for l in subprocess.run(['git', 'show', 'origin/main:prompts/QUEUE.md'], capture_output=True, text=True, check=True).stdout.splitlines():
     m = re.match(r'\|\s*([A-Za-z0-9_]+)\s*\|\s*(ready|wartet|fertig|manuell)\s*\|\s*(.*?)\s*\|', l)
