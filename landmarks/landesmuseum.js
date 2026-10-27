@@ -1,4 +1,4 @@
-/* Niedersächsisches Landesmuseum (Hubert Stier, 1897–1902) – Modul v2, Fotos: ref/landesmuseum/ (Wikimedia, siehe quellen.txt)
+/* Niedersächsisches Landesmuseum (Hubert Stier, 1897–1902) – Modul v3 (nach Google-Earth-Kadern ref/landesmuseum/foto/: Glasoberlichter statt Schieferwalm, Rotunde im Hof, Kupfer-Gauben), Fotos: ref/landesmuseum/ (Wikimedia, siehe quellen.txt)
    Lokales System = Mindestrechteck des OSM-Umrisses (r364529), 83 × 66 m: lokal +y = Hauptfassade zur Willy-Brandt-Allee, +x nach rechts im Frontfoto.
    Grundriss (OSM): Vierflügelanlage um einen Hof – Frontflügel (rechts/links vom Mittelrisalit), zwei Seitenflügel, Rückflügel; Eckpavillons mit Segmentgiebel
    und geschweiften Dächern; Mittelrisalit (nur ≈ 3 m vorgezogen) mit drei hohen Bogenfenstern und Walmdach; Sockel mit Rustika, Bogenfenster zwischen Pilastern,
@@ -70,6 +70,11 @@
     const flat = (K, x0, y0, x1, y1, z) => K.face([[x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z]], 'sl');
     const saddleX = (K, x0, y0, x1, y1, ze, zr) => { const ym = (y0 + y1) / 2; return courses(K, [[x0, y1, ze], [x1, y1, ze], [x1, ym, zr], [x0, ym, zr]], 'sl', 2) + courses(K, [[x1, y0, ze], [x0, y0, ze], [x0, ym, zr], [x1, ym, zr]], 'sl', 2) + K.face([[x1, y1, ze], [x1, y0, ze], [x1, ym, zr]], 'pl') + K.face([[x0, y0, ze], [x0, y1, ze], [x0, ym, zr]], 'pl'); };
     const saddleY = (K, x0, y0, x1, y1, ze, zr) => { const xm = (x0 + x1) / 2; return courses(K, [[x1, y1, ze], [x1, y0, ze], [xm, y0, zr], [xm, y1, zr]], 'sl', 2) + courses(K, [[x0, y0, ze], [x0, y1, ze], [xm, y1, zr], [xm, y0, zr]], 'sl', 2) + K.face([[x0, y1, ze], [x1, y1, ze], [xm, y1, zr]], 'pl') + K.face([[x1, y0, ze], [x0, y0, ze], [xm, y0, zr]], 'pl'); };
+    // v3: Flügeldächer = flache Dachterrasse (hinter der Balustrade) + Glasoberlicht (Kader: weiße Glasbänder), nicht Schiefer-Walm
+    const deck = (K, x0, y0, x1, y1) => K.face([[x0, y0, Z0 + HW], [x1, y0, Z0 + HW], [x1, y1, Z0 + HW], [x0, y1, Z0 + HW]], 'st tp');
+    const sky = (K, x0, y0, x1, y1, h = 2.8) => hipC(K, x0, y0, x1, y1, Z0 + HW, Z0 + HW + h, 'pl tp', 1.6);
+    // kleine grüne Kupfer-Gauben auf den Pavillondächern
+    const dormer = (K, x, y, z) => lathe(K, x, y, [[z, .95], [z + .5, .95], [z + 1.1, .6], [z + 1.45, .1]], 'cu', 0);
     // Segmentgiebel mit Rundfenster auf der Front des Pavillons (wird nach dem Dach gezeichnet, steht davor)
     const gablePed = (K, x) => K.g(K.plane([x, 64.8, Z0 + HP], [1, 0, 0], [0, 0, -1]),
       `<path class="pl fr" d="M${f2(12 * .12)} 0Q6 -5.4 ${f2(12 * .88)} 0Z"/><path class="dt" d="M${f2(12 * .17)} 0Q6 -4.3 ${f2(12 * .83)} 0"/><circle class="dt" cx="6" cy="-1.5" r=".8"/><circle class="wn dim" data-f="2" cx="6" cy="-1.5" r=".55"/>`);
@@ -85,12 +90,13 @@
     // ======== FLÜGEL (OSM-Grundriss, jeder Block eigener Grundriss) ========
     const sides = { S: plain, E: plain, N: plain, W: plain };
     // Frontflügel links/rechts vom Risalit: Reliefband und Bogenfenster in Pilastern
-    add({ id: 'fL', fp: [12, 46.4, 31, 63.4], draw: K => K.box(12, 46.4, Z0, 19, 17, HW, 'pl', { S: wingS(4.6), E: plain, N: plain, W: plain }) + saddleX(K, 12, 46.4, 31, 63.4, Z0 + HW, Z0 + HW + 1.7) });
-    add({ id: 'fR', fp: [50.8, 46.4, 71, 63.4], draw: K => K.box(50.8, 46.4, Z0, 20.2, 17, HW, 'pl', { S: wingS(4.6), E: plain, N: plain, W: plain }) + saddleX(K, 50.8, 46.4, 71, 63.4, Z0 + HW, Z0 + HW + 1.7) });
+    add({ id: 'fL', fp: [12, 46.4, 31, 63.4], draw: K => K.box(12, 46.4, Z0, 19, 17, HW, 'pl', { S: wingS(4.6), E: plain, N: plain, W: plain }) + deck(K, 12, 46.4, 31, 63.4) + sky(K, 14, 50.4, 29, 59.4) });
+    add({ id: 'fR', fp: [50.8, 46.4, 71, 63.4], draw: K => K.box(50.8, 46.4, Z0, 20.2, 17, HW, 'pl', { S: wingS(4.6), E: plain, N: plain, W: plain }) + deck(K, 50.8, 46.4, 71, 63.4) + sky(K, 52.8, 50.4, 68.8, 59.4) });
     // Seitenflügel und Rückflügel
-    add({ id: 'sW', fp: [0, 0, 18, 46.4], draw: K => K.box(0, 0, Z0, 18, 46.4, HW, 'pl', sides) + hipC(K, 0, 0, 18, 46.4, Z0 + HW, Z0 + HW + 3.2) });
-    add({ id: 'sE', fp: [59, 0, 83, 46.4], draw: K => K.box(59, 0, Z0, 24, 46.4, HW, 'pl', sides) + hipC(K, 59, 0, 83, 46.4, Z0 + HW, Z0 + HW + 3.6) });
-    add({ id: 'rear', fp: [18, 0, 59, 19.2], draw: K => K.box(18, 0, Z0, 41, 19.2, HW, 'pl', sides) + hipC(K, 18, 0, 59, 19.2, Z0 + HW, Z0 + HW + 3.4) });
+    add({ id: 'sW', fp: [0, 0, 18, 46.4], draw: K => K.box(0, 0, Z0, 18, 46.4, HW, 'pl', sides) + deck(K, 0, 0, 18, 46.4) + sky(K, 4, 3, 14, 21) + sky(K, 4, 25, 14, 43) });
+    add({ id: 'sE', fp: [59, 0, 83, 46.4], draw: K => K.box(59, 0, Z0, 24, 46.4, HW, 'pl', sides) + deck(K, 59, 0, 83, 46.4) + sky(K, 64, 3, 78, 21) + sky(K, 64, 25, 78, 43) });
+    add({ id: 'rear', fp: [18, 0, 59, 19.2], draw: K => K.box(18, 0, Z0, 41, 19.2, HW, 'pl', sides) + deck(K, 18, 0, 59, 19.2) + sky(K, 22, 4, 34, 15.2) + sky(K, 43, 4, 55, 15.2)
+      + hipC(K, 34.5, 3, 42.5, 16.2, Z0 + HW, Z0 + HW + 2.2, 'sl', 2) + hipC(K, 36, 6, 41, 13, Z0 + HW + 2.2, Z0 + HW + 4.2, 'pl tp', 1.6) });
 
     // ======== MITTELRISALIT: drei hohe Bogenfenster zwischen Säulen, Walmdach, Vasen ========
     add({ id: 'ris', fp: [31, 34.3, 50.8, 64.8], draw: K => {
@@ -103,8 +109,22 @@
         [-4.9, 4.9].forEach(d => { w += winA(c + d - 1.3, 14.4, 2.6, 5.4, 1); });
         return q + wins(w) + plinth(len, h, 14.2, 4.9);
       };
-      return K.box(31, 34.3, Z0, 19.8, 30.5, HR, 'pl', { S: f, E: plain, N: plain, W: plain }) + hipC(K, 31, 34.3, 50.8, 64.8, Z0 + HR, Z0 + HR + 4.6, 'sl', 2)
+      return K.box(31, 34.3, Z0, 19.8, 30.5, HR, 'pl', { S: f, E: plain, N: plain, W: plain }) + hipC(K, 31, 34.3, 50.8, 64.8, Z0 + HR, Z0 + HR + 3.6, 'sl', 2)
         + urn(K, 31.8, 63.9, Z0 + HR) + urn(K, 50.0, 63.9, Z0 + HR);
+    } });
+    // ======== ROTUNDE im Hof (hinter dem Mittelrisalit): Trommel mit Fensterreihen + flache Kupferkuppel ========
+    add({ id: 'rot', fp: [35.2, 27.6, 46.6, 34.3], draw: K => {
+      const cx = 40.9, cy = 33.0, R = 5.6, z0 = Z0, zt = Z0 + 16.5;
+      let q = lathe(K, cx, cy, [[z0, R], [zt, R], [zt + .5, R + .45], [zt + 1.0, R + .45]], 'pl', 0, [1]);
+      let w = '';
+      for (let k = 0; k < 14; k++) {
+        const a = Math.PI * (.08 + .84 * k / 13) + Math.PI * 0;     // nur die zum Hof (−y) gewandte Hälfte
+        [[Z0 + 6.2, 2.4], [Z0 + 12.0, 2.0]].forEach(([zz, hh]) => { const da = .07, r = R + .02;
+          const P = (aa, z) => [cx + r * Math.cos(aa), cy - r * Math.sin(aa), z];
+          const pts = [P(a - da, zz), P(a + da, zz), P(a + da, zz + hh), P(a - da, zz + hh)];
+          if (K.facing(Math.cos(a), -Math.sin(a)) > 0) w += `<path class="wn dim" data-f="2" d="${K.path(pts)}Z"/>`; });
+      }
+      return q + w + lathe(K, cx, cy, [[zt + 1.0, R + .1], [zt + 2.3, R - 1.2], [zt + 3.0, 2.2], [zt + 3.3, .3]], 'cu', 6);
     } });
     // flacher Eingangsvorsprung (≈ 3 m) mit Portal, Rundbögen und Stufen
     add({ id: 'step', fp: [32.7, 64.8, 49.1, 66.2], parent: 'ris', side: 'S', draw: K => K.box(32.7, 64.8, Z0, 16.4, 1.4, 5.6, 'pl', {
@@ -120,9 +140,9 @@
         return q + wins(w) + plinth(len, h, 15.2, 4);
       };
       return K.box(x, 46.4, Z0, 12, 18.4, HP, 'pl', { S: f, E: plain, N: plain, W: plain }) + bell(K, x, 46.4, x + 12, 64.8, Z0 + HP, Z0 + HP + 3.4, Z0 + HP + 5.2, 2.6)
-        + (K.wallVisible([x, 64.8], [x + 12, 64.8]) ? gablePed(K, x) : '') + urn(K, x + .6, 64.2, Z0 + HP) + urn(K, x + 11.4, 64.2, Z0 + HP);
+        + [[1.9, 48.4], [10.1, 48.4], [1.9, 62.8], [10.1, 62.8], [6, 62.8]].map(([a, b]) => dormer(K, x + a, b, Z0 + HP + 1.7)).join('') + (K.wallVisible([x, 64.8], [x + 12, 64.8]) ? gablePed(K, x) : '') + urn(K, x + .6, 64.2, Z0 + HP) + urn(K, x + 11.4, 64.2, Z0 + HP);
     } });
     pav('pW', 0); pav('pE', 71);
-    return { mods: M, ground, lc: [41.45, 33.1], z0: 0, top: [41, 50, 30], label: 'Landesmuseum', h: 30, len: 83 };
+    return { mods: M, ground, lc: [41.45, 33.1], z0: 0, top: [41, 50, 28], label: 'Landesmuseum', h: 28, len: 83 };
   });
 })();
