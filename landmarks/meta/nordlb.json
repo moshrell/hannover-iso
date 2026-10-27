@@ -1,12 +1,23 @@
 {
- "title": "NORD/LB",
- "fact": "Bankgebäude von Behnisch, Behnisch & Partner (2002): gestapelte, versetzte Glaskörper über einem Hof.",
- "studio": "Bankgebäude von Behnisch, Behnisch & Partner (2002): gläserne Randbebauung um einen Hof, darüber gestapelte, versetzte Glaskörper.",
+ "title": "NORD/LB (Norddeutsche Landesbank)",
+ "fact": "Bürohaus von Behnisch, Behnisch & Partner (2002): 17-geschossiger Glasturm aus gestapelten, versetzten Körpern über einer Randbebauung mit Gründächern um einen Hof.",
+ "studio": "Das Verwaltungsgebäude der Norddeutschen Landesbank am Friedrichswall, 2002 von Behnisch, Behnisch & Partner (Günter und Stefan Behnisch) fertiggestellt, bietet rund 40.000 m² für etwa 1.500 Beschäftigte. Eine Randbebauung mit begrünten Dächern umschließt einen großen Hof; darüber stapeln sich gegeneinander verdrehte Glaskörper zu einem 17-geschossigen Hochhaus (rund 70 m, mit dem gläsernen Kopf etwa 83 m). Zum Friedrichswall zeigt der Bau eine lange dunkelblaue Glasfassade; im Erdgeschoss liegen öffentliche Räume wie Gastronomie und Ausstellungen.",
  "detail": "studio.html?lm=nordlb",
- "minor": true,
+ "minor": false,
  "osm": [
   "r2479829"
  ],
- "h": 74,
- "rank": 5
+ "h": 83,
+ "rank": 50,
+ "face": [
+  "compass",
+  [
+   1,
+   0
+  ],
+  [
+   1,
+   0
+  ]
+ ]
 }
