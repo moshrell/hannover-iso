@@ -1,12 +1,16 @@
 {
  "title": "Heizkraftwerk Linden",
- "fact": "„Drei warme Brüder“ an der Ihme (seit 1962), Schornsteine 125 m, abends rot-violett angestrahlt.",
- "studio": "Das Heizkraftwerk Linden („Drei warme Brüder“) liefert seit 1962 Strom und Fernwärme; seine Schornsteine wurden 1975 von 65 auf 125 m erhöht. Seit 2013 werden die drei Kesselhaus-Türme abends rot und violett angestrahlt.",
+ "fact": "„Drei warme Brüder“ an der Ihme (seit 1962), Schornsteine bis 125 m, abends rot-violett angestrahlt.",
+ "studio": "Das Heizkraftwerk Linden („Drei warme Brüder“) liefert seit 1962 Strom und Fernwärme; seine Schornsteine wurden 1975 von 65 auf 125 m erhöht. Seit 2013 werden die drei Kesselhaus-Türme abends in Rot- und Violetttönen angestrahlt.",
  "detail": "studio.html?lm=heizkraftwerklinden",
  "minor": false,
  "osm": [
   "w45336252"
  ],
  "h": 125,
- "rank": 21
+ "rank": 21,
+ "card_phi": 90,
+ "seo": "Das Heizkraftwerk Linden prägt mit seinen drei schlanken Kesselhaus-Türmen und den hohen Schornsteinen die Silhouette des Stadtteils Linden-Nord am Ufer der Ihme. Den Hannoveranern sind die Türme als „Drei warme Brüder“ vertraut. Das Kraftwerk ging 1962 in Betrieb und erzeugt bis heute Strom und Fernwärme für große Teile der Stadt. Die Schornsteine wurden 1975 von rund 65 auf etwa 125 Meter erhöht und sind weithin sichtbar. Die Türme sind mit graublauem Glas verkleidet; auf ihren breiten Stirnseiten setzen Backsteinfelder warme Akzente. Davor erstreckt sich das lange, flache Maschinenhaus entlang des Flusses. Seit 2013 werden die Türme abends mit LED-Licht in Rot und Violett angestrahlt und wirken dann wie ein Wahrzeichen der Nacht. Das Kraftwerk steht an der Elisenstraße, nahe der Ihme-Brücke, und gehört heute zum Netz des Energieversorgers enercity.",
+ "addr": "Elisenstraße 2, 30451 Hannover",
+ "year": 1962
 }
