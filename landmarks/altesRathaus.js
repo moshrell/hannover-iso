@@ -35,6 +35,8 @@
       }
       return groupM('bk', q + wins(w));
     };
+    // Zwerchhaus der Marktfront: Wandstück über der Traufe mit zwei Fenstern
+    const zw = (len, h) => groupM('bk', hl(0, len, .4) + wins(winG(len * .5 - 1.9, 1.3, 1.5, h - 1.7, 3) + winG(len * .5 + .4, 1.3, 1.5, h - 1.7, 3)));
     // Hofwand über dem Glasdach: eine Reihe hoher Rundbogenfenster
     const court = (len, h) => {
       const n = Math.max(1, Math.round(len / 3.2)), st = len / n;
@@ -53,6 +55,17 @@
       const zr = x => RG_NW - (x - 11) / 11 * (RG_NW - EA);
       [[13.5, 17, 7.5, 12], [13.5, 17, 23, 27.5]].forEach(([x0, x1, y0, y1]) => { s += K.poly([[x0, y0, zr(x0)], [x0, y1, zr(x0)], [x1, y1, zr(x1)], [x1, y0, zr(x1)]], 'gl'); });
       s += K.wall([0, LY], [22, LY], EA, EA + .01, 'bk', () => groupM('bk', frieze(22, -.4) + sgable(22, RG_NW - EA, 4, 'bk', shade(K, 0, 1), 3, 3)));
+      // Nordostseite (Kader v_01, v_03, v_10): Arkade, zwei Fensterreihen, Treppengiebel
+      s += K.wall([22, 0], [0, 0], Z0, EA, 'bk', brick(4.4));
+      s += K.wall([22, 0], [0, 0], EA, EA + .01, 'bk', () => groupM('bk', frieze(22, -.4) + sgable(22, RG_NW - EA, 4, 'bk', shade(K, 0, -1), 3, 3)));
+      // Nordwest-Dachfläche (zur Marktkirche) und Marktfront (Kader v_07–v_09): Arkade, drei Zwerchhäuser bei ≈ 22 %, 52 %, 80 % der Breite
+      s += roofPlane(K, [[0, LY, EA], [0, 0, EA], [11, 0, RG_NW], [11, LY, RG_NW]]);
+      s += K.wall([0, 0], [0, LY], Z0, EA, 'bk', brick(4.46));
+      [.22, .52, .8].forEach(t => {
+        const y0 = t * LY - 3.2;
+        s += K.wall([0, y0], [0, y0 + 6.4], EA, EA + 4.5, 'bk', zw);
+        s += K.wall([0, y0], [0, y0 + 6.4], EA + 4.5, EA + 4.51, 'bk', () => groupM('bk', sgable(6.4, 6.2, 2, 'bk', shade(K, -1, 0), 1, 4)));
+      });
       return s;
     } });
 
@@ -65,12 +78,17 @@
       // zwei Gauben in der SW-Dachfläche des NO-Flügels (Kader v_04)
       const zn = y => EA + (9 - y) / 4.5 * (RG_NO - EA);
       [[27, 29.8], [33, 35.8]].forEach(([x0, x1]) => { s += K.poly([[x0, 6.8, zn(6.8)], [x0, 5.6, zn(5.6)], [x1, 5.6, zn(5.6)], [x1, 6.8, zn(6.8)]], 'gl'); });
+      // NO-Wand und NO-Dachfläche des NO-Flügels (Kader v_01, v_03)
+      s += K.wall([XS, 0], [22, 0], Z0, EA, 'bk', brick(4));
+      s += roofPlane(K, [[XS, 0, EA], [22, 0, EA], [22, 4.5, RG_NO], [XS, 4.5, RG_NO]]);
       // Hof mit Glasdach
       s += K.poly([[22, 9, GL], [XS, 9, GL], [XS, 26, GL], [22, 26, GL]], 'gl');
       for (let y = 11; y < 26; y += 2) s += `<path class="dt" d="${K.path([[22, y, GL], [XS, y, GL]])}"/>`;
       for (let x = 25; x < XS; x += 3) s += `<path class="dt" d="${K.path([[x, 9, GL], [x, 26, GL]])}"/>`;
       // SW-Flügel: Backsteinwand, graues Flachdach mit Klimageräten
       s += K.wall([22, LY], [XS, LY], Z0, FL, 'bk', brick(4));
+      s += K.wall([XS, 26], [22, 26], GL, FL, 'bk', court);       // Hofseite des SW-Flügels (sichtbar bei Blick von Nordost / Nordwest)
+      s += K.wall([XS, 9], [XS, 26], GL, EA, 'bk', court);        // Hofseite des Südostbaus
       s += K.face([[22, 26, FL], [XS, 26, FL], [XS, LY, FL], [22, LY, FL]], 'sl');
       [[24.5, 28.4], [27.6, 28.4], [30.7, 28.4], [24.5, 31.4], [30.7, 31.4]].forEach(([x, y]) => { s += K.box(x, y, FL, 2.4, 1.6, 1.1, 'pl', {}, true); });
       return s;
@@ -83,10 +101,14 @@
       s += K.wall([LX, LY], [LX, 0], Z0, EA, 'bk', brick(4.5));
       s += roofPlane(K, [[LX, LY, EA], [LX, 0, EA], [XR, 0, RG_SO], [XR, LY, RG_SO]]);
       s += K.wall([XS, LY], [LX, LY], EA, EA + .01, 'bk', () => groupM('bk', frieze(LX - XS, -.4) + sgable(LX - XS, RG_SO - EA + .8, 3, 'bk', shade(K, 0, 1), 2, 3)));
+      // Nordostseite des Südostbaus (Kader v_01, v_03): Arkade, Fensterreihen, Treppengiebel
+      s += K.wall([LX, 0], [XS, 0], Z0, EA, 'bk', brick(4.1));
+      s += roofPlane(K, [[XS, 0, EA], [XS, LY, EA], [XR, LY, RG_SO], [XR, 0, RG_SO]]);
+      s += K.wall([LX, 0], [XS, 0], EA, EA + .01, 'bk', () => groupM('bk', frieze(LX - XS, -.4) + sgable(LX - XS, RG_SO - EA + .8, 3, 'bk', shade(K, 0, -1), 2, 3)));
       s += K.wall([LX, 26.85], [LX, 8.85], EA, EA + .01, 'bk', () => groupM('bk', frieze(18, -.4) + sgable(18, 11, 4, 'bk', shade(K, 1, 0), 3, 3)));
       return s;
     } });
 
-    return { mods: M, lc: [LX / 2, LY / 2], z0: 0, top: [LX, LY / 2, RG_SO], label: 'Altes Rathaus', h: RG_SO, len: LX };
+    return { mods: M, lc: [LX / 2, LY / 2], z0: 0, top: [LX, LY / 2, RG_SO], pin: [LX / 2, LY / 2, 25], label: 'Altes Rathaus', h: RG_SO, len: LX };
   });
 })();
