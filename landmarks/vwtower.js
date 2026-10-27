@@ -1,6 +1,6 @@
 /* VW-Tower („Telemoritz“, ehem. Fernmeldeturm Hannover; Stahlbeton 1958–59, Fritz Leonhardt) – Modul, eine Datei pro Gebäude.
    Aufbau nach Google-Earth-Kadern ref/vwtower/foto/: Schaft ~66 m, breites Deck mit gerippter Brüstung (Ø 22 m, passt zum OSM-Kreis),
-   dunkle Trommel, drei schmale Scheiben mit Fensterhälsen (Ø ~17 m), oben Sockel mit drei runden Logoschildern, Mast bis 141 m.
+   dunkle Trommel, drei schmale Scheiben mit Fensterhälsen (Ø ~17 m), oben Sockel mit drei runden Logoschildern (Ø ≈ 8 m), Mast bis 141 m.
    Lokal: x Ost, y Süd, z Höhe, Gelände z = 1, Schaftachse bei (12, 12). */
 (() => {
   const Z0 = 1, CX = 12, CY = 12;
@@ -31,6 +31,12 @@
       }
       return wins(w);
     };
+    // Fugenlinie: sichtbare Hälfte eines Rings (Klasse dt, zart)
+    const arc = (K, z, r) => {
+      let d = '', pen = false;
+      for (let i = 0; i <= 72; i++) { const a = TAU * i / 72; if (!vis(K, a, .02)) { pen = false; continue; } const q = K.P(CX + r * Math.cos(a), CY + r * Math.sin(a), Z0 + z); d += (pen ? 'L' : 'M') + q.map(f2).join(' '); pen = true; }
+      return `<path class="dt" d="${d}"/>`;
+    };
     // Rippen der Brüstung (Fertigteil-Lisenen) auf der sichtbaren Hälfte
     const ribs = (K, z0, z1, r, n) => {
       let d = '';
@@ -45,16 +51,16 @@
         + `<path fill="none" stroke="#E9EEF3" stroke-width=".6" stroke-linejoin="round" stroke-linecap="round" d="M-2.4 2.1L-1.2 -1.6L0 .6L1.2 -1.6L2.4 2.1"/></g>`;
       return s;
     };
-    M.push({ id: 'vt', fp: [0, 0, 24, 24], draw: K => {
+    M.push({ id: 'vt', fp: [1, 1, 23, 23], draw: K => {
       let s = '';
       // Schaft (Stahlbeton, leicht verjüngt, am Fuß verbreitert)
       s += solid(K, [[0, 4.7], [3, 4.2], [14, 3.7], [66, 3.4]], 'st');
       // Hauptdeck: Brüstung mit Rippen, dunkle verwitterte Oberseite
       s += solid(K, [[66, 11], [70.5, 11]], 'st', 'st sd') + ribs(K, 66.4, 70.1, 11.02, 96);
       // dunkle gewölbte Trommel über dem Deck
-      const dr = [[70.5, 7.4], [71.4, 8.1], [72.6, 8.4], [74.4, 8.3], [76.2, 7.7], [77.6, 6.9], [78.5, 6.2]];
-      for (let i = 0; i < dr.length - 1; i++) s += solid(K, [dr[i], dr[i + 1]], 'st', null, 'sd');
-      s += solid(K, [[78.5, 6.2], [78.5, 6.2]], 'st', 'st', 'sd');
+      // eine einzige glatte Hülle (konvex) statt gestapelter Ringe; nur zwei zarte Fugenlinien auf der sichtbaren Hälfte
+      const dr = [[70.5, 7.3], [71.3, 7.95], [72.2, 8.15], [76.8, 8.15], [77.8, 7.9], [78.5, 7.5]];
+      s += solid(K, dr, 'st', 'st', 'sd') + arc(K, 73.6, 8.15) + arc(K, 75.4, 8.15);
       // Hals 1 + Scheibe C
       s += solid(K, [[78.5, 3.4], [83.6, 3.4]], 'st') + neckWins(K, 79.6, 2.6, 3.4, 12, 3);
       s += solid(K, [[83.6, 7.9], [84.8, 7.9]], 'st', 'st');
@@ -66,13 +72,13 @@
       s += solid(K, [[99, 7.9], [100.2, 7.9]], 'st', 'st');
       s += solid(K, [[100.2, 5.2], [101, 4.4]], 'st', 'st', 'sd');
       // Logos hinter dem Mast, Mast, Logos davor (Tiefe nach K.depth)
-      const R = 3.8, zc = 105.6, rr = 4.6, az = [15, 135, 255].map(d => d * Math.PI / 180);
+      const R = 3.8, zc = 105.6, rr = 4.1, az = [15, 135, 255].map(d => d * Math.PI / 180);
       const dm = K.depth(CX, CY), L = LOGOS ? az.map(a => ({ a, d: K.depth(CX + R * Math.cos(a), CY + R * Math.sin(a)) })) : [];
       L.filter(o => o.d < dm).forEach(o => { s += logo(K, o.a, zc, R, rr); });
       s += solid(K, [[101, .95], [112, .95]], 'st') + solid(K, [[112, .65], [125, .65]], 'st') + solid(K, [[125, .35], [141, .15]], 'st') + solid(K, [[111.6, 1.3], [112.4, 1.3]], 'st', 'st') + solid(K, [[124.6, .9], [125.4, .9]], 'st', 'st');
       L.filter(o => o.d >= dm).forEach(o => { s += logo(K, o.a, zc, R, rr); });
       return s;
     } });
-    return { mods: M, lc: [CX, CY], z0: 0, top: [CX, CY, Z0 + 141], label: 'VW-Tower', h: 141, len: 24 };
+    return { mods: M, lc: [CX, CY], z0: 0, top: [CX, CY, Z0 + 141], label: 'VW-Tower', h: 141, len: 22, pin: [CX, CY, Z0 + 146] };
   });
 })();
