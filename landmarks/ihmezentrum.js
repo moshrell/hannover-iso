@@ -106,6 +106,8 @@
     const draw = K => {
       let s = '';
       const topDone = new Set();
+      // Deck zwischen Fluss- und Südriegel: in Wirklichkeit liegt dort kein Straßenraum, sondern die geschlossene Dachebene des Sockels (Kader 1, 19)
+      s += K.poly(DECK.map(q => [q[0], q[1], Z0 + 9.6]), 'kc tp');
       order(K).forEach(p => {
         const mat = MAT[p.k], v = p.v, n = v.length;
         // Dach eines Teils als EIN Polygon (keine Nähte der Zerlegung), gezeichnet beim ersten Stück
@@ -114,6 +116,14 @@
       });
       return s;
     };
+    // konvexe Hülle der Eckpunkte beider Riegel (x −100…95 m) = Deck zwischen ihnen
+    const DECK = (() => {
+      const pts = P.flatMap(p => p.v).filter(q => q[0] >= -100 && q[0] <= 95 && q[1] > -10 && q[1] < 80).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]), lo = [], up = [];
+      pts.forEach(q => { while (lo.length > 1 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); });
+      [...pts].reverse().forEach(q => { while (up.length > 1 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); });
+      return lo.slice(0, -1).concat(up.slice(0, -1));
+    })();
     const M = [{ id: 'ihme', fp, draw }];
     return { mods: M, lc: [0, 0], z0: 0, top: [-140, 60, Z0 + 92], label: 'Ihme-Zentrum', h: 92, len: 150 };
   });

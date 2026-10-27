@@ -4,11 +4,10 @@
 (() => {
   'use strict';
   const BASE = 'tiles/';
-  // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): Altstadt = ein Punkt für alle drei Bauten
-  // Pins aus landmarks/meta/*.json (window.LMETA, von tools/build-landmarks.py erzeugt); Altstadt = Sammelpunkt für drei Bauten
+  // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): ein Punkt pro Gebäude, über dem höchsten Punkt der Zeichnung
+  // Pins aus landmarks/meta/*.json (window.LMETA, von tools/build-landmarks.py erzeugt); Position aus tiles/meta.js (labels)
   const FACTS = {};
   Object.entries(window.LMETA || {}).forEach(([n, m]) => { if (m.pin === false) return; FACTS[n] = { t: m.title, f: m.fact, d: m.detail, from: [n], minor: !!m.minor }; });
-  FACTS.altstadt = { t: 'Altstadt', f: 'Marktkirche (Backsteingotik, 14. Jh., Turm 97 m), Altes Rathaus mit Treppengiebeln und das Leineschloss – heute Sitz des Niedersächsischen Landtags.', d: 'altstadt.html', from: ['marktkirche', 'altesRathaus', 'leineschloss'] };
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
   const labelsEl = document.getElementById('labels');
   const v = { x: 0, y: 0, z: 1 };
@@ -24,12 +23,14 @@
     world.appendChild(cv); fit();
     poster.addEventListener('load', apply); if (poster.complete) apply();
     // Punkte aus den gerenderten Positionen der Bauten (Mittelwert bei Gruppen)
+    // Gebäude ohne gerenderte Position (z. B. beim Hochladen: Dateien erscheinen nacheinander) bekommen keinen Punkt statt eines Punkts in der Ecke
     M.pins = Object.entries(FACTS).map(([name, F]) => {
       const ls = F.from.map(n => M.labels.find(l => l.name === n)).filter(Boolean);
+      if (!ls.length) { console.error('karte: keine Position für', name); return null; }
       const p = { name, x: ls.reduce((s, l) => s + l.x, 0) / ls.length, y: ls.reduce((s, l) => s + l.y, 0) / ls.length };
       const b = document.createElement('button'); b.className = 'pin' + (F.minor ? ' minor' : ''); b.dataset.n = F.t; b.setAttribute('aria-label', F.t + ' – Detailansicht öffnen');
       b.addEventListener('click', () => openDetail(name)); labelsEl.appendChild(b); p.el = b; return p;
-    });
+    }).filter(Boolean);
   }
   const levelFor = z => { const dpr = Math.min(2, window.devicePixelRatio || 1); for (let i = 0; i < M.levels.length; i++) if (M.levels[i].s * 2 >= z * dpr * .9) return i; return M.levels.length - 1; };
   /* Zeichnen auf EINE Leinwand statt riesiger Ebenen: nie schwarz (Poster + grobe Stufen liegen immer darunter), kein Bild-Ziehen am PC */
@@ -38,6 +39,7 @@
     if (W * H * DPR * DPR > 4.5e6) DPR = Math.max(1, Math.sqrt(4.5e6 / (W * H)));
     cw = W; ch = H; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); cv.style.width = W + 'px'; cv.style.height = H + 'px';
   }
+  const id0 = (i, key) => i + '/' + key;
   function want(i, key) {
     const id = i + '/' + key; let e = cache.get(id);
     if (e) { e.u = fno; return e; }
@@ -66,16 +68,22 @@
         if (!e.ok || !inView) continue;
         const a = Math.min(1, (now - e.t0) / 220); if (a < 1) fading = true;
         const dx = Math.floor((v.x + tx * ts) * DPR), dy = Math.floor((v.y + ty * ts) * DPR);
-        ctx.globalAlpha = a; ctx.drawImage(e.im, dx, dy, Math.ceil((v.x + (tx + 1) * ts) * DPR) - dx, Math.ceil((v.y + (ty + 1) * ts) * DPR) - dy);
+        ctx.globalAlpha = a;
+        try { ctx.drawImage(e.im, dx, dy, Math.ceil((v.x + (tx + 1) * ts) * DPR) - dx, Math.ceil((v.y + (ty + 1) * ts) * DPR) - dy); }
+        catch (err) { console.error('karte: Kachel kaputt', id0(i, key), err); cache.delete(id0(i, key)); apply(); }   // sonst bricht ein verworfenes Bild das ganze Bild (Karte schwarz)
       }
     }
     ctx.globalAlpha = 1;
     if (cache.size > 260) { const old = [...cache.entries()].filter(([id, e]) => !id.startsWith('0/') && e.u < fno - 30).sort((a, b) => a[1].u - b[1].u);
       for (let n = 0; n < old.length && cache.size > 200; n++) cache.delete(old[n][0]); }
     map.classList.toggle('far', v.z < .8);
-    M.pins.forEach(p => { p.el.style.transform = `translate3d(${(v.x + p.x * v.z).toFixed(1)}px, ${(v.y + p.y * v.z).toFixed(1)}px, 0) translate(-50%, -50%)`; });
+    M.pins.forEach(p => { p.el.style.transform = `translate3d(${(v.x + p.x * v.z).toFixed(1)}px, ${(v.y + p.y * v.z).toFixed(1)}px, 0) translate(-50%, -50%) translate(0, -12px)`; });
     if (fading) apply();
   }
+  // Nach der Detailansicht (große Seite im Rahmen, auf dem Telefon knapper Speicher): Leinwand neu anlegen und alles neu zeichnen, sonst bleibt die Karte manchmal schwarz
+  const redraw = () => { if (!M) return; fit(); apply(); };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) redraw(); });
+  window.addEventListener('pageshow', redraw);
   const apply = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; tiles(); }); };
 
   /* ---------- Verschieben, Zoomen ---------- */
@@ -140,7 +148,7 @@
   }
   const closeDetail = () => { dlg.close ? dlg.close() : dlg.removeAttribute('open'); };
   document.getElementById('detail-close').addEventListener('click', closeDetail);
-  dlg.addEventListener('close', () => { frame.src = 'about:blank'; });
+  dlg.addEventListener('close', () => { if (!dlg.open) frame.src = 'about:blank'; redraw(); setTimeout(redraw, 400); });
   dlg.addEventListener('click', e => { if (e.target === dlg) closeDetail(); });
 
   /* ---------- Liste unter der Karte (echter Text für Google) ---------- */
@@ -152,12 +160,13 @@
   });
 
   /* ---------- Start ---------- */
+  const START = { dx: -30, dy: 75 };
   try {
     setup(window.TILES);
     zMin = Math.min(map.clientWidth / (M.box[2] - M.box[0]), map.clientHeight / (M.box[3] - M.box[1])) * .95;
-    // Start: nah am Neuen Rathaus, Altstadt noch im Bild
-    const nr = M.pins.find(p => p.name === 'neuesRathaus'), al = M.pins.find(p => p.name === 'altstadt');
-    focus(nr.x * .62 + al.x * .38, nr.y * .62 + al.y * .38, Math.max(zMin, map.clientWidth < 700 ? 1.15 : 1.5));
+    // Start: Neues Rathaus groß im Bild, dahinter ein Stück vom Maschteich (Abstand im Weltbild, Rathaus unten-mittig)
+    const nr = M.pins.find(p => p.name === 'neuesRathaus'), z0 = Math.max(zMin, map.clientWidth < 700 ? 1.5 : 1.6);
+    focus(nr.x + START.dx, nr.y + START.dy, z0);
     map.classList.add('ready');
   } catch (err) { console.error('karte:', err); }
 })();

@@ -129,7 +129,25 @@
   svg.setAttribute('class', 'rh lamps win lit crown instant');
   stage.appendChild(svg);
   const region = r => { svg.innerHTML = render(r); ISO.clock(svg); };
-  const labels = Object.entries(LMS).map(([name, { K, def }]) => { const [x, y] = toV(K.P(...def.top)); return { name, label: def.label, x: +f2(x), y: +f2(y) }; });
+  /* Punkt für die Karte: höchster Punkt der gezeichneten Form (nicht die von Hand gesetzte Spitze `top`, die oft daneben liegt) */
+  const pinOf = (name, K, def) => {
+    const o = SEQ.find(q => typeof q.s === 'string' && q.s.startsWith(`<g class="lm" data-b="${name}"`));
+    if (o) {
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); t.setAttribute('width', 10); t.setAttribute('height', 10);
+      t.style.cssText = 'position:absolute;left:0;top:0;overflow:visible;visibility:hidden'; stage.appendChild(t); t.innerHTML = o.s;
+      let best = null; const o0 = t.getBoundingClientRect();
+      t.querySelectorAll('path,polygon,polyline,rect,circle,ellipse,line').forEach(e => {
+        if (e.closest('defs,clipPath,mask,filter,pattern,symbol,marker')) return;
+        const r = e.getBoundingClientRect(), b = { x: r.left - o0.left, y: r.top - o0.top, width: r.width, height: r.height };
+        if (!(b.width > 0 || b.height > 0) || b.width > 120 || b.height > 400) return;   // große Boden-/Schattenflächen zählen nicht
+        if (!best || b.y < best.y) best = { x: b.x + b.width / 2, y: b.y };
+      });
+      t.remove();
+      if (best) return [best.x - bx0, best.y - by0];
+    }
+    return toV(K.P(...def.top));
+  };
+  const labels = Object.entries(LMS).map(([name, { K, def }]) => { const [x, y] = pinOf(name, K, def); return { name, label: def.label, x: +f2(x), y: +f2(y) }; });
   window.SCENE = {
     VW, VH, labels,
     region,   // Bereich [x0, y0, x1, y1] in Weltbild-Pixeln aufbauen (nur Teile, die hineinragen)
