@@ -9,37 +9,52 @@
 <link rel="preload" as="image" href="tiles/poster.webp">
 <link rel="stylesheet" href="karte.css">
 </head>
-<body>
-<div class="wrap">
-  <span class="eb">Hannover-Karte · Entwurf</span>
+<body class="km-page">
+<div class="km-wrap">
+  <span class="km-eb">Hannover-Karte · Entwurf</span>
   <h1>Hannover</h1>
-  <p class="sub">Von der Oststadt bis zum Maschsee: Straßen und Häuser nach OpenStreetMap, die Wahrzeichen von Hand gezeichnet. Leuchtende Punkte antippen: das Wahrzeichen öffnet sich mit Abendlicht.</p>
+  <p class="km-sub">Von der Oststadt bis zum Maschsee: Straßen und Häuser nach OpenStreetMap, die Wahrzeichen von Hand gezeichnet. Leuchtende Punkte antippen: das Wahrzeichen öffnet sich mit Abendlicht.</p>
 
-  <div class="map" id="map" aria-label="Isometrische Karte von Hannover am Abend">
-    <img class="poster" id="poster" src="tiles/poster.webp" alt="" width="1014" height="630" decoding="async">
-    <div class="world" id="world"></div>
-    <div class="labels" id="labels"></div>
-    <div class="hud tr">
-      <button class="btn ic" id="zin" aria-label="Vergrößern">+</button>
-      <button class="btn ic" id="zout" aria-label="Verkleinern">−</button>
-      <button class="btn ic" id="zall" aria-label="Ganze Karte zeigen">⤢</button>
+  <!-- Kartenblock: dieselbe Markierung steht in der Website-Seite /hannover-karte/ (kravets-site/src/pages/hannover-karte.astro) -->
+  <div class="km">
+    <div class="km-map" id="map" aria-label="Isometrische Karte von Hannover am Abend">
+      <img class="km-poster" id="poster" src="tiles/poster.webp" alt="" width="1014" height="630" decoding="async">
+      <div class="km-world" id="world"></div>
+      <div class="km-labels" id="labels"></div>
+      <div class="km-hud km-tr">
+        <button class="km-btn km-ic" id="zin" type="button" aria-label="Vergrößern"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+        <button class="km-btn km-ic" id="zout" type="button" aria-label="Verkleinern"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <button class="km-btn km-ic" id="zall" type="button" aria-label="Ganze Karte zeigen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+      <div class="km-hud km-bl"><span class="km-hint" id="hint">Ziehen · Zoomen · ● antippen</span></div>
     </div>
-    <div class="hud bl"><span class="hint">Ziehen · zwei Finger zum Zoomen · ● antippen</span></div>
+
+    <dialog class="km-detail" id="detail" aria-labelledby="detail-title">
+      <div class="km-sheet">
+        <div class="km-top" id="detail-top">
+          <i class="km-handle"></i>
+          <div class="km-head">
+            <div><p class="km-eb" id="detail-eb" hidden></p><h2 id="detail-title"></h2><p class="km-fact" id="detail-fact"></p></div>
+            <button class="km-btn km-ic" id="detail-close" type="button" aria-label="Schließen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+          </div>
+        </div>
+        <iframe id="detail-frame" title="Detailansicht" src="about:blank"></iframe>
+        <div class="km-foot">
+          <button class="km-btn km-gold" id="detail-back" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>Zur Karte</button>
+          <div class="km-nav">
+            <button class="km-btn km-ic" id="detail-prev" type="button" aria-label="Vorheriges Wahrzeichen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+            <button class="km-btn km-ic" id="detail-next" type="button" aria-label="Nächstes Wahrzeichen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </dialog>
   </div>
 
-  <ul class="list" id="list"></ul>
+  <ul class="km-list km-after" id="list"></ul>
 
-  <p class="credit">Kartendaten © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap-Mitwirkende</a> (ODbL) ·
+  <p class="km-credit">Kartendaten © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap-Mitwirkende</a> (ODbL) ·
     Projektion nach iso-figure (MIT, Tolga Cohce) · Wahrzeichen nicht maßstabsgetreu</p>
 </div>
-
-<dialog class="detail" id="detail" aria-labelledby="detail-title">
-  <div class="d-head">
-    <div><h2 id="detail-title"></h2><p id="detail-fact"></p></div>
-    <button class="btn ic" id="detail-close" aria-label="Schließen">×</button>
-  </div>
-  <iframe id="detail-frame" title="Detailansicht" src="about:blank"></iframe>
-</dialog>
 
 <script src="tiles/meta.js"></script>
 <script src="landmarks/meta.js"></script>
