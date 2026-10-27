@@ -53,12 +53,12 @@
 
   .credit { margin-top:2rem; font:.72rem/1.5 ui-monospace, Menlo, monospace; color:rgba(237,232,221,.35); }
 
-    /* Abendablauf im Studio doppelt so schnell wie in iso.css */
-  .rh .st, .rh .tl, .rh .cu, .rh .bk, .rh .sl, .rh .gz, .rh .lv, .rh .dt, .rh .mul, .rh .clockface, .rh .hand, .rh .gb, .rh .rs, .rh .brz, .rh .gl { transition:fill .92s var(--soft) var(--d, 0s), stroke .92s var(--soft) var(--d, 0s); }
-  .rh .wn { transition:fill .61s var(--soft) var(--d, 0s), stroke .61s var(--soft) var(--d, 0s), opacity .61s var(--soft) var(--d, 0s); }
-  .rh .wsh, .rh .wsl { transition:opacity .92s var(--soft) var(--d, 0s); }
-  .rh .lamp, .rh .lant { transition:fill .69s var(--soft) var(--d, 0s); }
-  .rh .lamp-g, .rh .lamp-r, .rh .lant-h { transition:opacity .77s var(--soft) var(--d, 0s); }
+    /* Abendablauf im Studio doppelt so schnell wie in iso.css; --ts (studio.js) kürzt die Übergänge bei Gebäuden mit sehr vielen Elementen */
+  .rh .st, .rh .tl, .rh .cu, .rh .bk, .rh .sl, .rh .gz, .rh .lv, .rh .dt, .rh .mul, .rh .clockface, .rh .hand, .rh .gb, .rh .rs, .rh .brz, .rh .gl, .rh .pl, .rh .kc, .rh .kz, .rh .kr, .rh .iron, .rh .glb { transition:fill calc(.92s * var(--ts, 1)) var(--soft), stroke calc(.92s * var(--ts, 1)) var(--soft); }
+  .rh .wn { transition:fill calc(.61s * var(--ts, 1)) var(--soft), stroke calc(.61s * var(--ts, 1)) var(--soft), opacity calc(.61s * var(--ts, 1)) var(--soft); }
+  .rh .wsh, .rh .wsl { transition:opacity calc(.92s * var(--ts, 1)) var(--soft); }
+  .rh .lamp, .rh .lant { transition:fill .69s var(--soft); }
+  .rh .lamp-g, .rh .lamp-r, .rh .lant-h { transition:opacity .77s var(--soft); }
   /* Einbettung in die Karte (?embed): nur Zeichnung + Knopf */
   html.embed .intro, html.embed .credit { display:none; }
   html.embed .wrap { display:block; min-height:0; padding:8px 12px 16px; max-width:none; }
@@ -69,9 +69,9 @@
   html.embed .ctrl { flex-direction:column; justify-content:center; align-items:center; gap:8px; }
   html.embed .read { flex:none; width:100%; text-align:center; min-height:1.5em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-  /* Abendlicht-Ablauf: Fenster flackern kurz auf, dann ruhiges Leben (einzelne Fenster, Sterne, Laternenkrone atmen) */
+  /* Abendlicht-Ablauf: der Ablauf wird in studio.js getaktet; hier nur die Keyframes. Kurzes Aufflackern beim Einschalten (wflick, nur einzelne Fenster),
+     Sterne und Laternenkrone atmen, Deckfenster (.ov) blenden einzelne Fenster weich aus und wieder ein. */
   @keyframes wflick { 20% { opacity:.3; } 38% { opacity:1; } 52% { opacity:.45; } 70% { opacity:1; } }
-  @keyframes wtw { 0%, 84%, 100% { opacity:1; } 88% { opacity:.25; } 92% { opacity:1; } 95% { opacity:.45; } }
   @keyframes star { from { fill-opacity:.3; } to { fill-opacity:1; } }
   @keyframes breathe { from { opacity:.5; } to { opacity:.85; } }
-  .rh.win:not(.instant) .wn { animation:wflick .8s linear var(--d, 0s) backwards; }
+  .rh .wn.ov { transition:opacity 1.6s ease-in-out; pointer-events:none; }
