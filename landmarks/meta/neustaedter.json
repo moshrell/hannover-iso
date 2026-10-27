@@ -1,12 +1,17 @@
 {
  "title": "Neustädter Hof- und Stadtkirche",
- "fact": "Barocke Kirche St. Johannis (1666–1670) mit Westturm von 1691–1700 – Grabstätte von Gottfried Wilhelm Leibniz.",
- "studio": "Neustädter Hof- und Stadtkirche St. Johannis, 1666–1670 als frühbarocke Saalkirche gebaut (Entwurf Girolamo Sartorio zugeschrieben). Der Westturm entstand 1691–1700 über dem Westportal: quadratischer Schaft, achteckiges Geschoss mit Uhren und kupferne Haube mit Laterne. Hier wurde 1716 Gottfried Wilhelm Leibniz beigesetzt.",
+ "fact": "Frühbarocke Hof- und Stadtkirche (1666–1670) mit Westturm von 1691–1700 – Grabstätte von Gottfried Wilhelm Leibniz.",
+ "studio": "Neustädter Hof- und Stadtkirche St. Johannis, 1666–1670 als frühbarocke Saalkirche gebaut (Entwurf Girolamo Sartorio zugeschrieben). Das ockerfarbene Langhaus trägt ein steiles Ziegeldach mit kleinen Dachluken und sechs hohe Bogenfenster zur Südseite, in der Mitte das Portal. Der Westturm entstand 1691–1700 über dem Westportal: Sandsteinschaft mit Kupferbändern, achteckiges Geschoss mit Uhren und kupferne Haube mit Laterne. 1943 brannte die Kirche bis auf die Mauern aus und wurde 1956–58 wiederaufgebaut. Hier wurde 1716 Gottfried Wilhelm Leibniz beigesetzt.",
  "detail": "studio.html?lm=neustaedter",
- "minor": true,
+ "minor": false,
  "osm": [
   "w29173386"
  ],
  "h": 73,
- "rank": 10
+ "rank": 10,
+ "card_phi": 270,
+ "seo": "Die Neustädter Hof- und Stadtkirche St. Johannis steht an der Roten Reihe in der Calenberger Neustadt von Hannover. Sie wurde 1666 bis 1670 als frühbarocke Saalkirche für die Neustadt und den welfischen Hof errichtet; der Entwurf wird Girolamo Sartorio zugeschrieben. Ein ockerfarbenes Langhaus mit sechs hohen Bogenfenstern, einem Portal an der Südseite und einem steilen Ziegeldach prägt das Bild, im Osten schließt ein etwas schmalerer Chor an. Weithin sichtbar ist der Westturm, der 1691 bis 1700 neu über dem Westportal entstand: ein Sandsteinschaft mit achteckigem Aufsatz, Uhren und kupferner Haube mit Laterne. Im Zweiten Weltkrieg blieben von der Kirche nur die Außenmauern, 1956 bis 1958 wurde sie wiederaufgebaut. Im Inneren liegt Gottfried Wilhelm Leibniz begraben, der 1716 starb.",
+ "addr": "Rote Reihe 8, 30169 Hannover",
+ "year": "1666–1670",
+ "arch": "Girolamo Sartorio (zugeschrieben), Frühbarock"
 }
