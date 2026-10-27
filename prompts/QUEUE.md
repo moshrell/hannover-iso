@@ -30,17 +30,17 @@
 | ihmezentrum | fertig | Ihme-Zentrum (бруталистский комплекс, Linden), новое, большое |
 | hcc | fertig | HCC / Stadthalle с Kuppelsaal, новое, вне зоны плиток |
 | markuskirche | fertig | Markuskirche (Hannover-List), новое |
-| p_licht | ready | Свет и плавность анимации в карточках (studio.js/studio.css), без перерисовки зданий |
-| p_aegidienkirche | ready | Доработка: Aegidienkirche |
-| p_altesRathaus | ready | Доработка: Altes Rathaus |
-| p_marktkirche | ready | Доработка: Marktkirche |
-| p_leineschloss | ready | Доработка: Leineschloss / Landtag |
-| p_heinzvonheidenarena | ready | Доработка: Heinz von Heiden Arena |
-| p_neustaedter | ready | Доработка: Neustädter Hof- und Stadtkirche |
-| p_gartenkirche | ready | Доработка: Gartenkirche St. Marien |
-| p_vwtower | ready | Доработка: VW-Tower |
-| p_heizkraftwerklinden | ready | Доработка: Heizkraftwerk Linden |
-| p_telemax | ready | Доработка: Telemax |
+| p_licht | fertig | Свет и плавность анимации в карточках (studio.js/studio.css), без перерисовки зданий |
+| p_aegidienkirche | fertig | Доработка: Aegidienkirche |
+| p_altesRathaus | fertig | Доработка: Altes Rathaus |
+| p_marktkirche | fertig | Доработка: Marktkirche |
+| p_leineschloss | fertig | Доработка: Leineschloss / Landtag |
+| p_heinzvonheidenarena | fertig | Доработка: Heinz von Heiden Arena |
+| p_neustaedter | fertig | Доработка: Neustädter Hof- und Stadtkirche |
+| p_gartenkirche | fertig | Доработка: Gartenkirche St. Marien |
+| p_vwtower | fertig | Доработка: VW-Tower |
+| p_heizkraftwerklinden | fertig | Доработка: Heizkraftwerk Linden |
+| p_telemax | fertig | Доработка: Telemax |
 | p_landesmuseum | ready | Доработка: Landesmuseum |
 | p_welfenschloss | ready | Доработка: Welfenschloss (Universität) |
 | p_wangenheim | ready | Доработка: Wangenheimpalais |
