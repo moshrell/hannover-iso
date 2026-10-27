@@ -50,58 +50,131 @@
   ISO.clock(svg); setInterval(() => ISO.clock(svg), 20000);
 
   /* ---------- Licht ---------- */
+  /* Der Ablauf wird von JS getaktet statt von tausend CSS-Verzögerungen: Jedes Element wird erst zu seinem Zeitpunkt umgeschaltet
+     (dann übernimmt die CSS-Transition den weichen Übergang). So warten nie tausende Übergänge gleichzeitig, und nur ein paar
+     Dutzend Elemente pro Bild ändern sich. Der Zielzustand wird einmal aus dem Stylesheet gelesen (kein zweiter Farbsatz). */
   const T = { win0: 1.2, floor: 1.1, winJit: 2.4, flood0: 6.2, sweep: 4.6, crown: 11.6 };
-  const OFF = { crown: 0, sweep: 2.6, flood0: .3, win0: 2.4, floor: .7, winJit: .9 };
-  const SPEED = .55;
-  const setD = (el, d) => el.style.setProperty('--d', `${(d * SPEED).toFixed(2)}s`);
-  let prep = null;
+  // Ausschalten: Fenster gehen mit der Fassade aus (gleiche Welle oben → unten), nicht erst danach
+  const OFF = { crown: 0, sweep: 4.2, flood0: .3, winJit: .4 };
+  const SPEED = .55, STATE = ['lamps', 'win', 'lit', 'crown'], PROPS = ['fill', 'stroke', 'opacity'];
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let prep = null, raf = 0;
   function prepare() {
     const inClk = el => !!el.closest('.clk');
     const walls = [...svg.querySelectorAll('.bld .wsh, .bld .wsl, .bld .st, .bld .tl, .bld .cu, .bld .bk, .bld .sl, .bld .gz, .bld .lv, .bld .dt, .bld .mul, .bld .gb, .bld .rs, .bld .brz, .bld .gl, .bld .pl, .bld .kc, .bld .kz, .bld .kr, .bld .iron, .bld .glb')].filter(el => !inClk(el));
-    const rects = walls.map(el => el.getBoundingClientRect());
-    const top = Math.min(...rects.map(q => q.top)), base = Math.max(...rects.map(q => q.bottom)), span = Math.max(1, base - top);
+    const wins = [...svg.querySelectorAll('.wn')].filter(el => !inClk(el));
+    const wr = walls.map(el => el.getBoundingClientRect()), ww = wins.map(el => el.getBoundingClientRect());
+    const top = Math.min(...wr.map(q => q.top)), base = Math.max(...wr.map(q => q.bottom)), span = Math.max(1, base - top);
+    const rel = r => Math.min(1, Math.max(0, (base - r.bottom) / span));
     let s2 = 11; const r2 = () => (s2 = (s2 * 16807) % 2147483647) / 2147483647;
-    return {
-      walls: walls.map((el, i) => [el, Math.min(1, Math.max(0, (base - rects[i].bottom) / span))]),
-      clocks: [...svg.querySelectorAll('.clk *')],
-      wins: [...svg.querySelectorAll('.wn')].filter(el => !inClk(el)).map(el => [el, +el.dataset.f || 0, r2()]),
-      // ein Dutzend heller Fenster flackert im Ruhezustand gelegentlich (kein Dauer-Blinken: nur kurze Dips alle paar Sekunden)
-      twinkle: [...svg.querySelectorAll('.wn:not(.off)')].filter(el => !inClk(el)).filter((_, i) => i % 29 === 7).slice(0, 14),
-      stars: [...svg.querySelectorAll('.star')],
-      crown: [...svg.querySelectorAll('.lant, .lant-h')], flood: [...svg.querySelectorAll('.flood')],
-    };
+    const when = new Map();   // Element → Zeitpunkt (Einheiten des Ablaufs) für Ein- und Ausschalten
+    walls.forEach((el, i) => { const h = rel(wr[i]); when.set(el, { on: T.flood0 + h * T.sweep, off: OFF.flood0 + (1 - h) * OFF.sweep }); });
+    wins.forEach((el, i) => { const h = rel(ww[i]), f = +el.dataset.f || 0, q = r2(), q3 = r2(); when.set(el, { on: T.win0 + f * T.floor + q * T.winJit, off: OFF.flood0 + (1 - h) * OFF.sweep + q * OFF.winJit, flick: q3 < .3 }); });
+    svg.querySelectorAll('.flood').forEach(el => when.set(el, { on: T.flood0 + .4, off: OFF.flood0 }));
+    svg.querySelectorAll('.clk *').forEach(el => when.set(el, { on: T.flood0 + .8 * T.sweep, off: OFF.flood0 + .2 * OFF.sweep }));
+    svg.querySelectorAll('.lant, .lant-h').forEach(el => when.set(el, { on: T.crown, off: OFF.crown }));
+    return { when, items: [], stars: [...svg.querySelectorAll('.star')], crown: [...svg.querySelectorAll('.lant-h')] };
   }
+  /* Beide Zustände einmal aus dem Stylesheet lesen (Übergänge dabei aus). Als Element des Ablaufs zählt jedes, dessen Farbe/Deckkraft sich
+     zwischen Nacht und Licht wirklich ändert; was nicht in der Zeitliste steht, geht gleich zu Beginn um. */
+  function probe() {
+    const was = STATE.filter(c => svg.classList.contains(c)), inst = svg.classList.contains('instant');
+    svg.classList.add('instant'); STATE.forEach(c => svg.classList.remove(c));
+    const els = [...svg.querySelectorAll('*')].filter(el => !el.closest('defs') && !el.classList.contains('star'));
+    const read = () => els.map(el => { const cs = getComputedStyle(el); return PROPS.map(k => cs.getPropertyValue(k)); });
+    const dark = read(); STATE.forEach(c => svg.classList.add(c)); const bright = read();
+    STATE.forEach(c => { if (!was.includes(c)) svg.classList.remove(c); });
+    svg.getBoundingClientRect(); if (!inst) svg.classList.remove('instant');
+    els.forEach((el, i) => {
+      const diff = PROPS.map((_, k) => k).filter(k => dark[i][k] !== bright[i][k]);
+      if (diff.length) prep.items.push({ ...(prep.when.get(el) || { on: T.flood0, off: OFF.flood0 }), el, offV: dark[i], onV: bright[i], diff, lit: false });
+    });
+  }
+  const put = (it, v) => it.diff.forEach(k => it.el.style.setProperty(PROPS[k], v[k]));       // Wert festhalten bzw. umschalten (Transition läuft)
+  const free = it => it.diff.forEach(k => it.el.style.removeProperty(PROPS[k]));            // Wert dem Stylesheet überlassen
+  svg.addEventListener('animationend', e => { if (e.animationName === 'wflick') e.target.style.animation = ''; });
   const state = { lit: false }, bLight = document.getElementById('b-light'), read = document.getElementById('read');
-  function applyLight() {
-    prep = prep || prepare();
-    const on = state.lit;
-    prep.wins.forEach(([el, f, q2]) => setD(el, on ? T.win0 + f * T.floor + q2 * T.winJit : OFF.win0 + (4 - f) * OFF.floor + q2 * OFF.winJit));
-    prep.walls.forEach(([el, h]) => setD(el, on ? T.flood0 + h * T.sweep : OFF.flood0 + (1 - h) * OFF.sweep));
-    prep.flood.forEach(el => setD(el, on ? T.flood0 + .4 : OFF.flood0));
-    prep.clocks.forEach(el => setD(el, on ? T.flood0 + .8 * T.sweep : OFF.flood0 + .2 * OFF.sweep));
-    prep.crown.forEach(el => setD(el, on ? T.crown : OFF.crown));
-    svg.getBoundingClientRect();
-    ['lamps', 'win', 'lit', 'crown'].forEach(c => svg.classList.toggle(c, on));
-    life(on);
-    read.textContent = on ? 'Abendlicht · Fenster, Fassade' : 'Nacht';
+  /* Vorbereiten (einmal, vor dem ersten Einschalten): Elemente sammeln, Zielwerte lesen und den Nacht-Zustand festhalten.
+     Das ändert nichts am Bild; danach färbt der Klassenwechsel am svg nichts mehr um, jedes Element wird einzeln freigegeben. */
+  function warm() {
+    if (prep) return;
+    prep = prepare(); probe();
+    if (!svg.classList.contains('instant') && !calm) { prep.items.forEach(it => put(it, it.offV)); svg.style.setProperty('--ts', Math.max(.45, Math.min(1, 1500 / prep.items.length)).toFixed(2)); }
   }
-  /* Ruhezustand: nach dem Einschalten atmen Laternenkrone und Sterne, einzelne Fenster flackern kurz (element.style, keine Inline-Stile im Markup) */
-  let lifeT = 0;
-  function life(on) {
-    clearTimeout(lifeT);
-    const set = (els, f) => els.forEach((el, i) => { el.style.animation = on ? f(i) : ''; });
-    if (!on) { set(prep.twinkle, () => ''); set(prep.crown, () => ''); set(prep.stars, () => ''); return; }
-    const wait = svg.classList.contains('instant') ? 0 : (T.crown + 2) * SPEED * 1000;
-    lifeT = setTimeout(() => {
-      set(prep.twinkle, i => `wtw ${9 + (i * 3) % 7}s linear ${(i * 1.7) % 6}s infinite`);
-      set(prep.crown.filter(el => el.classList.contains('lant-h')), () => 'breathe 5s ease-in-out infinite alternate');
-      set(prep.stars, i => `star ${3 + (i % 5)}s ease-in-out ${(i * .7) % 4}s infinite alternate`);
-    }, wait);
+  function applyLight() {
+    warm();
+    const on = state.lit, quick = svg.classList.contains('instant') || calm;
+    cancelAnimationFrame(raf); raf = 0;
+    if (quick) { prep.items.forEach(it => { free(it); it.lit = on; }); STATE.forEach(c => svg.classList.toggle(c, on)); life(on, true); finish(on); return; }
+    // Die Klassen (lit, win, …) gehen beim ersten Einschalten an und bleiben; Aussehen und Zeitpunkt bestimmt je Element der festgehaltene Wert:
+    // Einschalten = Wert freigeben (das Stylesheet gilt), Ausschalten = Wert auf den Nachtwert setzen; die CSS-Transition macht den weichen Übergang.
+    if (on) STATE.forEach(c => svg.classList.add(c));
+    life(on, false);
+    const q = prep.items.filter(it => it.lit !== on).map(it => [(on ? it.on : it.off) * SPEED * 1000, it]).sort((a, b) => a[0] - b[0]), t0 = performance.now();
+    let n = 0;
+    const tick = now => {
+      const t = now - t0;
+      while (n < q.length && q[n][0] <= t) {
+        const it = q[n++][1];
+        if (on) { free(it); if (it.flick) it.el.style.animation = 'wflick .8s linear'; } else put(it, it.offV);
+        it.lit = on;
+      }
+      if (n < q.length) raf = requestAnimationFrame(tick);
+      else { raf = 0; life(on, true); }
+    };
+    raf = requestAnimationFrame(tick);
+    finish(on);
+  }
+  const finish = on => { read.textContent = on ? 'Abendlicht · Fenster, Fassade' : 'Nacht'; };
+  /* Ruhezustand: Laternenkrone und Sterne atmen; ein paar Prozent der Fenster gehen immer wieder weich aus und wieder an. */
+  const NS = 'http://www.w3.org/2000/svg', rr = (a, b) => a + Math.random() * (b - a);
+  let pool = null, ovs = [], gen = 0;
+  function life(on, settled) {
+    const set = (els, f) => els.forEach((el, i) => { el.style.animation = on && settled && !calm ? f(i) : ''; });
+    set(prep.crown, () => 'breathe 5s ease-in-out infinite alternate');
+    set(prep.stars, i => `star ${3 + (i % 5)}s ease-in-out ${(i * .7) % 4}s infinite alternate`);
+    if (on && settled && !calm) startChurn(); else if (!on) stopChurn();
+  }
+  /* Fenster-Quelle: alle Teilpfade (Fenster) der .wn-Elemente. In zusammengefassten Pfaden (ein <path> je Klasse) lässt sich ein Fenster nicht
+     einzeln dimmen; deshalb liegt über dem ausgewählten Fenster ein kleines dunkles Deckfenster (Pfad aus denselben Koordinaten), das ein-/ausblendet. */
+  function buildPool() {
+    const src = []; let n = 0;
+    svg.querySelectorAll('.wn:not(.off):not(.ov)').forEach(el => {
+      if (el.closest('.clk')) return;
+      let d = el.getAttribute('d');
+      if (!d) { if (el.tagName !== 'rect') return; const [x, y, w, h] = ['x', 'y', 'width', 'height'].map(k => +el.getAttribute(k)); d = `M${x} ${y}h${w}v${h}h${-w}z`; }
+      const subs = d.split(/(?=M)/).filter(Boolean); src.push({ el, subs, i0: n }); n += subs.length;
+    });
+    return { src, n };
+  }
+  function startChurn() {
+    if (ovs.length) return;
+    pool = pool || buildPool();
+    const W = pool.n; if (W < 8) return;
+    const CAP = 96, want = W * .07, m = Math.max(1, Math.min(6, Math.ceil(want / CAP))), K = Math.max(3, Math.min(CAP, Math.round(want / m))), my = ++gen;
+    const pick = () => { let i = Math.floor(Math.random() * W), lo = 0, hi = pool.src.length - 1; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (pool.src[mid].i0 <= i) lo = mid; else hi = mid - 1; } const s = pool.src[lo], a = Math.min(i - s.i0, Math.max(0, s.subs.length - m)); return [s, a]; };
+    for (let k = 0; k < K; k++) {
+      const el = document.createElementNS(NS, 'path'); el.setAttribute('class', 'wn off ov'); el.style.opacity = '0';
+      const o = { el, t: 0 }; ovs.push(o);
+      const wait = () => { o.t = setTimeout(dark, rr(1, 10) * 1000); };
+      const dark = () => {
+        if (my !== gen) return;
+        const [s, a] = pick(); el.setAttribute('d', s.subs.slice(a, a + m).join('')); s.el.after(el);
+        o.t = setTimeout(() => { if (my !== gen) return; el.style.opacity = '1'; o.t = setTimeout(() => { if (my !== gen) return; el.style.opacity = '0'; o.t = setTimeout(wait, 1800); }, rr(2.5, 9) * 1000); }, 80);
+      };
+      o.t = setTimeout(dark, rr(.3, 10) * 1000);
+    }
+  }
+  function stopChurn() {
+    gen++; const old = ovs; ovs = [];
+    old.forEach(o => { clearTimeout(o.t); o.el.style.opacity = '0'; });
+    setTimeout(() => old.forEach(o => o.el.remove()), 2000);
   }
   let demo = [];
   const setLit = v => { state.lit = v; bLight.setAttribute('aria-pressed', v); applyLight(); };
   bLight.addEventListener('click', () => { demo.forEach(clearTimeout); demo = []; setLit(!state.lit); });
   read.textContent = 'Nacht';
+  setTimeout(warm, 120);   // vorab lesen, damit das Einschalten ohne Ruckler startet
   if (q.has('sofort')) { svg.classList.add('instant'); setLit(true); }
   else demo = [setTimeout(() => setLit(true), 700)];   // bleibt an; der Knopf schaltet zurück auf Nacht
 })();
