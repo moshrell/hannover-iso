@@ -1,7 +1,7 @@
 {
  "title": "Heinz von Heiden Arena",
  "fact": "Stadion von Hannover 96, eröffnet 1954 als Niedersachsenstadion, 2003–04 umgebaut, rund 49.000 überdachte Plätze, seit 2022 Heinz von Heiden Arena.",
- "studio": "Heinz von Heiden Arena am Maschsee, Heimstadion von Hannover 96: 1954 als Niedersachsenstadion eröffnet, 2002–2013 AWD-Arena, 2013–2022 HDI-Arena, seit 2022 mit dem heutigen Namen. Beim Umbau 2003–04 (Schulitz & Partner) entstand das neue Dach: außen grau, am Spielfeldrand ein lichtdurchlässiges Kissendach aus ETFE-Folie, darüber ein Kabelring auf Stäben. Das Stadion fasst rund 49.000 Zuschauer auf zwei Rängen; auf der Westtribüne steht der Schriftzug HEINZ VON HEIDEN, unten an der Fassade laufen Fensterbänder und acht Treppentürme.",
+ "studio": "Heinz von Heiden Arena am Maschsee, Heimstadion von Hannover 96: 1954 als Niedersachsenstadion eröffnet, 2002–2013 AWD-Arena, 2013–2022 HDI-Arena, seit 2022 mit dem heutigen Namen. Beim Umbau 2003–04 (Schulitz & Partner) entstand das neue Dach: außen grau, am Spielfeldrand ein lichtdurchlässiges Kissendach aus ETFE-Folie, darüber ein Kabelring auf Stäben. Das Stadion fasst rund 49.000 Zuschauer auf zwei Rängen; auf der Westtribüne steht der Schriftzug HEINZ VON HEIDEN, unten an der Fassade laufen Fensterbänder und zehn Treppentürme.",
  "detail": "studio.html?lm=heinzvonheidenarena",
  "minor": false,
  "h": 35,
@@ -19,5 +19,10 @@
    0.14988,
    -0.9887
   ]
- ]
+ ],
+ "card_phi": -30,
+ "seo": "Die Heinz von Heiden Arena liegt im Sportpark am Maschsee und ist die Heimat von Hannover 96. Eröffnet wurde sie am 26. September 1954 als Niedersachsenstadion mit Platz für rund 86.000 Zuschauer; später hieß sie AWD-Arena und HDI-Arena, seit 2022 trägt sie ihren heutigen Namen. Für die Fußball-WM 2006 wurde das Stadion von 2003 bis 2005 nach Plänen von Schulitz & Partner zum reinen Fußballstadion umgebaut, vom alten Bau blieb vor allem der Wall der Westtribüne. Heute überspannt ein Seildach die Ränge: außen eine graue Membran, am Spielfeldrand lichtdurchlässige ETFE-Kissen, die dem Rasen Tageslicht geben. Rund 49.000 Zuschauer sitzen überdacht, auf der Westtribüne bilden die Sitze den Schriftzug des Stadionnamens. Neben Bundesligaspielen finden hier Länderspiele und Konzerte statt.",
+ "addr": "Robert-Enke-Straße, 30169 Hannover",
+ "year": 1954,
+ "arch": "Schulitz & Partner (Umbau 2003–2005)"
 }
