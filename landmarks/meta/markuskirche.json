@@ -1,0 +1,17 @@
+{
+ "title": "Markuskirche",
+ "fact": "Evangelisch-lutherische Kirche in der List (Otto Lüer, 1902–06) mit rund 70 m hohem Turm.",
+ "studio": "Die Markuskirche in Hannover-List wurde 1902–1906 nach Plänen von Otto Lüer gebaut. Ihr schlanker Turm ist rund 70 m hoch; weil der Baugrund aus Sand besteht, ruht er auf etwa 400 Betonpfählen. Das Langhaus trägt ein steiles dunkles Dach mit mehreren Giebeln. Die Kirche gilt als Musikkirche (Chor, Konzerte, Orgel von 1958–62).",
+ "detail": "studio.html?lm=markuskirche",
+ "minor": false,
+ "h": 70,
+ "rank": 46,
+ "point": [
+  52.3883,
+  9.7523,
+  90.0
+ ],
+ "osm": [
+  "w44834907"
+ ]
+}
