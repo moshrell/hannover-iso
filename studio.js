@@ -13,9 +13,11 @@
   document.title = def.label + ' · Hannover';
 
   /* ---------- Zeichnen ---------- */
-  const K = ISO.kernel({ lcx: def.lc[0], lcy: def.lc[1] });
+  // Drehung nur in der Karte-Detailansicht: meta `card_phi` (Grad) stellt die schönste Seite nach vorn; auf der Karte bleibt die echte Lage (phi aus OSM / `face`)
+  const phi = (+((window.LMETA || {})[name] || {}).card_phi || 0) * Math.PI / 180;
+  const K = ISO.kernel({ lcx: def.lc[0], lcy: def.lc[1], phi });
   const fps = def.mods.map(m => m.fp), x0 = Math.min(...fps.map(f => f[0])) - 10, y0 = Math.min(...fps.map(f => f[1])) - 10, x1 = Math.max(...fps.map(f => f[2])) + 10, y1 = Math.max(...fps.map(f => f[3])) + 10;
-  const r = ISO.drawLandmark(name, { lcx: def.lc[0], lcy: def.lc[1] });
+  const r = ISO.drawLandmark(name, { lcx: def.lc[0], lcy: def.lc[1], phi });
   let s = `<defs>
     <filter id="wglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <filter id="bloom" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>

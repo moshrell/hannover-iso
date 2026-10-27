@@ -10,7 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const LEVELS = [0.09375, 0.375, 0.75, 1.5, 3], BLOCK = 1024, DPR = 2;
 const OUTER_MAX = 2;   // außerhalb der Innenstadt (data/bbox.json → core) nur Stufen bis 0,75 px/m: ganze Stadt bei kleinem Speicherbedarf
 const tmp = '/tmp/iso-render'; rmSync(tmp, { recursive: true, force: true }); mkdirSync(tmp, { recursive: true });
-const browser = await chromium.launch({ executablePath: process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+const browser = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
 // frische Seite je Bereich: bei vielen Regionswechseln in einer Seite wächst der Renderer-Speicher und Screenshots hängen
 let page = null;
 async function freshPage() {

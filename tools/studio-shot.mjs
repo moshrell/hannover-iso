@@ -2,7 +2,7 @@
 // Erwartet laufenden Testserver (python3 tools/serve.py . 8770). Ausgabe: /tmp/studio_<name>.png
 import { chromium } from 'playwright';
 const names = (process.argv[2] || '').split(','), W = +(process.argv[3] || 390), Hh = +(process.argv[4] || 760);
-const b = await chromium.launch({ executablePath: process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+const b = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
 const p = await b.newPage({ viewport: { width: W, height: Hh }, deviceScaleFactor: 2 });
 const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error' && !/favicon|404/.test(m.text())) errs.push(m.text()); });
 for (const n of names) {

@@ -131,6 +131,7 @@
   const region = r => { svg.innerHTML = render(r); ISO.clock(svg); };
   /* Punkt für die Karte: höchster Punkt der gezeichneten Form (nicht die von Hand gesetzte Spitze `top`, die oft daneben liegt) */
   const pinOf = (name, K, def) => {
+    if (def.pin) return toV(K.P(...def.pin));   // Modul legt den Punkt selbst fest: return { …, pin: [x, y, z] } in lokalen Metern (Mitte über dem Gebäude)
     const o = SEQ.find(q => typeof q.s === 'string' && q.s.startsWith(`<g class="lm" data-b="${name}"`));
     if (o) {
       const t = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); t.setAttribute('width', 10); t.setAttribute('height', 10);
