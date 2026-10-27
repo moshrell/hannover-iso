@@ -1,7 +1,7 @@
 {
- "title": "marktkirche",
- "fact": "",
- "studio": "",
+ "title": "Marktkirche St. Georgii et Jacobi",
+ "fact": "Backsteingotik (Backsteingotik = Backsteinbau der Gotik), Baubeginn 1349, Turm ca. 97 m.",
+ "studio": "Die Marktkirche ist die Hauptkirche der Altstadt Hannovers: dreischiffige Backstein-Hallenkirche aus dem 14. Jahrhundert mit einem 97 m hohen Westturm; nach der Zerstörung 1943 in den 1950er-Jahren wiederaufgebaut.",
  "detail": "studio.html?lm=marktkirche",
  "minor": false,
  "osm": [
@@ -10,5 +10,16 @@
  "h": 99,
  "rank": 90,
  "pin": false,
- "group": "altstadt"
+ "group": "altstadt",
+ "face": [
+  "compass",
+  [
+   0,
+   1
+  ],
+  [
+   0,
+   1
+  ]
+ ]
 }
