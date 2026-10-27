@@ -10,8 +10,8 @@
 
 | id | статус | что это |
 |---|---|---|
-| nordlb | ready | NORD/LB (стеклянная башня и квартал), v1 в mitte2.js |
-| marktkirche | ready | Marktkirche, v1 в altstadt.js |
+| nordlb | fertig | NORD/LB (стеклянная башня и квартал), v1 в mitte2.js |
+| marktkirche | fertig | Marktkirche, v1 в altstadt.js |
 | altesRathaus | fertig | Altes Rathaus, v1 в altstadt.js |
 | leineschloss | fertig | Leineschloss / Landtag (файл Степана назывался votum) |
 | heinzvonheidenarena | fertig | стадион Hannover 96 (бывш. HDI-Arena) |
@@ -21,12 +21,12 @@
 | vwtower | fertig | VW-Tower (старая радиобашня), новое |
 | heizkraftwerklinden | fertig | Heizkraftwerk Linden, новое |
 | telemax | fertig | Telemax (282 м, вне зоны плиток), новое |
-| landesmuseum | ready | Landesmuseum, v2 → доработка по кадрам |
-| welfenschloss | ready | Welfenschloss, v2 → доработка по кадрам |
+| landesmuseum | fertig | Landesmuseum, v2 → доработка по кадрам |
+| welfenschloss | fertig | Welfenschloss, v2 → доработка по кадрам |
 | wangenheim | fertig | Wangenheimpalais, v1 в mitte2.js |
 | beginenturm | fertig | Beginenturm, малая точка, v1 в mitte2.js |
-| georgenpalais | ready | Georgenpalais (Wilhelm-Busch-Museum), новое |
-| anzeiger | ready | Anzeiger-Hochhaus (Höger 1928, клинкер, зелёный купол), v1 в mitte2.js |
-| ihmezentrum | ready | Ihme-Zentrum (бруталистский комплекс, Linden), новое, большое |
-| hcc | ready | HCC / Stadthalle с Kuppelsaal, новое, вне зоны плиток |
-| markuskirche | ready | Markuskirche (Hannover-List), новое |
+| georgenpalais | fertig | Georgenpalais (Wilhelm-Busch-Museum), новое |
+| anzeiger | fertig | Anzeiger-Hochhaus (Höger 1928, клинкер, зелёный купол), v1 в mitte2.js |
+| ihmezentrum | fertig | Ihme-Zentrum (бруталистский комплекс, Linden), новое, большое |
+| hcc | fertig | HCC / Stadthalle с Kuppelsaal, новое, вне зоны плиток |
+| markuskirche | fertig | Markuskirche (Hannover-List), новое |
