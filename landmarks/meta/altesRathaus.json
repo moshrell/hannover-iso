@@ -1,7 +1,7 @@
 {
  "title": "Altes Rathaus",
  "fact": "Backsteingotik seit 1410: Treppengiebel, Tonfries und glasüberdachter Hof – Conrad Wilhelm Hase rettete es im 19. Jahrhundert vor dem Abriss.",
- "studio": "Das Alte Rathaus wurde ab 1410 in norddeutscher Backsteingotik gebaut; der älteste Teil an der Schmiedestraße stammt von etwa 1420, der Marktflügel folgte bald danach. Der Abriss war 1844 beschlossen, eine Bürgerinitiative um den Architekten Conrad Wilhelm Hase rettete es, und Hase stellte es im 19. Jahrhundert wieder her. Prägend sind die gotischen Treppengiebel mit Fialen und der Tonfries. Auf der Karte: der Bau mit rotem Dach, zwei Treppengiebeln zur Südwestseite, Mittelgiebel zur Südostseite und dem Innenhof unter einem Glasdach; die Marktfront mit den drei Zwerchhäusern liegt auf der abgewandten Seite zur Marktkirche.",
+ "studio": "Das Alte Rathaus entstand ab 1410 in norddeutscher Backsteingotik; der älteste Teil an der Schmiedestraße stammt von etwa 1420. Im 19. Jahrhundert drohte der Abriss, Bürgerproteste retteten es, und Conrad Wilhelm Hase führte die Wiederherstellung durch. Prägend sind die Treppengiebel, die Zwerchhäuser der Marktfront und der Tonfries. Im Krieg 1943 stark zerstört, wurde es nach 1953 wieder aufgebaut; seit 1999 überspannt ein Glasdach den Innenhof. Auf der Stadtkarte steht das Haus mit der Südostseite zur Karmarschstraße; diese Ansicht zeigt die Marktfront zur Marktkirche mit den drei Zwerchhäusern und die Nordostseite mit den Treppengiebeln.",
  "detail": "studio.html?lm=altesRathaus",
  "minor": false,
  "osm": [
@@ -9,5 +9,10 @@
  ],
  "h": 26,
  "rank": 90,
- "group": "altstadt"
+ "group": "altstadt",
+ "card_phi": 180,
+ "seo": "Das Alte Rathaus im Herzen der Hannoverschen Altstadt ist der älteste erhaltene Profanbau der Stadt und ein Hauptwerk der norddeutschen Backsteingotik. Mit dem Bau begann man 1410, der Marktflügel und der Teil an der Schmiedestraße entstanden in den folgenden Jahrzehnten. Rote Ziegel, Treppengiebel, Zierfriese aus Ton und drei Zwerchhäuser zur Marktkirche geben dem Haus sein Gesicht. Im 19. Jahrhundert wollte man Teile abreißen, doch Bürger setzten sich für den Erhalt ein, und Conrad Wilhelm Hase stellte die gotische Gestalt wieder her. Die Bomben von 1943 zerstörten besonders die ältesten Bauteile; nach 1953 wurde das Rathaus wieder aufgebaut. Heute ist es ein beliebtes Fotomotiv am Marktplatz, und seit der Erneuerung von 1999 überspannt ein Glasdach den Innenhof.",
+ "addr": "Karmarschstraße 42, 30159 Hannover",
+ "year": "ab 1410",
+ "arch": "Backsteingotik, Wiederherstellung durch Conrad Wilhelm Hase"
 }
