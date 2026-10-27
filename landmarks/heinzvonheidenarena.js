@@ -84,9 +84,10 @@ ISO.landmark('heinzvonheidenarena', H => {
         s += K.face(q, mat, extra);
       }
     }
-    // Schriftzug HEINZ VON HEIDEN im oberen Rang der Westtribüne (vom Spielfeld aus nach Westen gelesen: Süd → Nord = +x)
-    const sw = 14.5, sl = (PROF[3][1] - PROF[2][1]) / (PROF[3][0] - PROF[2][0]), zw = PROF[2][1] + (sw - PROF[2][0]) * sl, yw = C0[1] - RRB - sw, k = Math.hypot(1, sl);
-    if (K.facing(0, sl / k, 1 / k) > 0) s += wins(`<text class="wn" data-f="3" transform="${K.plane([C0[0] - 26, yw, Z0 + zw], [1, 0, 0], [0, 1 / k, -sl / k])}" font-family="sans-serif" font-weight="700" font-size="4" textLength="52" lengthAdjust="spacingAndGlyphs">HEINZ VON HEIDEN</text>`);
+    // Schriftzug HEINZ VON HEIDEN: helle Sitze im unteren Rang der Westtribüne (v_07/v_08), direkt unter dem Dachrand; vom Spielfeld aus nach Westen gelesen: Süd → Nord = +x
+    // (der obere Rang liegt für eine Kamera im Osten hinter dem Dachrand, sichtbar ist nur der untere Streifen)
+    const sw = 1.6, sl = (PROF[1][1] - PROF[0][1]) / (PROF[1][0] - PROF[0][0]), zw = PROF[0][1] + sw * sl, yw = C0[1] - RRB - sw, k = Math.hypot(1, sl);
+    if (K.facing(0, sl / k, 1 / k) > 0) s += wins(`<text class="wn" data-f="3" transform="${K.plane([C0[0] - 41, yw, Z0 + zw], [1, 0, 0], [0, 1 / k, -sl / k])}" font-family="sans-serif" font-weight="700" font-size="8" textLength="82" lengthAdjust="spacingAndGlyphs">HEINZ VON HEIDEN</text>`);
     return s;
   };
   add({ id: 'bowl', fp: [0, 0, W, D], draw: K => pitch(K) + bowl(K) });
@@ -108,12 +109,21 @@ ISO.landmark('heinzvonheidenarena', H => {
   };
   const prism = (K, pts, z0, z1, mat, deco) => { const p = outward(clean(pts)); let s = ''; for (let i = 0; i < p.length; i++) { const a = p[i], b = p[(i + 1) % p.length]; s += K.wall(a, b, Z0 + z0, Z0 + z1, mat, deco); } return s + K.poly(p.map(q => [q[0], q[1], Z0 + z1]), mat + ' tp'); };
   const towerDeco = (len, h) => `${hl0(len, 1)}` + (len > 3 ? wins(`<rect class="wn${vari()}" data-f="2" x="${f2(len * .36)}" y="2.2" width="${f2(len * .28)}" height="${f2(h - 5)}"/>`) : '');
+  // Eingangsblock der Ostfassade (v_07/v_08): vorspringender Baukörper mit Glasfront und rotem «96»-Schild, in der Mitte der Ostfassade
+  const ENT = [[99.0,202.65],[121.0,203.42],[120.8,208.9],[98.8,208.15]];
+  const entDeco = (len, h) => {
+    if (len < 12) return hl0(len, 1);
+    let w = ''; const y = h - 2.2 - 5.2; let u = .6;
+    while (u < len - 1) { const ww = Math.min(len - u - .6, 2.4); if (ww > .8) w += `<rect class="wn${vari()}" data-f="2" x="${f2(u)}" y="${f2(y)}" width="${f2(ww)}" height="5.2"/>`; u += ww + .35; }
+    return hl0(len, h - 1.6) + `<rect class="tl" x="${f2(len * .3)}" y="1.2" width="${f2(len * .4)}" height="2.6"/>` + wins(w);
+  };
   add({ id: 'fassade', fp: [0, 0, W, D], above: 'bowl', draw: K => {
     let s = '';
     for (let i = 0; i < OUTW.length; i++) { const a = OUTW[i], b = OUTW[(i + 1) % OUTW.length];
       s += K.wall(a, b, Z0, Z0 + HW, 'kc', wallDeco(i)) + K.wall(a, b, Z0 + HW, Z0 + ZE, 'pl'); }
-    const tws = TW.map(p => ({ p, d: K.depth(p.reduce((q, c) => q + c[0], 0) / p.length, p.reduce((q, c) => q + c[1], 0) / p.length) })).sort((x, y) => x.d - y.d);
-    tws.forEach(t => { s += prism(K, t.p, 0, 11, 'pl', towerDeco); });
+    const tws = TW.map(p => ({ p, h: 11, deco: towerDeco, mat: 'pl' })).concat([{ p: ENT, h: 10.5, deco: entDeco, mat: 'kc' }])
+      .map(t => ({ ...t, d: K.depth(t.p.reduce((q, c) => q + c[0], 0) / t.p.length, t.p.reduce((q, c) => q + c[1], 0) / t.p.length) })).sort((x, y) => x.d - y.d);
+    tws.forEach(t => { s += prism(K, t.p, 0, t.h, t.mat, t.deco); });
     return s;
   } });
   add({ id: 'dach', fp: [0, 0, W, D], above: 'fassade', draw: K => {
@@ -131,10 +141,10 @@ ISO.landmark('heinzvonheidenarena', H => {
     // Kabelring auf Stäben über dem Dachrand
     let posts = '', ring = '', acc = 0, nxt = 0; const per = [];
     for (let i = 0; i < OUTW.length; i++) { const a = OUTW[i], b = OUTW[(i + 1) % OUTW.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]); per.push([a, b, L]); }
-    const tot = per.reduce((q, e) => q + e[2], 0), step = tot / Math.round(tot / 15), tops = [];
+    const tot = per.reduce((q, e) => q + e[2], 0), step = tot / Math.round(tot / 22), tops = [];
     per.forEach(([a, b, L]) => { while (nxt <= acc + L) { const t = (nxt - acc) / L, p = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; tops.push(p); nxt += step; } acc += L; });
     tops.forEach((p, i) => { posts += `M${K.P(p[0], p[1], Z0 + ZE).map(f2).join(' ')}L${K.P(p[0], p[1], Z0 + ZR).map(f2).join(' ')}`; ring += (i ? 'L' : 'M') + K.P(p[0], p[1], Z0 + ZR).map(f2).join(' '); });
     return s + `<path class="dt" d="${posts}"/><path class="dt" d="${ring}Z"/>`;
   } });
-  return { mods: M, lc: [W / 2, D / 2], z0: 0, top: [W / 2, D / 2, ZR], label: 'Heinz von Heiden Arena', h: ZR, len: W };
+  return { mods: M, lc: [W / 2, D / 2], z0: 0, top: [W / 2, D / 2, ZR], pin: [C0[0], C0[1], Z0 + ZR + 4], label: 'Heinz von Heiden Arena', h: ZR, len: W };
 });
