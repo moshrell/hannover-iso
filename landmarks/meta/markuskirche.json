@@ -1,7 +1,7 @@
 {
  "title": "Markuskirche",
- "fact": "Evangelisch-lutherische Kirche in der List (Otto Lüer, 1902–06) mit rund 70 m hohem Turm.",
- "studio": "Die Markuskirche in Hannover-List wurde 1902–1906 nach Plänen von Otto Lüer gebaut. Ihr schlanker Turm ist rund 70 m hoch; weil der Baugrund aus Sand besteht, ruht er auf etwa 400 Betonpfählen. Das Langhaus trägt ein steiles dunkles Dach mit mehreren Giebeln. Die Kirche gilt als Musikkirche (Chor, Konzerte, Orgel von 1958–62).",
+ "fact": "Evangelisch-lutherische Kirche in der List (Otto Lüer, 1902–06) mit rund 70 m hohem Turm auf 400 Betonpfählen.",
+ "studio": "Die Markuskirche in Hannover-List wurde 1902–1906 nach Plänen von Otto Lüer gebaut; die Stadt stellte das Grundstück kostenlos zur Verfügung. Weil der Baugrund aus Treibsand besteht, ruht der rund 70 m hohe Turm auf etwa 400 Betonpfählen. Das Langhaus trägt ein steiles dunkles Dach, an der Längsseite stehen drei Giebel mit Rosenfenstern. Die Kirche gilt als Musikkirche (Konzerte, Orgel von 1958–62).",
  "detail": "studio.html?lm=markuskirche",
  "minor": false,
  "h": 70,
@@ -14,5 +14,9 @@
  "osm": [
   "w44834907"
  ],
- "card_phi": 0
+ "card_phi": 180,
+ "seo": "Die Markuskirche liegt im Hannoveraner Stadtteil List an einem kleinen Platz unweit der Eilenriede und gehört zu den auffälligsten Kirchen der Stadt. Gebaut wurde sie von 1902 bis 1906 nach Plänen des Architekten Otto Lüer; das Grundstück stellte die Stadt kostenlos bereit. Weil der Untergrund aus Treibsand besteht, musste der rund 70 Meter hohe Turm auf etwa 400 Betonpfähle gegründet werden, was den Bau zeitweise aufhielt. Das Langhaus mit seinem steilen dunklen Dach, drei Giebeln an der Längsseite, Rosenfenstern und dem schlanken Turmhelm prägt die Silhouette der List. Die Kirche zählt zur Architektur des Historismus. Seit die Göttinger Firma Ott 1958 bis 1962 eine große Orgel mit 56 Registern einbaute, ist die Markuskirche zudem als Musikkirche bekannt, in der regelmäßig Konzerte und Lesungen stattfinden.",
+ "addr": "Oskar-Winter-Straße 7, 30161 Hannover",
+ "year": 1906,
+ "arch": "Otto Lüer, Historismus"
 }
