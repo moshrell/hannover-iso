@@ -1,25 +1,36 @@
-# Welfenschloss v3 — Bericht
+Отчёт: Welfenschloss (ветка lm/p_welfenschloss, доработка v3.1)
 
-## Was gezeichnet ist
-`landmarks/welfenschloss.js`, komplett neu nach OSM-Grundriss (r2743600) und den Kadern: Hauptbau 73–222 × 23–91 m in drei Teile gegliedert — niedrige Flügel (11 m) mit drei Innenhöfen (OSM-Löcher), hoher Mittelbau (20 m) mit Ringdach um den Lichthof (Backsteinschacht + Glasdach), vier Ecktürme am Mittelbau (nur der rechts in der Mitte mit Spitzhelm), Mittelturm vor der Südfront (Zinnenkranz, vier Ecktürmchen), Portalvorbau mit drei Bögen und zwei Löwen, Westflügel und Westende, Nordost-Anbau mit Hof, drei Bäume. Höhe Mittelturm ≈ 44 m über Gelände. Karte und Studio zeigen dieselbe Ansicht; Platzierung auf der Karte stimmt mit dem OSM-Umriss (len 240).
+Что сделано в этой доработке
+- Вес карточки: 970 узлов SVG вместо 3606 (в 3,7 раза легче), вид тот же. Цоколь, зубцы, пилястры, оконные рамки и перемычки теперь собираются в один путь на стену; светящееся стекло окон остаётся отдельными путями (data-f, классы win/lit), чтобы свет включался как раньше.
+- Точка на карте: pin = [146, 56, 41] над серединой Hauptbau (Lichthof), раньше стояла над западным концом комплекса.
+- Кольцевая крыша круче (подъём 7,5 м вместо 4,5 м), стеклянная крыша Lichthof поднята на уровень крыши (раньше «провалена» в яму 6 м ниже карниза), кирпичная стенка шахты видна ниже, как на v_21.
+- Метаданные: seo, addr, year, arch; fact уточнён; h = 44 (по рисунку; отдельный источник высоты не найден).
 
-## Seite → Kader
-Süd: v_21, v_16 · Dach/Lichthof/Türme: v_21, v_28 · Ost/West/Nord: nur grob (siehe INDEX.md).
+Размеры и ориентация
+- OSM r2743600: 240 × 94 м, len модуля 240 м, итоговый fit = ×1,0.
+- Ориентация: theta −8° по OSM, face не задан (минимальный поворот подходит). На карте южный фасад с порталом и Mittelturm виден как на v_21; card_phi = 0 (карточка уже показывает главный фасад с юго-востока, при других углах видны только упрощённые тыльные стороны).
+- Контрольная точка на карте проверена tools/preview.sh welfenschloss 2: стоит между двумя крыльями, над Lichthof.
 
-## Vergleiche
-`vergleich-1.png` (Studio ↔ v_21), `vergleich-2.png` (Studio ↔ v_28), `vergleich-3.png` (Karte ↔ v_16).
+Сверка с кадрами
+- vergleich-4.png: кадр v_21 (с юга) рядом с карточкой. vergleich-1..3.png: сравнения прошлой версии.
 
-## Nach Analogie / vereinfacht
-- Ringdach als flache Schrägen (echt: steile Walmdächer mit Gauben), Flügeldächer flach.
-- Turmhelm als Kegel (echt: achteckig); die Stellung der Ecktürme (Mitte/hinten) nach v_21, Position des Spitzhelmturms (rechts Mitte) aus nur einem Kader.
-- Fassaden von Ost, West und Nord verallgemeinert; Innenhöfe unbeleuchtet.
-- Lage des Lichthofs (126–169 × 36–64) geschätzt; er ist in OSM kein eigenes Loch.
+Сторона → кадры
+- юг (Welfengarten): v_21, v_16 (v_16 закрыт деревьями; фасад по v_13–v_17)
+- крыши, Lichthof, башни: v_21, v_28
+- восток, запад, север: только общий вид (v_05–v_09, v_29–v_36), Fassaden verallgemeinert
 
-## Nicht geprüft
-- Gesamthöhe ≈ 40 m (Auftrag): in zwei Quellen (en.wikipedia, hannover.de) keine Höhenangabe; Wert bleibt Schätzung.
-- Architekt: beide Quellen nennen **Christian Heinrich Tramm** (Bau 1857–1866, Georg V.; nach Tramms Tod Eduard Heidelberg) — die alten Texte mit Conrad Wilhelm Hase sind ersetzt (meta/welfenschloss.json).
+Нарисовано по аналогии / упрощено
+- Крыши боковых крыльев плоские (на кадрах пологие скатные, v_21), кольцевая крыша без люкарн.
+- Шлем угловой башни — конус (на самом деле восьмигранный); положение трёх башен без шлема и башни со шлемом по одному кадру.
+- Внутренние дворы не освещены, Lichthof (126–169 × 36–64) оценён.
 
-## Für Builder/Core
-Nichts Neues nötig; `face` nicht gesetzt (Mindestrotation passt). Meta-Felder `fact`, `studio`, `h` aktualisiert.
+Не проверено
+- Высота Mittelturm ≈ 44 м и общая высота: ни en.wikipedia, ни hannover.de высоты не дают, значение оценка по кадрам.
+- Адрес «Welfengarten 1, 30167 Hannover» (официальный адрес университета) не подтверждён ни en.wikipedia, ни hannover.de; поле добавлено по общеизвестным данным.
+- Данные по 1943 (повреждение Turmhauben) и 1956–58 (новый корпус Audimax) взяты из hannover.de, в модуле не отражены.
 
-Quellen: [Wikipedia](https://en.wikipedia.org/wiki/Welfenschloss), [hannover.de](https://www.hannover.de/Kultur-Freizeit/Geschichte-Geschichten/Historische-Bauten/Welfenschloss), OSM-Mitwirkende (ODbL).
+Для сборщика / core
+- Ничего нового в core/ не нужно. Сборщик: слить ветку, build-landmarks.py, точечный рендер плиток вокруг здания.
+- Какие кадры помогли бы: крупный кадр с востока и с севера (Fassaden und Dächer der Flügel), кадр боковых крыльев с высоты ≈ 45°.
+
+Источники: [Wikipedia](https://en.wikipedia.org/wiki/Welfenschloss), [hannover.de](https://www.hannover.de/Kultur-Freizeit/Geschichte-Geschichten/Historische-Bauten/Welfenschloss), OSM-Mitwirkende (ODbL).

@@ -1,12 +1,16 @@
 {
  "title": "Welfenschloss (Leibniz Universität)",
- "fact": "Neugotisches Schloss (1857–1866) nach Entwurf von Christian Heinrich Tramm für König Georg V. – heute Hauptgebäude der Leibniz Universität.",
+ "fact": "Neugotisches Schloss (1857–1866) nach Entwurf von Christian Heinrich Tramm für König Georg V. – seit 1879 Hochschule, heute Hauptgebäude der Leibniz Universität Hannover.",
  "studio": "Das Welfenschloss ließ König Georg V. von Hannover ab 1857 nach Entwürfen von Christian Heinrich Tramm in neugotischem Stil bauen (Bauleitung nach Tramms Tod: Eduard Heidelberg); seit 1879 ist es Hochschule und heute das Hauptgebäude der Leibniz Universität Hannover. Der Mittelbau mit Ringdach um den Lichthof, die Ecktürme und der Mittelturm mit Portal prägen die Front zum Welfengarten.",
  "detail": "studio.html?lm=welfenschloss",
  "minor": false,
- "h": 40.0,
+ "h": 44,
  "rank": 4,
  "osm": [
   "r2743600"
- ]
+ ],
+ "seo": "Das Welfenschloss liegt am Welfengarten im Hannoveraner Stadtteil Nordstadt und ist heute das Hauptgebäude der Leibniz Universität. König Georg V. von Hannover ließ es ab 1857 nach Plänen von Christian Heinrich Tramm als neugotische Residenz bauen; nach Tramms Tod führte Eduard Heidelberg die Bauleitung weiter. Die vierflügelige Anlage besteht aus hellem Sandstein und zeigt Rundbogenfenster, Zinnenkränze und mehrere Ecktürme, davor ein Mittelturm mit dreibogigem Portal. 1866 verlor die Welfendynastie das Königreich, Preußen übernahm den Bau, und seit 1879 dient er als Hochschule. Im Zweiten Weltkrieg 1943 wurden unter anderem die Turmhauben schwer beschädigt, später wurde das Gebäude für die Universität wiederhergestellt. Die lange Front mit Portal und Löwen blickt auf den Welfengarten und gehört zu den prägenden Bauten der Stadt.",
+ "addr": "Welfengarten 1, 30167 Hannover",
+ "year": "1857–1866",
+ "arch": "Christian Heinrich Tramm, Neugotik (Bauleitung nach Tramms Tod: Eduard Heidelberg)"
 }
