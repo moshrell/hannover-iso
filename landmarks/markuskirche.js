@@ -183,6 +183,6 @@
       return s;
     };
     const M = [{ id: 'markuskirche', fp, draw }];
-    return { mods: M, lc: [0, 0], z0: 0, top: [-15, -9, Z0 + 72], label: 'Markuskirche', h: 70, len: 60 };
+    return { mods: M, lc: [0, 0], z0: 0, top: [-15, -9, Z0 + 72], pin: [-1, 2, Z0 + 74], label: 'Markuskirche', h: 70, len: 60 };
   });
 })();
