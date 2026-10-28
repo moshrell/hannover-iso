@@ -80,7 +80,7 @@
     add({ id: 'wpPort', fp: [21.2, YR, 31.9, 24.8], parent: 'wp', side: 'S', draw: K => {
       const x0 = 21.65, x1 = 31.45, y0 = YR, y1 = 23.6, zc = Z0 + .5, zt = Z0 + 4.4;
       let s = K.box(x0 - .5, y0, Z0, x1 - x0 + 1, y1 - y0 + 1.1, .5, 'st');                                    // Stufe/Sockel
-      for (let i = 0; i < 4; i++) s += lathe(K, x0 + 1.0 + i * (x1 - x0 - 2.0) / 3, y1 - .6, [[zc, .9], [zc + .5, .72], [zt - .6, .62], [zt, .78]], 'st fr', 2);
+      for (let i = 0; i < 4; i++) s += lathe(K, x0 + 1.0 + i * (x1 - x0 - 2.0) / 3, y1 - .6, [[zc, .66], [zc + .35, .58], [zt - .8, .52], [zt - .3, .58], [zt, .7]], 'st fr', 2);
       s += K.box(x0, y0, zt, x1 - x0, y1 - y0, .7, 'st', { S: l => hl(0, l, .25) });                          // Gebälk + Balkonplatte
       const zb = zt + .7;
       s += K.wall([x0, y1 - .2], [x1, y1 - .2], zb, zb + 1.0, 'st', l => hl(0, l, .18) + Array.from({ length: Math.floor(l / .7) }, (_, i) => vl(.35 + i * .7, .18, 1.0)).join(''));
@@ -102,6 +102,6 @@
       return s;
     } });
 
-    return { mods: M, lc: [27, 10], z0: 0, top: [27, 10, 19], label: 'Wangenheimpalais', h: 19, len: 52 };
+    return { mods: M, lc: [27, 10], z0: 0, top: [27, 10, 19], label: 'Wangenheimpalais', h: 19, len: 52, pin: [26.8, 9.6, ZR + 4] };   // Punkt über der Mitte des Hauptbaus
   });
 })();

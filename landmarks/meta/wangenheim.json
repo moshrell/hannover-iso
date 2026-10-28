@@ -1,9 +1,9 @@
 {
  "title": "Wangenheimpalais",
  "fact": "Klassizistisches Palais von Laves (1829–1833), 1863–1913 Rathaus, seit 1957 Sitz des Wirtschaftsministeriums.",
- "studio": "Das Wangenheimpalais am Friedrichswall ließ Georg Ludwig Friedrich Laves 1829–1833 für Georg von Wangenheim bauen – ein Hauptwerk des hannoverschen Klassizismus. Die helle, dreigeschossige Front trägt ein leicht vorspringendes Mittelrisalit mit viersäuligem Portikus und Balkon, darüber einen Dreiecksgiebel mit dem Stadtwappen vor dem Walmdach; an der Westseite sitzt ein Erker mit grüner Kupferhaube. Unter König Georg V. königliche Residenz, 1863–1913 Rathaus der Stadt, 1943 ausgebrannt und danach wieder aufgebaut; seit 1957 hat hier das niedersächsische Wirtschaftsministerium seinen Sitz.",
+ "studio": "Das Wangenheimpalais am Friedrichswall ließ Georg Ludwig Friedrich Laves 1829–1833 für Graf Georg von Wangenheim bauen – ein Hauptwerk des hannoverschen Klassizismus. Die helle, dreigeschossige Front hat 4 + 5 + 4 Fensterachsen, ein leicht vorspringendes Mittelrisalit mit Säulenportikus und Balkon, darüber einen Dreiecksgiebel vor dem Walmdach; an der Westseite sitzt der 1844 angebaute Erker mit grüner Kupferhaube. 1851 kaufte das Königreich Hannover das Palais als Residenz für den Kronprinzen, 1862 die Stadt: bis 1913 war es Rathaus. Im Zweiten Weltkrieg brannte es aus; seit 1957 sitzt hier das niedersächsische Wirtschaftsministerium.",
  "detail": "studio.html?lm=wangenheim",
- "minor": true,
+ "minor": false,
  "osm": [],
  "h": 19,
  "rank": 8,
@@ -18,6 +18,10 @@
  "point": [
   52.369136,
   9.734905,
-  24
- ]
+  52
+ ],
+ "seo": "Das Wangenheimpalais am Friedrichswall gilt als Hauptwerk des hannoverschen Klassizismus. Der Hofbaumeister Georg Ludwig Friedrich Laves errichtete es von 1829 bis 1833 für Graf Georg von Wangenheim. Die helle, dreigeschossige Fassade ist in 4 + 5 + 4 Fensterachsen gegliedert; in der Mitte tritt ein Risalit mit Säulenportikus und Balkon vor, darüber schließt ein Dreiecksgiebel an das Walmdach an. Der halbrunde Erker an der Westseite wurde 1844 als Wintergarten angebaut. Nach dem Tod des Grafen 1851 erwarb das Königreich Hannover das Haus für den Kronprinzen, 1862 kaufte es die Stadt und nutzte es bis zur Eröffnung des Neuen Rathauses 1913 als Rathaus. Im Zweiten Weltkrieg brannte es aus und wurde wieder aufgebaut; seit 1957 hat hier das niedersächsische Wirtschaftsministerium seinen Sitz.",
+ "addr": "Friedrichswall 1, 30159 Hannover",
+ "year": "1829–1833",
+ "arch": "Georg Ludwig Friedrich Laves; Klassizismus"
 }
