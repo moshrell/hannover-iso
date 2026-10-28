@@ -71,8 +71,17 @@
     body('wC', XA, XB, { N: mid(11), S: mid(11) });
     body('wE', XB, L, { N: wing, S: wing, E: endWall }, WW);
     // Mittelrisalit (Süd 2,5 m, Nord 1,5 m) + Freitreppe nördlich
-    add({ id: 'rS', fp: [RX0, D, RX1, D + 2.5], draw: K => K.box(RX0, D, Z0, RX1 - RX0, 2.5, WH, 'pl', { S: fac(3, 0, { door: 1, tall: true }), E: (len, h) => hl(0, len, .35) + hl(0, len, h - 4.3) }, false)
-      + K.box(RX0 + 3.6, D + 2.5, Z0, 2.4, 1.3, .55, 'st', {}) + K.box(RX0 + 3.0, D + 3.8, Z0, 3.6, .9, .3, 'st', {}) });
+    // Südrisalit: dreiseitig (Mittelteil + zwei schräge Seiten), wie auf v_06
+    add({ id: 'rS', fp: [RX0, D, RX1, D + 2.5], draw: K => {
+      const c = 2.4, fr = (len, h) => hl(0, len, .3) + hl(0, len, .8) + hl(0, len, h - .02) + hl(0, len, h - 4.7)
+        + wins(`<rect class="lv" x="${f2(len / 2 - .75)}" y="${f2(h - 3.4)}" width="1.5" height="2.5"/>` + winR(len / 2 - .55, 1.5, 1.1, 1.55, 1));
+      const sd = (len, h) => hl(0, len, .3) + hl(0, len, .8) + hl(0, len, h - .02) + hl(0, len, h - 4.7)
+        + wins(winR(len / 2 - .65, h - 4.1, 1.3, 3.0, 0) + winR(len / 2 - .55, 1.5, 1.1, 1.55, 1));
+      const z1 = Z0 + WH;
+      return K.wall([RX0, D], [RX0 + c, D + 2.5], Z0, z1, 'pl', sd) + K.wall([RX0 + c, D + 2.5], [RX1 - c, D + 2.5], Z0, z1, 'pl', fr)
+        + K.wall([RX1 - c, D + 2.5], [RX1, D], Z0, z1, 'pl', sd)
+        + K.box(RX0 + 3.6, D + 2.5, Z0, 2.4, 1.3, .55, 'st', {}) + K.box(RX0 + 3.0, D + 3.8, Z0, 3.6, .9, .3, 'st', {});
+    } });
     add({ id: 'rN', fp: [RX0, -1.5, RX1, 0], draw: K => K.box(RX0, -1.5, Z0, RX1 - RX0, 1.5, WH, 'pl', { N: fac(3, 0, { door: 1, tall: true }), E: (len, h) => hl(0, len, .35) + hl(0, len, h - 4.3) }, false)
       + K.box(RX0 + 2, -3.3, Z0, 5.6, 1.8, .6, 'st', {}) + K.box(RX0 + 1.4, -4.5, Z0, 6.8, 1.2, .3, 'st', {}) });
     // Dächer: West-, Mitteltrakt, Osttrakt (hinten → vorne)
