@@ -8,9 +8,9 @@
   ISO.landmark('anzeiger', H => {
     const { f2, hl, winR, winG, wins, lathe, groupM } = H, M = [], add = m => (M.push(m), m);
     const PITCH = 2.3;                                    // Pfeilerabstand
-    const HT = 46;                                        // Traufe (Oberkante Gesims) über Gelände
+    const HT = 39;                                        // Traufe (Oberkante Gesims) über Gelände: Gesamthöhe 51 m (structurae, archiweb, Aurubis) – Kuppel 12 m = 39 m bis Gesims
     const MX1 = 32.3, MY1 = 14.2, WX0 = 4.9, WX1 = 26.9, WY1 = 23.6;   // Ostriegel (y 0–MY1) / Westvorbau (y MY1–WY1)
-    const DCX = MX1 / 2, DCY = WY1 / 2, DR = 11.2;        // Kuppelmitte und -radius (Kuppel ≈ so breit wie das Haus)
+    const DCX = MX1 / 2, DCY = WY1 / 2, DR = 9.0, DH = 12;   // Kuppelmitte, -radius (Ø ≈ 18 m ≈ 0,8 × Breite der Schriftfassade, Nachtfoto) und -höhe (12 m)
 
     /* ---------- Fassade (Wandkoordinaten: u entlang, y von der Oberkante nach unten) ---------- */
     const bays = len => { const a = [], n = Math.max(1, Math.round(len / PITCH)), p = len / n; for (let i = 0; i < n; i++) a.push([i * p, p]); return a; };
@@ -41,12 +41,21 @@
       return s;
     } });
 
-    /* ---------- Kuppel: überhöhte Halbkugel (≈ 12 m hoch) mit Rippen ---------- */
+    /* ---------- Kuppel: überhöhte Halbkugel (12 m hoch, Ø ≈ 18 m) mit Rippen, Fugenringen und kleiner Laterne ---------- */
     add({ id: 'azDome', fp: [0, 0, MX1, WY1], above: 'azBody', draw: K => {
-      const zk = Z0 + HT, prof = []; for (let i = 0; i <= 14; i++) { const t = i / 14; prof.push([zk + 12 * Math.sin(t * Math.PI / 2), DR * Math.cos(t * Math.PI / 2) + .1]); }
-      return lathe(K, DCX, DCY, prof, 'cu', 10, [4, 8, 11]);
+      const zk = Z0 + HT, prof = []; for (let i = 0; i <= 14; i++) { const t = i / 14; prof.push([zk + DH * Math.sin(t * Math.PI / 2), DR * Math.cos(t * Math.PI / 2) + .1]); }
+      let s = lathe(K, DCX, DCY, prof, 'cu', 12, []);
+      // Fugenringe: sichtbare Hälfte, an Lücken unterbrochen (keine Sehne quer über die Kuppel)
+      [3, 6, 9].forEach(i => {
+        const [z, r] = prof[i]; let seg = [], d = '';
+        for (let j = 0; j <= 72; j++) { const a = Math.PI * 2 * j / 72; if (K.facing(Math.cos(a), Math.sin(a)) > .02) seg.push([DCX + r * Math.cos(a), DCY + r * Math.sin(a), z]); else { if (seg.length > 1) d += K.path(seg); seg = []; } }
+        if (seg.length > 1) d += K.path(seg);
+        s += `<path class="dt cu-d" d="${d}"/>`;
+      });
+      s += lathe(K, DCX, DCY, [[zk + DH - .2, 1.5], [zk + DH + .9, 1.3]], 'cu', 0, []);   // Laterne auf dem Scheitel
+      return s;
     } });
 
-    return { mods: M, lc: [MX1 / 2, WY1 / 2], z0: 0, top: [DCX, DCY, 59], label: 'Anzeiger-Hochhaus', h: 59, len: 32.3 };
+    return { mods: M, lc: [MX1 / 2, WY1 / 2], z0: 0, top: [DCX, DCY, Z0 + HT + DH + 1], label: 'Anzeiger-Hochhaus', h: 51, len: 32.3, pin: [DCX, DCY, Z0 + HT + DH + 5] };
   });
 })();

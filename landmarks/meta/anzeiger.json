@@ -1,13 +1,13 @@
 {
  "title": "Anzeiger-Hochhaus",
  "fact": "Expressionistisches Klinkerhochhaus (Fritz Höger, 1927–28) mit grüner Kuppel und leuchtender Schrift ANZEIGER.",
- "studio": "Anzeiger-Hochhaus an der Goseriede, 1927–28 von Fritz Höger als expressionistisches Klinkerhochhaus für das Zeitungshaus gebaut. Dunkelroter Klinker, Pfeilerfassade mit Fensterreihen, zurückgesetztes Kronengeschoss mit der Schrift ANZEIGER und die grüne Kupferkuppel des früheren Planetariums prägen die Silhouette.",
+ "studio": "Anzeiger-Hochhaus an der Goseriede, 1927–28 von Fritz Höger für das Zeitungshaus Madsack gebaut: eines der ersten Hochhäuser Deutschlands, rund 51 m hoch. Dunkelroter Klinker, senkrechte Pfeiler mit schmalen Fensterreihen, oben die Schrift ANZEIGER und darüber die grüne Kupferkuppel (12 m) des früheren Planetariums prägen die Silhouette.",
  "detail": "studio.html?lm=anzeiger",
- "minor": true,
+ "minor": false,
  "osm": [
   "w304133007"
  ],
- "h": 59,
+ "h": 51,
  "rank": 4,
  "face": [
   "compass",
@@ -19,5 +19,9 @@
    -1,
    0
   ]
- ]
+ ],
+ "seo": "Das Anzeiger-Hochhaus an der Goseriede ist eines der frühesten Hochhäuser Deutschlands und ein Hauptwerk des norddeutschen Backsteinexpressionismus. Der Architekt Fritz Höger baute es 1927 und 1928 für den Verleger August Madsack und dessen Hannoverschen Anzeiger. Zehn Geschosse aus dunkelrotem Klinker steigen etwa 51 Meter auf; senkrechte Pfeiler gliedern die Fassade und ziehen den Blick nach oben, wo schmale Schlitzfenster und die Buchstaben ANZEIGER unter dem Gesims sitzen. Darüber wölbt sich die grüne Kupferkuppel, in der einst ein Planetarium untergebracht war. Abends leuchten Schrift und Pfeilerbänder weit über den Platz. Das Haus steht am Rand der Altstadt, nahe dem Steintor, und gehört zu den bekanntesten Bauten Hannovers.",
+ "addr": "Goseriede 9, 30159 Hannover",
+ "year": "1927–1928",
+ "arch": "Fritz Höger; norddeutscher Backsteinexpressionismus"
 }
