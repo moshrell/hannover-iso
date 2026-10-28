@@ -16,6 +16,7 @@
     });
     const ring = t => { const r = []; for (let i = 5; i < t.length; i += 2) r.push([t[i], t[i + 1]]); return r; };
     const PART = T.map(t => { const r = ring(t); return { zw: t[0], h: t[1], shape: t[2], rh: t[3], mc: t[4], r, minx: Math.min(...r.map(q => q[0])), maxx: Math.max(...r.map(q => q[0])), miny: Math.min(...r.map(q => q[1])), maxy: Math.max(...r.map(q => q[1])) }; });
+    PART[3].shape = 5;   // Foyer (w37761426): First senkrecht zur Nordfassade, Giebel zur Platzseite
     const fp = [Math.min(...PART.map(p => p.minx)), Math.min(...PART.map(p => p.miny)), Math.max(...PART.map(p => p.maxx)), Math.max(...PART.map(p => p.maxy))];
     // Teil B steht auf Teil A (B beginnt dort, wo A endet, und beide Grundrisse überlappen) → alle Stücke von A vor allen Stücken von B
     const SP = {};   // "a>b": Teil a liegt unter Teil b
@@ -98,10 +99,31 @@
     const RING = { fh: 7.6, bay: 4.4, ww: 2.0, wh: 4.6, sill: 1.5, mx: 1.4, ...LIT };
     const DRUM = { fh: 12, bay: 3.4, ww: 1.5, wh: 7.5, sill: 2.4, mx: 1.0, ...LIT };
     const FOY = { fh: 5.4, bay: 3.6, ww: 2.0, wh: 3.6, sill: 1.2, mx: 1.4, ...LIT };
-    function deco(p) {
+    /* Foyer-Hauptfassade (Nordseite zum Theodor-Heuss-Platz, v_09/v_10/hcc-nacht): zwei Fensterreihen zwischen Lisenen, in der Mitte Säulenportikus
+       mit Balkon. Wandkoordinaten u (L→R, Mitte = len/2), v nach unten ab Traufe. Anstrahlung abends violett (Nachtfoto), Eingang warm. */
+    const foyerFront = (len, h) => {
+      const c = len / 2, acc = {}, put = (k, r) => (acc[k] = acc[k] || []).push(r);
+      const win = (u, y, w, hh, f) => { const q = rnd(), k = q < .1 ? 'off' : q < .3 ? 'dim' : q < .42 ? 'hi' : ''; put(f + ' ' + k, rect(u - w / 2, y, w, hh)); };
+      [-13.6, -9.0, 9.0, 13.6].forEach((o, i) => { win(c + o, 1.7, 2.0, 3.4, 3); win(c + o, 7.0, 2.0, 3.8, 2); });
+      [-3.6, 0, 3.6].forEach(o => win(c + o, 1.5, 1.7, 3.6, 4));              // Obergeschoss über dem Balkon
+      let s = '', dt = '';
+      [-15.9, -11.3, -6.7, 6.7, 11.3, 15.9].forEach(o => { dt += `M${f2(c + o)} 0V${f2(h)}`; });                    // Lisenen
+      dt += `M0 1H${f2(len)}M0 5.9H${f2(len)}`;                                                                         // Gesims, Geschossband
+      s += `<path class="dt" d="${dt}"/>`;
+      s += `<path class="brz" d="${rect(c - 5.9, 6.5, 11.8, h - 6.5)}"/>`;                                           // Portikus: dunkle Tiefe
+      const doors = [-3.8, 0, 3.8].map(o => rect(c + o - 1.2, 7.6, 2.4, h - 7.6)).join('');
+      s += `<path class="wn hi" d="${doors}"/>`;                                                                       // warm beleuchteter Eingang
+      s += Object.entries(acc).map(([k, v]) => { const [f, c2] = k.split(' '); return `<path class="wn${c2 ? ' ' + c2 : ''}" data-f="${f}" d="${v.join('')}"/>`; }).join('');
+      s += `<path class="pl" d="${[-5.6, -1.9, 1.9, 5.6].map(o => rect(c + o - .5, 6.5, 1, h - 6.5)).join('')}"/>`;   // Säulen
+      s += `<path class="brz" d="${rect(c - 6.4, 5.3, 12.8, 1.2)}"/>` + `<path class="dt" d="${Array.from({ length: 17 }, (_, i) => `M${f2(c - 6.2 + i * .775)} 5.3v1.2`).join('')}"/>`;   // Balkon mit Geländer
+      s += [0, 1, 2].map(() => `<rect class="wsl" fill="#7F5BE6" opacity="0" y="${f2(h * .08)}" width="${f2(len)}" height="${f2(h * .92)}"/>`).join('');
+      return s;
+    };
+    function deco(p, a, b) {
       const pt = p.part, id = IDS[pt];
       return (len, h) => {
         if (len < 2.5 || h < 1) return '';
+        if (id === 'w37761426' && len > 30 && b[0] < a[0] && Math.abs(b[1] - a[1]) < len * .7) return foyerFront(len, h);
         if (id === 'w526529261') return windows(len, h, DRUM) + vlines(len, h, 3.4);        // Trommel: Pilaster und hohe Fenster
         if (id === 'w1490187483') return windows(len, h, RING) + hlines(len, [h * .5]);      // Ringbau
         if (id === 'w37761426' || id === 'w526550619') return windows(len, h, FOY) + hlines(len, [h - 5.4]);
@@ -128,6 +150,7 @@
         }
         return s;
       }
+      if (shape === 5) return gableRoof(K, q);
       // Sattel-/Walmdach auf dem Hüllrechteck (längste Kante bestimmt die Firstrichtung)
       let bi = 0, bl = 0; r.forEach((p, i) => { const n = r[(i + 1) % r.length], l = Math.hypot(n[0] - p[0], n[1] - p[1]); if (l > bl) { bl = l; bi = i; } });
       const e0 = r[bi], e1 = r[(bi + 1) % r.length], ux = (e1[0] - e0[0]) / bl, uy = (e1[1] - e0[1]) / bl, vx = -uy, vy = ux;
@@ -141,17 +164,32 @@
       return s;
     }
 
+    // Satteldach quer: First senkrecht zur längsten Kante (Fassade), Giebel mit Relief-Medaillon zur Fassadenseite
+    function gableRoof(K, q) {
+      const { zw, h, mc, r } = q, z = Z0 + zw, zt = Z0 + h, mat = MATS[mc];
+      let bi = 0, bl = 0; r.forEach((p, i) => { const n = r[(i + 1) % r.length], l = Math.hypot(n[0] - p[0], n[1] - p[1]); if (l > bl) { bl = l; bi = i; } });
+      const e0 = r[bi], e1 = r[(bi + 1) % r.length], ux = (e1[0] - e0[0]) / bl, uy = (e1[1] - e0[1]) / bl, vx = -uy, vy = ux;
+      let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9;
+      r.forEach(p => { const u = (p[0] - e0[0]) * ux + (p[1] - e0[1]) * uy, v = (p[0] - e0[0]) * vx + (p[1] - e0[1]) * vy; u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v); });
+      const W = (u, v, zz) => [e0[0] + u * ux + v * vx, e0[1] + u * uy + v * vy, zz], um = (u0 + u1) / 2;
+      const A = W(u0, v0, z), B = W(u1, v0, z), C = W(u1, v1, z), Dd = W(u0, v1, z), R0 = W(um, v0, zt), R1 = W(um, v1, zt);
+      let s = K.face([A, Dd, R1, R0], mat) + K.face([B, C, R1, R0], mat) + K.face([A, B, R0], 'pl') + K.face([Dd, C, R1], 'pl');
+      const zc = z + (zt - z) * .34, rr = 2.7, ring = Array.from({ length: 20 }, (_, i) => W(um + rr * Math.cos(i * Math.PI / 10), v0, zc + rr * 1.15 * Math.sin(i * Math.PI / 10)));
+      s += K.poly(ring, 'wn dim') + K.poly([A, R0, B], 'dt') + K.poly([W(u0 + 1.6, v0, z + .6), W(u1 - 1.6, v0, z + .6)], 'dt');
+      return s;
+    }
+
     /* ---------- Zeichnen ---------- */
     const draw = K => {
       let s = '';
       const left = PART.map(() => 0); P.forEach(p => left[p.part]++);
       order(K).forEach(p => {
-        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'pl', deco(p));
+        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'pl', deco(p, p.v[i], p.v[(i + 1) % p.v.length]));
         if (--left[p.part] === 0) s += roof(K, PART[p.part]);
       });
       return s;
     };
     const M = [{ id: 'hcc', fp, draw }];
-    return { mods: M, lc: [0, 0], z0: 0, top: [-10, 5, Z0 + 44], label: 'HCC', h: 44, len: 140 };
+    return { mods: M, lc: [0, 0], z0: 0, top: [-32, -35, Z0 + 44], pin: [-32, -35, Z0 + 46], label: 'HCC', h: 44, len: 140 };
   });
 })();
