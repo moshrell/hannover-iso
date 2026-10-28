@@ -1,9 +1,9 @@
 {
  "title": "Landesmuseum",
  "fact": "Niedersächsisches Landesmuseum (1897–1902, Hubert Stier, Neorenaissance) am Maschpark: Vierflügelanlage mit Glasdächern, Kuppel und Rotunde am Mittelrisalit – die Kuppel brannte 1943 ab.",
- "studio": "Niedersächsisches Landesmuseum, 1897–1902 von Hubert Stier im Stil der Neorenaissance gebaut. Vier Flügel mit flachen Dachterrassen und Glasoberlichtern (ursprünglich sieben Glasdächer) umschließen einen Hof; in der Mitte der Front der Risalit mit drei hohen Bogenfenstern und flachem Pyramidendach (die Kuppel darüber brannte beim Luftangriff vom 8. Oktober 1943 ab), dahinter im Hof die runde Rotunde. An den Ecken stehen Pavillons mit geschweiften Schieferdächern, Segmentgiebeln und grünen Kupfer-Gauben.",
+ "studio": "Niedersächsisches Landesmuseum, 1897–1902 von Hubert Stier im Stil der Neorenaissance gebaut. Vier Flügel mit flachen Dachterrassen und langen Glasoberlichtern (ursprünglich sieben Glasdächer) umschließen einen Hof; in der Mitte der Front der Risalit mit drei hohen Bogenfenstern und flachem Pyramidendach (die Kuppel darüber brannte beim Luftangriff vom 8. Oktober 1943 ab), dahinter im Hof die runde Rotunde. An den Ecken stehen Pavillons mit geschweiften Schieferdächern, Segmentgiebeln und grünen Kupfer-Gauben.",
  "detail": "studio.html?lm=landesmuseum",
- "minor": true,
+ "minor": false,
  "osm": [
   "r364529"
  ],
@@ -16,5 +16,9 @@
    1
   ],
   "Willy-Brandt-Allee"
- ]
+ ],
+ "seo": "Das Niedersächsische Landesmuseum liegt am Maschpark in Hannover, die Hauptfassade blickt zur Willy-Brandt-Allee. Der Architekt Hubert Stier baute es von 1897 bis 1902 im Stil der Neorenaissance aus Sandstein: vier Flügel um einen Innenhof, an den Ecken Pavillons mit geschweiften Schieferdächern, in der Mitte ein Risalit mit drei hohen Bogenfenstern. Über diesem Risalit saß einst eine Kuppel, sie brannte beim Luftangriff vom 8. Oktober 1943 ab; heute deckt ein flaches Walmdach den Mittelbau. Im Hof steht die runde Rotunde, die Flügel tragen lange Glasdächer, die ihre Säle mit Tageslicht versorgen. Nach dem Umbau wurde das Haus im Jahr 2000 wiedereröffnet. Es zeigt Kunst, Natur- und Landesgeschichte unter einem Dach.",
+ "addr": "Willy-Brandt-Allee 5, 30169 Hannover",
+ "year": 1902,
+ "arch": "Hubert Stier, Neorenaissance"
 }
