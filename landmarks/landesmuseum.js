@@ -25,13 +25,13 @@
       return s + wins(w);
     };
     // Flügelfassade: Reliefband, Bogenfenster zwischen Pilastern, Sockel
-    const wingS = (step = 4.6, lead = 0) => (len, h) => {
+    const wingS = (step = 4.6, lead = 0, ww = 2.4) => (len, h) => {
       let q = balustrade(len) + hl(0, len, 2.3) + hl(0, len, 4.3), w = '';
       const n = Math.max(1, Math.floor((len - 1.6) / step)), x0 = (len - (n - 1) * step) / 2;
       for (let i = 0; i < n; i++) {
         const u = x0 + i * step;
-        w += winA(u - 1.2, 5.4, 2.4, 5.2, 1);
-        q += `<path class="dt" d="M${f2(u - 1.5)} 2.7h3V4.0h-3Z"/>` + hl(u - 1.6, u + 1.6, 5.1);                  // Reliefplatte über dem Fenster
+        w += winA(u - ww / 2, 5.4, ww, 5.2, 1);
+        q += `<path class="dt" d="M${f2(u - ww / 2 - .3)} 2.7h${f2(ww + .6)}V4.0h-${f2(ww + .6)}Z"/>` + hl(u - ww / 2 - .4, u + ww / 2 + .4, 5.1);                  // Reliefplatte über dem Fenster
         if (i < n - 1) q += vl(u + step / 2, 2.3, 11.2);                                                           // Pilaster
       }
       q += vl(.5, 2.3, 11.2) + vl(len - .5, 2.3, 11.2) + hl(0, len, 11.2);
@@ -90,11 +90,11 @@
     // ======== FLÜGEL (OSM-Grundriss, jeder Block eigener Grundriss) ========
     const sides = { S: plain, E: plain, N: plain, W: plain };
     // Frontflügel links/rechts vom Risalit: Reliefband und Bogenfenster in Pilastern
-    add({ id: 'fL', fp: [12, 46.4, 31, 63.4], draw: K => K.box(12, 46.4, Z0, 19, 17, HW, 'pl', { S: wingS(4.6), E: plain, N: plain, W: plain }) + deck(K, 12, 46.4, 31, 63.4) + sky(K, 14, 50.4, 29, 59.4) });
-    add({ id: 'fR', fp: [50.8, 46.4, 71, 63.4], draw: K => K.box(50.8, 46.4, Z0, 20.2, 17, HW, 'pl', { S: wingS(4.6), E: plain, N: plain, W: plain }) + deck(K, 50.8, 46.4, 71, 63.4) + sky(K, 52.8, 50.4, 68.8, 59.4) });
+    add({ id: 'fL', fp: [12, 46.4, 31, 63.4], draw: K => K.box(12, 46.4, Z0, 19, 17, HW, 'pl', { S: wingS(3.4, 0, 2.0), E: plain, N: plain, W: plain }) + deck(K, 12, 46.4, 31, 63.4) + sky(K, 14, 50.4, 29, 59.4) });
+    add({ id: 'fR', fp: [50.8, 46.4, 71, 63.4], draw: K => K.box(50.8, 46.4, Z0, 20.2, 17, HW, 'pl', { S: wingS(3.4, 0, 2.0), E: plain, N: plain, W: plain }) + deck(K, 50.8, 46.4, 71, 63.4) + sky(K, 52.8, 50.4, 68.8, 59.4) });
     // Seitenflügel und Rückflügel
-    add({ id: 'sW', fp: [0, 0, 18, 46.4], draw: K => K.box(0, 0, Z0, 18, 46.4, HW, 'pl', sides) + deck(K, 0, 0, 18, 46.4) + sky(K, 4, 3, 14, 21) + sky(K, 4, 25, 14, 43) });
-    add({ id: 'sE', fp: [59, 0, 83, 46.4], draw: K => K.box(59, 0, Z0, 24, 46.4, HW, 'pl', sides) + deck(K, 59, 0, 83, 46.4) + sky(K, 64, 3, 78, 21) + sky(K, 64, 25, 78, 43) });
+    add({ id: 'sW', fp: [0, 0, 18, 46.4], draw: K => K.box(0, 0, Z0, 18, 46.4, HW, 'pl', sides) + deck(K, 0, 0, 18, 46.4) + sky(K, 4, 4, 14, 42) });
+    add({ id: 'sE', fp: [59, 0, 83, 46.4], draw: K => K.box(59, 0, Z0, 24, 46.4, HW, 'pl', sides) + deck(K, 59, 0, 83, 46.4) + sky(K, 64, 4, 78, 42) });
     add({ id: 'rear', fp: [18, 0, 59, 19.2], draw: K => K.box(18, 0, Z0, 41, 19.2, HW, 'pl', sides) + deck(K, 18, 0, 59, 19.2) + sky(K, 22, 4, 34, 15.2) + sky(K, 43, 4, 55, 15.2)
       + hipC(K, 34.5, 3, 42.5, 16.2, Z0 + HW, Z0 + HW + 2.2, 'sl', 2) + hipC(K, 36, 6, 41, 13, Z0 + HW + 2.2, Z0 + HW + 4.2, 'pl tp', 1.6) });
 
@@ -124,7 +124,7 @@
           const pts = [P(a - da, zz), P(a + da, zz), P(a + da, zz + hh), P(a - da, zz + hh)];
           if (K.facing(Math.cos(a), -Math.sin(a)) > 0) w += `<path class="wn dim" data-f="2" d="${K.path(pts)}Z"/>`; });
       }
-      return q + w + lathe(K, cx, cy, [[zt + 1.0, R + .1], [zt + 2.3, R - 1.2], [zt + 3.0, 2.2], [zt + 3.3, .3]], 'cu', 6);
+      return q + w + lathe(K, cx, cy, [[zt + 1.0, R + .1], [zt + 2.3, R - 1.2], [zt + 3.0, 2.2], [zt + 3.3, .3]], 'sl', 6);
     } });
     // flacher Eingangsvorsprung (≈ 3 m) mit Portal, Rundbögen und Stufen
     add({ id: 'step', fp: [32.7, 64.8, 49.1, 66.2], parent: 'ris', side: 'S', draw: K => K.box(32.7, 64.8, Z0, 16.4, 1.4, 5.6, 'pl', {
@@ -143,6 +143,6 @@
         + [[1.9, 48.4], [10.1, 48.4], [1.9, 62.8], [10.1, 62.8], [6, 62.8]].map(([a, b]) => dormer(K, x + a, b, Z0 + HP + 1.7)).join('') + (K.wallVisible([x, 64.8], [x + 12, 64.8]) ? gablePed(K, x) : '') + urn(K, x + .6, 64.2, Z0 + HP) + urn(K, x + 11.4, 64.2, Z0 + HP);
     } });
     pav('pW', 0); pav('pE', 71);
-    return { mods: M, ground, lc: [41.45, 33.1], z0: 0, top: [41, 50, 28], label: 'Landesmuseum', h: 28, len: 83 };
+    return { mods: M, ground, lc: [41.45, 33.1], z0: 0, top: [41, 50, 28], pin: [41.5, 33.1, Z0 + 31], label: 'Landesmuseum', h: 28, len: 83 };
   });
 })();
