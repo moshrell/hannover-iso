@@ -5,7 +5,7 @@
    Jeder Teil ist in konvexe Stücke zerlegt (Sortierung ohne Durchdringung); Dächer entstehen aus dem Teilumriss. */
 (() => {
   const Z0 = 1;
-  /*DATA*/const D = [[0,11,0,[-16.3,2.9,-20.9,-3.7,-25.0,-0.8,-11.2,18.8],7],[0,11,0,[3.4,-10.9,-2.4,-6.9,-4.0,-5.7,-9.8,-1.7,-10.6,-1.1,-16.3,2.9,-11.2,18.8,17.5,-1.2],85],[0,11,0,[-9.8,-1.7,-14.3,-8.3,-15.2,-7.7,-10.6,-1.1],7],[0,11,0,[-2.4,-6.9,-7.0,-13.4,-8.6,-12.3,-4.0,-5.7],7],[0,11,0,[3.7,-20.9,-1.2,-17.5,3.4,-10.9,17.5,-1.2],11],[0,11,1,[18.3,-15.7,10.9,-19.2,3.4,-21.3,16.9,-2.1,20.7,-7.1,20.7,-11.4],61],[0,11,1,[10.9,-19.2,12.1,-21.9,10.7,-24.5,8.2,-24.9,3.4,-21.3],15],[0,11,2,[-1.3,-17.4,-1.4,-17.7,-7.1,-13.7],3],[0,11,2,[-2.4,-7.0,3.3,-10.9,-1.3,-17.4,-7.1,-13.7],11],[0,11,3,[-8.6,-12.3,-8.8,-12.5,-14.5,-8.5],3],[0,11,3,[-9.7,-1.8,-4.1,-5.7,-8.6,-12.3,-14.5,-8.5],11],[0,11,4,[-15.2,-7.7,-15.3,-8.0,-21.1,-3.9],3],[0,11,4,[-16.3,2.8,-10.6,-1.2,-15.2,-7.7,-21.1,-3.9],11],[0,46,5,[8.0,6.9,2.9,10.4,6.4,15.4,11.5,11.9],15],[0,7,6,[-4.7,14.3,-9.6,17.7,-7.8,20.3,-2.8,16.9],15],[0,6,7,[9.5,4.4,9.9,5.0,17.9,-0.6,17.5,-1.2],15],[46,46,8,[4.2,9.3,3.8,11.9,5.3,14.1,7.9,14.6,10.1,13.0,10.6,10.4,9.1,8.2,6.4,7.7],255]], T = [[11,23.5,2,12.5,0,0,-11.2,18.8,-25.0,-0.8,-20.9,-3.7,-16.3,2.9,-10.6,-1.1,-15.2,-7.7,-14.3,-8.3,-9.8,-1.7,-4.0,-5.7,-8.6,-12.3,-7.0,-13.4,-2.4,-6.9,3.4,-10.9,-1.2,-17.5,3.7,-20.9,17.5,-1.2],[11,20,2,9,0,0,20.7,-7.1,16.9,-2.1,3.4,-21.3,8.2,-24.9,10.7,-24.5,12.1,-21.9,10.9,-19.2,18.3,-15.7,20.7,-11.4],[11,22,2,11,0,0,-1.4,-17.7,-1.3,-17.4,3.3,-10.9,-2.4,-7.0,-7.1,-13.7],[11,22,2,11,0,0,-8.8,-12.5,-8.6,-12.3,-4.1,-5.7,-9.7,-1.8,-14.5,-8.5],[11,22,2,11,0,0,-15.3,-8.0,-15.2,-7.7,-10.6,-1.2,-16.3,2.8,-21.1,-3.9],[46,46,0,0,0,0,6.4,15.4,2.9,10.4,8.0,6.9,11.5,11.9],[7,10,2,3,0,0,-7.8,20.3,-9.6,17.7,-4.7,14.3,-2.8,16.9],[6,6,0,0,0,0,17.9,-0.6,9.9,5.0,9.5,4.4,17.5,-1.2],[46,70,1,24,0,0,9.1,8.2,10.6,10.4,10.1,13.0,7.9,14.6,5.3,14.1,3.8,11.9,4.2,9.3,6.4,7.7]], IDS = ["hall", "chor-o", "giebel3", "giebel2", "giebel1", "turm", "anbau-sw", "anbau-se", "helm"];/*END*/
+  /*DATA*/const D = [[0,15.5,0,[-16.3,2.9,-20.9,-3.7,-25.0,-0.8,-11.2,18.8],7],[0,15.5,0,[3.4,-10.9,-2.4,-6.9,-4.0,-5.7,-9.8,-1.7,-10.6,-1.1,-16.3,2.9,-11.2,18.8,17.5,-1.2],85],[0,15.5,0,[-9.8,-1.7,-14.3,-8.3,-15.2,-7.7,-10.6,-1.1],7],[0,15.5,0,[-2.4,-6.9,-7.0,-13.4,-8.6,-12.3,-4.0,-5.7],7],[0,15.5,0,[3.7,-20.9,-1.2,-17.5,3.4,-10.9,17.5,-1.2],11],[0,12.5,1,[18.3,-15.7,10.9,-19.2,3.4,-21.3,16.9,-2.1,20.7,-7.1,20.7,-11.4],61],[0,12.5,1,[10.9,-19.2,12.1,-21.9,10.7,-24.5,8.2,-24.9,3.4,-21.3],15],[0,46,2,[8.6,6.0,1.7,10.8,6.5,17.7,13.4,12.8],15],[0,15.5,3,[-1.3,-17.4,-1.4,-17.7,-7.1,-13.7],3],[0,15.5,3,[-2.4,-7.0,3.3,-10.9,-1.3,-17.4,-7.1,-13.7],11],[0,15.5,4,[-8.6,-12.3,-8.8,-12.5,-14.5,-8.5],3],[0,15.5,4,[-9.7,-1.8,-4.1,-5.7,-8.6,-12.3,-14.5,-8.5],11],[0,15.5,5,[-15.2,-7.7,-15.3,-8.0,-21.1,-3.9],3],[0,15.5,5,[-16.3,2.8,-10.6,-1.2,-15.2,-7.7,-21.1,-3.9],11],[0,7,6,[-4.7,14.3,-9.6,17.7,-7.8,20.3,-2.8,16.9],15],[0,6,7,[9.5,4.4,9.9,5.0,17.9,-0.6,17.5,-1.2],15],[46,46,8,[4.1,9.6,3.5,12.7,5.3,15.3,8.4,15.8,11.0,14.0,11.5,10.9,9.7,8.4,6.6,7.8],255]], T = [[15.5,28.0,2,12.5,0,0,-11.2,18.8,-25.0,-0.8,-20.9,-3.7,-16.3,2.9,-10.6,-1.1,-15.2,-7.7,-14.3,-8.3,-9.8,-1.7,-4.0,-5.7,-8.6,-12.3,-7.0,-13.4,-2.4,-6.9,3.4,-10.9,-1.2,-17.5,3.7,-20.9,17.5,-1.2],[12.5,22.5,2,10,0,0,20.7,-7.1,16.9,-2.1,3.4,-21.3,8.2,-24.9,10.7,-24.5,12.1,-21.9,10.9,-19.2,18.3,-15.7,20.7,-11.4],[46,46,0,0,0,0,6.5,17.7,1.7,10.8,8.6,6.0,13.4,12.8],[15.5,26.5,2,11,0,0,-1.4,-17.7,-1.3,-17.4,3.3,-10.9,-2.4,-7.0,-7.1,-13.7],[15.5,26.5,2,11,0,0,-8.8,-12.5,-8.6,-12.3,-4.1,-5.7,-9.7,-1.8,-14.5,-8.5],[15.5,26.5,2,11,0,0,-15.3,-8.0,-15.2,-7.7,-10.6,-1.2,-16.3,2.8,-21.1,-3.9],[7,10,2,3,0,0,-7.8,20.3,-9.6,17.7,-4.7,14.3,-2.8,16.9],[6,6,0,0,0,0,17.9,-0.6,9.9,5.0,9.5,4.4,17.5,-1.2],[46,70,1,24,0,0,9.7,8.4,11.5,10.9,11.0,14.0,8.4,15.8,5.3,15.3,3.5,12.7,4.1,9.6,6.6,7.8]], IDS = ["hall", "chor-o", "turm", "giebel3", "giebel2", "giebel1", "anbau-sw", "anbau-se", "helm"];/*END*/
   ISO.landmark('markuskirche', H => {
     const { f2, rnd } = H;
     const P = D.map((d, n) => {
@@ -76,6 +76,10 @@
 
     /* ---------- Fassaden (Wandkoordinaten: u nach rechts, v nach unten ab Oberkante) ---------- */
     const rect = (x, y, w, h) => `M${f2(x)} ${f2(y)}h${f2(w)}v${f2(h)}h${f2(-w)}z`;
+    const arch = (x, y, w, h) => { const r = w / 2; return h <= r ? rect(x, y, w, h) : `M${f2(x)} ${f2(y + h)}V${f2(y + r)}a${f2(r)} ${f2(r)} 0 0 1 ${f2(w)} 0V${f2(y + h)}z`; };   // Fenster mit Rundbogen
+    const circ = (cx, cy, r) => `M${f2(cx - r)} ${f2(cy)}a${f2(r)} ${f2(r)} 0 1 0 ${f2(2 * r)} 0a${f2(r)} ${f2(r)} 0 1 0 ${f2(-2 * r)} 0z`;
+    const ringDt = (cx, cy, r) => `<path class="dt" d="${circ(cx, cy, r)}"/>`;
+    const spokes = (cx, cy, r) => `<path class="dt" d="${Array.from({ length: 6 }, (_, i) => { const a = i * Math.PI / 3 + .3; return `M${f2(cx + r * Math.cos(a))} ${f2(cy + r * Math.sin(a))}L${f2(cx - r * Math.cos(a))} ${f2(cy - r * Math.sin(a))}`; }).join('')}"/>`;   // Maßwerk der Rose
     function windows(len, h, o) {
       const { fh, bay, ww, wh, sill, mx } = o, acc = {}, rows = Math.floor((h - (o.top || mx)) / fh);
       if (rows < 1 || len < ww + 2 * mx) return '';
@@ -85,7 +89,7 @@
         if (yb - wh < .3) continue;
         for (let b = 0; b < nb; b++) {
           const q = rnd(), c = q < o.pOff ? ' off' : q < o.pOff + o.pDim ? ' dim' : q < o.pOff + o.pDim + o.pHi ? ' hi' : '';
-          const key = f + c; (acc[key] = acc[key] || []).push(rect(off + b * bay, yb - wh, ww, wh));
+          const key = f + c; (acc[key] = acc[key] || []).push((o.arch ? arch : rect)(off + b * bay, yb - wh, ww, wh));
         }
       }
       return Object.entries(acc).map(([k, v]) => { const [f, ...c] = k.split(' '); return `<path class="wn${c.length ? ' ' + c.join(' ') : ''}" data-f="${f}" d="${v.join('')}"/>`; }).join('');
@@ -93,27 +97,53 @@
     const vlines = (len, h, step) => { let d = ''; for (let u = step / 2; u < len; u += step) d += `M${f2(u)} 0V${f2(h)}`; return `<path class="dt" d="${d}"/>`; };
     const hlines = (len, ys) => ys.length ? `<path class="dt" d="${ys.map(y => `M0 ${f2(y)}H${f2(len)}`).join('')}"/>` : '';
     const LIT = { pOff: .52, pDim: .24, pHi: .08 };
-    const NAVE = { fh: 8.4, bay: 5.2, ww: 1.8, wh: 5.6, sill: 2.2, mx: 2.0, ...LIT };
+    const NAVE = { fh: 9, bay: 4.4, ww: 1.8, wh: 8.2, sill: 3.0, mx: 2.0, arch: 1, ...LIT };
     const GABL = { fh: 8.4, bay: 7, ww: 4.4, wh: 5.6, sill: 2.2, mx: 1.2, ...LIT };
     const TURM = { fh: 9, bay: 3.2, ww: .9, wh: 4, sill: 1.5, mx: 1.4, pOff: .55, pDim: .2, pHi: .05 };
-    const SMALL = { fh: 8, bay: 3.6, ww: 1.4, wh: 3.6, sill: 1.6, mx: 1.2, ...LIT };
-    function deco(p) {
-      const id = IDS[p.part];
+    const SMALL = { fh: 7, bay: 3.4, ww: 1.4, wh: 4.4, sill: 1.8, mx: 1.2, arch: 1, ...LIT };
+    // Wandfläche mit Normale n (aus Wandrichtung a→b): Südostseite (Eingang, zur Straße) = „front“ des Turms
+    const nrm = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); return [-dy / l, dx / l]; };
+    function deco(p, a, b) {
+      const id = IDS[p.part], n = nrm(a, b), front = n[0] * .57 + n[1] * .82 > .75;
       return (len, h) => {
         if (len < 2.2 || h < 1) return '';
-        if (id === 'turm') return windows(len, h, TURM) + (len > 4 ? `<path class="wn hi" data-f="4" d="${rect(len / 2 - 1.1, 5.2, 2.2, 2.2)}"/>` : '') + hlines(len, [h - 13, h - 3.2]);    // Uhr unter dem Glockengeschoss
-        if (id.startsWith('giebel')) return windows(len, h, GABL) + hlines(len, [2.2]);
-        if (id === 'hall') return windows(len, h, NAVE) + hlines(len, [h - 1.4]);
+        if (id === 'turm') {   // Westturm: Eckpfeiler, Schlitze, Portal (Südseite), Uhr, Schallarkaden
+          let s = `<path class="dt" d="M.55 0V${f2(h)}M${f2(len - .55)} 0V${f2(h)}"/>` + hlines(len, [h - 11.5, h - 20, h - 33]);
+          const lit = (d, f, c) => `<path class="wn${c ? ' ' + c : ''}" data-f="${f}" d="${d}"/>`;
+          s += lit(arch(len / 2 - 1.55, 1.8, .95, 5.4) + arch(len / 2 + .6, 1.8, .95, 5.4), 4, rnd() < .5 ? 'hi' : '');       // Schallöffnungen
+          s += `<circle class="clockface" cx="${f2(len / 2)}" cy="${f2(h - 33 + 1.9)}" r="1.25"/>` + ringDt(len / 2, h - 33 + 1.9, 1.7);   // Uhr
+          if (front) s += `<path class="brz" d="${arch(len / 2 - 1.3, h - 6.4, 2.6, 6.4)}"/>` + lit(circ(len / 2, h - 12.8, .95), 3) + ringDt(len / 2, h - 12.8, 1.4);   // Portal und Rose
+          else s += lit(rect(len / 2 - .35, h - 18, .7, 3.4) + rect(len / 2 - .35, h - 27, .7, 3.4), 2) + lit(arch(len / 2 - .45, h - 9, .9, 4), 1, 'dim');
+          return s;
+        }
+        if (id.startsWith('giebel')) {   // Giebelfront: Rose, zwei Rundbogenfenster, Lisenen
+          const c = len / 2;
+          return `<path class="dt" d="M.5 0V${f2(h)}M${f2(len - .5)} 0V${f2(h)}M0 6.8H${f2(len)}"/>` + ringDt(c, 3.7, 2.3)
+            + `<path class="wn hi" data-f="4" d="${circ(c, 4.3, 2.0)}"/>` + spokes(c, 4.3, 2.0)
+            + `<path class="wn" data-f="2" d="${arch(c - 2.3, 8.7, 1.5, 5.8)}${arch(c + .8, 8.7, 1.5, 5.8)}"/>`;
+        }
+        if (id === 'hall') return windows(len, h, NAVE) + hlines(len, [h - 1.4, 2.0]) + vlines(len, h, 4.4);
         return windows(len, h, SMALL) + hlines(len, [h - 1.2]);
       };
     }
 
     /* ---------- Dächer ---------- */
+    // senkrechte Giebel-/Wimpergdreiecke mit bekannter Außennormale (K.face verlässt sich bei nz≈0 auf Rundungsrauschen und kann sie umdrehen)
+    const shd = (K, nx, ny) => (ny * K.view[0] - nx * K.view[1] >= 0 ? 'fr' : 'sd');
+    const vface = (K, pts, nx, ny, mat) => K.facing(nx, ny) <= 1e-6 ? '' : `<path class="${mat} ${shd(K, nx, ny)}" d="${K.path(pts)}Z"/>`;
     const MATS = ['sl', 'cu', 'rs'];
     function roof(K, q) {
       const { zw, h, shape, rh, mc, r } = q, z = Z0 + zw, zt = Z0 + h, mat = MATS[mc];
       const cx = r.reduce((a, p) => a + p[0], 0) / r.length, cy = r.reduce((a, p) => a + p[1], 0) / r.length;
-      if (shape === 0) return K.poly(r.map(p => [p[0], p[1], zt]), 'st tp');
+      const ln = (...pts) => `<path class="dt cu-d" d="${K.path(pts)}"/>`;
+      if (shape === 0) {
+        let t = K.poly(r.map(p => [p[0], p[1], zt]), 'st tp');
+        if (q.h === 46) for (let i = 0; i < r.length; i++) {   // Turm: vier Wimperge (Zierlgiebel) unter dem Helm
+          const a = r[i], b = r[(i + 1) % r.length], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, zt + 4.2];
+          t += vface(K, [[a[0], a[1], zt], [b[0], b[1], zt], m], -(b[1] - a[1]), b[0] - a[0], 'st') + ln([a[0], a[1], zt], m, [b[0], b[1], zt]);
+        }
+        return t;
+      }
       if (shape === 1) { let s = ''; for (let i = 0; i < r.length; i++) { const a = r[i], b = r[(i + 1) % r.length]; s += K.face([[a[0], a[1], z], [b[0], b[1], z], [cx, cy, zt]], mat); } return s; }
       if (shape === 4) {
         let R = 0; r.forEach(p => R += Math.hypot(p[0] - cx, p[1] - cy)); R /= r.length;
@@ -137,7 +167,8 @@
       const hip = shape === 3 && (u1 - u0) > 2 * hw ? hw : 0;
       const A = W(u0, v0, z), B = W(u1, v0, z), C = W(u1, v1, z), Dd = W(u0, v1, z), R0 = W(u0 + hip, vm, zt), R1 = W(u1 - hip, vm, zt);
       let s = K.face([A, B, R1, R0], mat) + K.face([C, Dd, R0, R1], mat);
-      s += hip ? K.face([B, C, R1], mat) + K.face([Dd, A, R0], mat) : K.face([B, C, R1], 'st') + K.face([Dd, A, R0], 'st');
+      s += hip ? K.face([B, C, R1], mat) + K.face([Dd, A, R0], mat) : vface(K, [B, C, R1], ux, uy, 'st') + vface(K, [Dd, A, R0], -ux, -uy, 'st');
+      if (mat === 'sl') s += ln(R0, R1) + ln(A, R0) + ln(Dd, R0) + ln(B, R1) + ln(C, R1);   // Kupferpatina an First und Graten
       return s;
     }
 
@@ -146,7 +177,7 @@
       let s = '';
       const left = PART.map(() => 0); P.forEach(p => left[p.part]++);
       order(K).forEach(p => {
-        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'st', deco(p));
+        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'st', deco(p, p.v[i], p.v[(i + 1) % p.v.length]));
         if (--left[p.part] === 0) s += roof(K, PART[p.part]);
       });
       return s;
