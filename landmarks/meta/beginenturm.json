@@ -1,12 +1,27 @@
 {
  "title": "Beginenturm",
- "fact": "Wehrturm der Stadtmauer (um 1357), heute Teil des Historischen Museums.",
- "studio": "Rest der mittelalterlichen Stadtbefestigung (um 1357), heute Teil des Historischen Museums.",
+ "fact": "Einziger vollständig erhaltener Turm der mittelalterlichen Stadtbefestigung (1357 erwähnt), 24 m hoch, heute Ausstellungsort des Historischen Museums.",
+ "studio": "Der Beginenturm am Hohen Ufer ist der einzige vollständig erhaltene Turm der mittelalterlichen Stadtbefestigung Hannovers und wird 1357 erstmals erwähnt. Der runde Wehrturm aus hellem Kalkstein ist rund 24 m hoch, seine Mauern sind etwa 3 m dick. Später diente er als Lager und Gefängnis, von 1972 bis 2007 als Kneipe; seit 2014 ist er nach der Sanierung ein Ausstellungsort des Historischen Museums.",
  "detail": "studio.html?lm=beginenturm",
  "minor": true,
  "osm": [
   "w31290856"
  ],
- "h": 27,
- "rank": 11
+ "h": 24,
+ "rank": 11,
+ "face": [
+  "compass",
+  [
+   1,
+   0
+  ],
+  [
+   1,
+   0
+  ]
+ ],
+ "seo": "Der Beginenturm steht direkt an der Leine am Hohen Ufer in Hannovers Altstadt. Er ist der einzige vollständig erhaltene Turm der mittelalterlichen Stadtbefestigung und wird 1357 erstmals erwähnt; damit zählt er zu den ältesten erhaltenen Gebäuden der Stadt. Der runde Wehrturm aus hellem Kalkstein ist etwa 24 Meter hoch, seine Mauern sind rund drei Meter dick. Unter einem zwölfseitigen Ziegeldach tragen Mauerbänder und wenige schmale Scharten die Wirkung des Mittelalters. Im Lauf der Jahrhunderte diente der Turm als Lager und Gefängnis, von 1972 bis 2007 als Kneipe. Heute gehört er zum Historischen Museum Hannover, das ihn seit der Sanierung 2014 für Ausstellungen und Führungen nutzt. Von der halboffenen Plattform in rund 15 Metern Höhe reicht der Blick über die Altstadt.",
+ "addr": "Am Hohen Ufer 3, 30159 Hannover",
+ "year": "um 1357",
+ "arch": "mittelalterlicher Wehrturm"
 }
