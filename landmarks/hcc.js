@@ -104,7 +104,7 @@
     const foyerFront = (len, h) => {
       const c = len / 2, acc = {}, put = (k, r) => (acc[k] = acc[k] || []).push(r);
       const win = (u, y, w, hh, f) => { const q = rnd(), k = q < .1 ? 'off' : q < .3 ? 'dim' : q < .42 ? 'hi' : ''; put(f + ' ' + k, rect(u - w / 2, y, w, hh)); };
-      [-13.6, -9.0, 9.0, 13.6].forEach((o, i) => { win(c + o, 1.7, 2.0, 3.4, 3); win(c + o, 7.0, 2.0, 3.8, 2); });
+      [-13.6, -9.0, 9.0, 13.6].forEach((o, i) => { win(c + o, 1.5, 1.6, 3.9, 3); win(c + o, 6.8, 1.6, 4.2, 2); });
       [-3.6, 0, 3.6].forEach(o => win(c + o, 1.5, 1.7, 3.6, 4));              // Obergeschoss über dem Balkon
       let s = '', dt = '';
       [-15.9, -11.3, -6.7, 6.7, 11.3, 15.9].forEach(o => { dt += `M${f2(c + o)} 0V${f2(h)}`; });                    // Lisenen
@@ -114,9 +114,9 @@
       const doors = [-3.8, 0, 3.8].map(o => rect(c + o - 1.2, 7.6, 2.4, h - 7.6)).join('');
       s += `<path class="wn hi" d="${doors}"/>`;                                                                       // warm beleuchteter Eingang
       s += Object.entries(acc).map(([k, v]) => { const [f, c2] = k.split(' '); return `<path class="wn${c2 ? ' ' + c2 : ''}" data-f="${f}" d="${v.join('')}"/>`; }).join('');
-      s += `<path class="pl" d="${[-5.6, -1.9, 1.9, 5.6].map(o => rect(c + o - .5, 6.5, 1, h - 6.5)).join('')}"/>`;   // Säulen
+      s += `<path class="wn dim" d="${[-5.6, -1.9, 1.9, 5.6].map(o => rect(c + o - .5, 6.5, 1, h - 6.5)).join('')}"/>`;   // Säulen
       s += `<path class="brz" d="${rect(c - 6.4, 5.3, 12.8, 1.2)}"/>` + `<path class="dt" d="${Array.from({ length: 17 }, (_, i) => `M${f2(c - 6.2 + i * .775)} 5.3v1.2`).join('')}"/>`;   // Balkon mit Geländer
-      s += [0, 1, 2].map(() => `<rect class="wsl" fill="#7F5BE6" opacity="0" y="${f2(h * .08)}" width="${f2(len)}" height="${f2(h * .92)}"/>`).join('');
+      s += [0, 1].map(() => `<rect class="wsl" fill="#7F5BE6" opacity="0" y="${f2(h * .08)}" width="${f2(len)}" height="${f2(h * .92)}"/>`).join('');
       return s;
     };
     function deco(p, a, b) {

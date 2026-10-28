@@ -1,7 +1,7 @@
 {
  "title": "HCC / Stadthalle",
- "fact": "Stadthalle mit Kuppelsaal (Bonatz & Scholer, 1911–14): größter Konzertsaal Deutschlands für klassische Musik, heute Teil des HCC.",
- "studio": "Die Stadthalle Hannover entstand 1911–1914 nach Plänen von Paul Bonatz und Friedrich Eugen Scholer. Ihr Kuppelsaal mit grüner Kupferkuppel fasst rund 3.600 Plätze und gilt als größter Saal Deutschlands für klassische Musik. Heute ist die Stadthalle Teil des Hannover Congress Centrum (HCC) am Stadtpark; der Eingang mit Giebel (Foyer) liegt auf der Nordseite zum Theodor-Heuss-Platz. Im Zweiten Weltkrieg schwer beschädigt, wurde sie nach 1945 wiederaufgebaut und 2015/16 modernisiert.",
+ "fact": "Stadthalle mit Kuppelsaal (Bonatz & Scholer, 1912–14): größter Saal Deutschlands für klassische Musik (3.600 Plätze), heute Teil des HCC.",
+ "studio": "Die Stadthalle Hannover entstand 1912–1914 nach Plänen von Paul Bonatz und Friedrich Eugen Scholer, die den Wettbewerb 1910 gewonnen hatten. Der Kuppelsaal, dem Pantheon in Rom nachempfunden, fasst rund 3.600 Plätze und gilt als größter Saal Deutschlands für klassische Musik. Heute gehört die Stadthalle zum Hannover Congress Centrum (HCC) am Stadtpark; der Eingang mit Giebel und Säulenportikus liegt auf der Nordseite zum Theodor-Heuss-Platz. Im Zweiten Weltkrieg schwer beschädigt, wurde sie nach 1945 unter Bonatz leicht verändert wiederaufgebaut; 2015/16 wurde der Kuppelsaal modernisiert.",
  "detail": "studio.html?lm=hcc",
  "minor": false,
  "h": 44,
@@ -12,5 +12,9 @@
   140.0
  ],
  "osm": [],
- "card_phi": 180
+ "card_phi": 180,
+ "seo": "Die Stadthalle Hannover mit ihrem Kuppelsaal gehört zu den markantesten Bauten am Stadtpark und ist heute das Herz des Hannover Congress Centrums (HCC). Nach einem Wettbewerb von 1910 setzten Paul Bonatz und Friedrich Eugen Scholer das Haus zwischen 1912 und 1914 um und eröffneten es mit einem großen Musikfest. Der Saal unter der grünen Kupferkuppel ist dem römischen Pantheon nachempfunden; um den Rundbau legt sich ein flacherer Ring, davor steht auf der Nordseite das Foyer mit Giebel, Säulenportikus und Balkon. Mit rund 3.600 Plätzen gilt der Kuppelsaal als größter Konzertsaal Deutschlands für klassische Musik. Im Zweiten Weltkrieg schwer beschädigt, wurde die Halle nach 1945 vereinfacht wiederaufgebaut, später mehrfach erneuert und 2015/16 technisch modernisiert. Heute treffen sich hier Orchester, Kongresse und Messegäste mitten in Hannovers Zooviertel.",
+ "addr": "Theodor-Heuss-Platz 1–3, 30175 Hannover",
+ "year": 1914,
+ "arch": "Paul Bonatz und Friedrich Eugen Scholer, Neoklassizismus"
 }
