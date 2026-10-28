@@ -1,10 +1,10 @@
 {
  "title": "Georgenpalais",
  "fact": "Wallmodenpalais im Georgengarten (1780–82), heute Wilhelm-Busch-Museum.",
- "studio": "Das Georgenpalais im Georgengarten ließ Reichsgraf von Wallmoden-Gimborn 1780–1782 als Wallmodenpalais bauen, zunächst für seine Antikensammlung. 1817 kaufte es König Georg III. und benannte es um; die beiden niedrigeren Seitenflügel kamen 1826 nach Plänen von Laves hinzu. Heute ist es das Wilhelm-Busch-Museum, Deutsches Museum für Karikatur und Zeichenkunst. Zwei Geschosse, cremefarbener Putz, rotes Walmdach, in der Mitte ein dreiachsiger Risalit mit Portal und Freitreppe.",
+ "studio": "Das Georgenpalais im Georgengarten ließ Johann Ludwig von Wallmoden-Gimborn 1780–1782 als Wallmodenpalais errichten, zunächst für seine Antikensammlung. 1817 kaufte es König Georg III. und gab ihm den heutigen Namen. Heute ist es das Wilhelm-Busch-Museum, Deutsches Museum für Karikatur und Zeichenkunst. Zwei Geschosse, heller Putz, rote Walmdächer: In der Mitte ein höherer Hauptbau mit dreiachsigem Risalit (vorspringender Mittelteil) und Portal, links und rechts niedrigere Flügel mit Rundbogentür und Gauben.",
  "detail": "studio.html?lm=georgenpalais",
  "minor": false,
- "h": 15,
+ "h": 17,
  "rank": 55,
  "osm": [
   "w5121415"
@@ -19,5 +19,10 @@
    0,
    -1
   ]
- ]
+ ],
+ "card_phi": 0,
+ "seo": "Mitten im Georgengarten, dem englischen Landschaftspark neben den Herrenhäuser Gärten, steht das Georgenpalais. Der Graf Johann Ludwig von Wallmoden-Gimborn ließ das Haus zwischen 1780 und 1782 als Sommersitz bauen, ausgeführt wurde es unter einem Baumeister namens Tänzel. Schon damals zeigte der Hausherr hier seine Sammlung antiker Kunst. 1817 erwarb König Georg III. das Anwesen, seitdem trägt es seinen heutigen Namen. Der Bau besteht aus einem höheren Mittelhaus mit vorspringendem Risalit und zwei niedrigeren Flügeln, alles in hellem Putz unter roten Ziegeldächern mit Gauben. Zur Parkseite führt eine kleine Freitreppe zum Portal, davor liegt ein Gartenparterre. Seit 1950 beherbergt das Palais das Wilhelm-Busch-Museum, das Zeichnungen, Satire und Bildergeschichten zeigt. Ein Spaziergang durch den Park lässt sich gut mit dem Besuch der Ausstellung verbinden.",
+ "addr": "Georgengarten 1, 30167 Hannover",
+ "year": "1780–1782",
+ "arch": "Auftraggeber J. L. von Wallmoden-Gimborn, Ausführung Tänzel; Klassizismus"
 }

@@ -1,28 +1,39 @@
-# Georgenpalais — Bericht (Branch `lm/georgenpalais`)
+# Georgenpalais (Wallmodenpalais, Wilhelm-Busch-Museum) — отчёт о доработке
 
-**Gemacht:** neues Gebäude `landmarks/georgenpalais.js` + `landmarks/meta/georgenpalais.json` (OSM w5121415). Ein Modul: zwei Flügel + Mitteltrakt, Mittelrisalit (Süd 2,5 m / Nord 1,5 m) mit Quer-Walmdächern, höheres Mitteldach, Gauben (nur Südhänge gezeichnet), Schornsteine, Freitreppe an der Nordseite, kleiner Anbau am Ostende.
+Ветка `lm/p_georgenpalais`. Файлы: `landmarks/georgenpalais.js`, `landmarks/meta/georgenpalais.json`, `ref/georgenpalais/`.
+Сравнения (слева наш рисунок, справа кадр Google Earth): `vergleich-1.png` (юг, `v_06`), `vergleich-2.png` (юго-восток/восток, `v_07`), `vergleich-3.png` (север, `v_01`).
 
-## Seite → Kadr
-| Seite | Kadr |
-|---|---|
-| Süd (Gartenseite, in der Kartenansicht vorn) | v_06, v_07 |
-| Ost | v_07 |
-| Nord (Hofseite) | v_01, v_02, v_08 |
-| West | v_03, v_04, v_05 |
+## Что сделано
+- Крылья и центр теперь разной высоты, как на кадре `v_06`: крылья низкие (стена 6,3 м, крутая крыша 4,4 м), центральный корпус выше (стена 9,4 м, большой вальмовый (Walmdach) кров 6,6 м).
+- Крылья: по 9 осей, пилястровые полосы, две строки малых окон с переплётами, посередине арочная дверь (Rundbogentür); крыша с вальмой только на внешнем конце, внутри конёк упирается в центральный корпус; по 3 мансардных окна (Gauben) с двускатными крышами и щёчками на южном скате.
+- Центр: 11 осей, внизу высокие окна с козырьками, вверху малые, венчающий карниз; трёхосный ризалит (Risalit) на юге 2,5 м с порталом и ступенями; на севере 1,5 м с лестницей.
+- Восточная пристройка с серой крышей (на кадрах есть, в OSM-контуре нет), трубы.
+- Точка: `pin: [40, 6.35, 19.6]` — над серединой здания, над коньком центра; на карте проверено (`tools/preview.sh`).
+- Размер: `len` 80 м = длинная сторона OSM (w5121415, 79,6 м) → **fit ≈ ×0,995**.
+- `card_phi` = 0: в карточке виден южный садовый фасад с порталом, как на `v_06`. Ошибок консоли нет (390×760 и 1000×700); проверены повороты 0/90/180/270.
+- Meta: добавлены `seo` (≈125 слов), `addr` (Georgengarten 1, 30167 Hannover — по OSM), `year`, `arch`; в `studio` убрано утверждение про боковые флигели Лавеса 1826 (источники его не подтвердили).
 
-## Nach Analogie / nicht belegt
-- Fensterzahl je Achse und Gewände nur grob (ein Rhythmus für alle Seiten); Türen der Flügel nicht gezeichnet.
-- Nordseite aus SO nicht sichtbar → Nordgauben bewusst weggelassen (würden über dem First schweben, weil das Skript nicht verdeckt).
-- Ostanbau und Westende nach Luftbild geschätzt; Festzelt östlich nicht gezeichnet.
-- Höhen aus Kadern geschätzt (OSM height=10 passt nicht zum Dach).
-- Lage der Hofseite (Nord): aus v_01 (Blick 180°) abgeleitet; Meta `face` = Norden.
+## Сторона → кадры
+| сторона | кадры | примечание |
+|---|---|---|
+| юг (сад) | v_06, v_07 | оси и двери крыльев сверены по приближению |
+| север (двор) | v_01, v_02, v_08 | портал, стены; мансарды северного ската не нарисованы |
+| запад | v_03, v_04, v_05 | торец с тремя осями по аналогии |
+| восток | v_07 | пристройка с серой крышей |
 
-## Fakten (zwei Quellen)
-1780–82 für Graf von Wallmoden-Gimborn gebaut, 1817 von Georg III. gekauft; heute Wilhelm-Busch-Museum (visit-hannover, Wikipedia «Georgengarten»). Die niedrigeren Flügel von 1826 (Laves) laut Wikipedia. Bauzeit der Gliederung (welcher Teil 1826) nicht anhand der Kader geprüft.
+## Что не совпадает / по аналогии
+- Скосы (фаски) углов южного ризалита: в жизни он граненый (3 грани), у нас прямоугольный.
+- Мансарды на северном скате не рисуются (при фиксированном ракурсе скат скрыт); в карточке с `card_phi` 180 их не будет видно, поэтому выбран 0. На севере у крыльев по 3 мансарды, у центра 2+2 (кадры `v_01`, `v_02`).
+- Северный портал с треугольным фронтоном и зелёная дверь восточного крыла не детализированы.
+- Белый шатёр (Zelt) рядом с крылом на кадрах `v_02`/`v_07` — временный, не рисуется.
+- Высоты по кадрам (OSM: height=10, это скорее карниз центра); второй источник не найден.
+- Число осей крыльев (9) оценено по `v_06`; нужны приближенные кадры, чтобы подтвердить.
 
-## Sichtprüfung
-`vergleich-1…3.png` (links Studio, Mitte v_07, rechts v_06): Gliederung, Dachmassen, Risalit stimmen; Rest sind Gewände/Gaubenformen. `telefon-390.png`: Gebäude passt (≈ 366 px) ins Bild. `preview.sh` (Karte) nicht gemacht: Karte ist in dieser Umgebung nicht rendbar (SCENE.region fehlt im Skript, siehe lm/telemax-Bericht).
+## Какие кадры нужны Степану
+1. Южный фасад западного крыла фронтально, с высоты глаз (точное число осей, форма двери).
+2. Северный портал центра вблизи и северные скаты (мансарды).
+3. Западный торец и пристройка у восточного торца.
 
-## Für Sammler
-- Kein neues Material in `core/` nötig. Gebäude liegt im Kernbereich (52.3842, 9.7078).
-- Hinweis wie bei Telemax: `tools/*` suchen Chromium 1194 (jetzt 1243), `map-crop.mjs` ohne `SCENE.region`.
+## От движка / сборщика
+- Ничего в `core/` не нужно; здание в зоне детальных плиток, расширять зону не нужно.
+- Источники: visit-hannover.com (1780–1782, Wallmoden-Gimborn, Георг III 1817), en.wikipedia (музей с 1950), OSM w5121415 (адрес).
