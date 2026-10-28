@@ -30,7 +30,7 @@ SH = {'flat': 0, 'pyramidal': 1, 'gabled': 2, 'hipped': 3, 'dome': 4}
 DORM = [(-11.5, 3.5), (-3.5, 3.5), (5.5, 3.5)]          # Mitte u, halbe Breite der drei Giebel an der NNW-Seite
 hall = box(-20, -9, 15, 15)
 for cu, hw in DORM: hall = hall.difference(box(cu - hw, 7, cu + hw, 15.5))
-TOWER = (-3.6, 2.6, -16.3, -10.2)
+TOWER = (-4.8, 3.6, -18.2, -9.8)
 tw = box(TOWER[0], TOWER[2], TOWER[1], TOWER[3])
 def P(pg, **k): return dict(pg=pg, **k)
 def upg(g): return Polygon([uv(*p) for p in g.exterior.coords[:-1]])
@@ -38,13 +38,13 @@ parts = []
 def add(id, ring_uv, z0, zw, shape='flat', rh=0, mc=0, sw=0, name=''):
     pg = Polygon([uv(*p) for p in ring_uv]) if not hasattr(ring_uv, 'exterior') else upg(ring_uv)
     parts.append(dict(id=id, pg=pg, z0=z0, zw=zw, h=zw + rh, shape=SH[shape], rh=rh, mc=mc, sw=sw, area=pg.area))
-add('hall', hall, 0, 11, 'gabled', 12.5)
-for i, (cu, hw) in enumerate(DORM): add('giebel%d' % (i + 1), rect(cu - hw, cu + hw, 7, 15.3), 0, 11, 'gabled', 11)
+add('hall', hall, 0, 15.5, 'gabled', 12.5)
+for i, (cu, hw) in enumerate(DORM): add('giebel%d' % (i + 1), rect(cu - hw, cu + hw, 7, 15.3), 0, 15.5, 'gabled', 11)
 add('anbau-sw', rect(-18, -12, -12.2, -9), 0, 7, 'gabled', 3)
 add('anbau-se', rect(5.2, 15, -9.8, -9), 0, 6)
-add('chor-o', [(15, -8), (21, -6), (23.5, -2.5), (24, 2.4), (20, 9.5), (22.5, 11), (22.8, 14), (21, 15.7), (15, 15.5)], 0, 11, 'gabled', 9)
+add('chor-o', [(15, -8), (21, -6), (23.5, -2.5), (24, 2.4), (20, 9.5), (22.5, 11), (22.8, 14), (21, 15.7), (15, 15.5)], 0, 12.5, 'gabled', 10)
 add('turm', rect(TOWER[0], TOWER[1], TOWER[2], TOWER[3]), 0, 46)
-add('helm', octagon((TOWER[0] + TOWER[1]) / 2, (TOWER[2] + TOWER[3]) / 2, 3.5), 46, 46, 'pyramidal', 24)
+add('helm', octagon((TOWER[0] + TOWER[1]) / 2, (TOWER[2] + TOWER[3]) / 2, 4.1), 46, 46, 'pyramidal', 24)
 # Überlappungen im Grundriss: wo sich die Höhenbereiche schneiden, behält das höhere Teil die Fläche
 def prio(p): return (round(p['zw'], 1), p['area'])
 for a in parts:
