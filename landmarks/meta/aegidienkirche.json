@@ -1,7 +1,7 @@
 {
  "title": "Aegidienkirche",
  "fact": "Gotische Kirchenruine (um 1347), im Krieg 1943 zerstört und als Mahnmal erhalten; im Turm hängt die Friedensglocke aus Hiroshima.",
- "studio": "Die Aegidienkirche, eine dreischiffige gotische Hallenkirche um 1347, wurde 1943 bei Luftangriffen zerstört und nie wieder aufgebaut. Heute ist die Ruine ein Mahnmal für die Opfer von Krieg und Gewalt: Stehen geblieben sind die Außenwände mit Spitzbogenöffnungen und Jochgiebeln, der Polygonchor im Osten und der Westturm mit barocker Fassade (Anfang des 18. Jahrhunderts) und Kupferaufsatz mit Glockenspiel von 1958. Im Turmeingang hängt die Friedensglocke aus Hiroshima, die jedes Jahr am 6. August läutet.",
+ "studio": "Die Aegidienkirche, eine dreischiffige gotische Hallenkirche aus Sandstein (Baubeginn 1347), wurde im Oktober 1943 bei Luftangriffen bis auf die Außenmauern zerstört und nie wieder aufgebaut. Heute ist die Ruine ein Mahnmal für die Opfer von Krieg und Gewalt: Stehen geblieben sind Teile der Seitenwände mit Spitzbogenöffnungen und Jochgiebeln, der Polygonchor im Osten und der Westturm mit barocker Fassade (1703–1711) und einem Kupferaufsatz mit Glockenspiel von 1958. Im Turmeingang hängt die Friedensglocke aus Hiroshima, ein Geschenk der Partnerstadt von 1985, die jedes Jahr am 6. August läutet.",
  "detail": "studio.html?lm=aegidienkirche",
  "minor": false,
  "osm": [
@@ -19,5 +19,10 @@
    -1,
    0
   ]
- ]
+ ],
+ "card_phi": 0,
+ "seo": "Die Aegidienkirche steht am Aegidientorplatz in der Altstadt von Hannover und ist heute eine Kriegsruine, die als Mahnmal dient. Der Bau einer gotischen Hallenkirche aus Sandstein begann 1347; der Westturm bekam zwischen 1703 und 1711 eine barocke Fassade. Im Oktober 1943 zerstörten Luftangriffe das Gotteshaus bis auf die Außenmauern, und man entschied sich gegen einen Wiederaufbau. Erhalten blieben Teile der Seitenwände mit Spitzbogenöffnungen, der Polygonchor und der Turm, dessen Aufsatz mit Glockenspiel 1958 ergänzt wurde. Das Glockenspiel erklingt mehrmals am Tag. Im Turmeingang hängt die Friedensglocke, ein Geschenk der Partnerstadt Hiroshima von 1985, die jedes Jahr am 6. August geläutet wird. So erinnert die Ruine mitten in der Stadt an die Opfer von Krieg und Gewalt.",
+ "addr": "Aegidienkirchhof 1, 30159 Hannover",
+ "year": "1347 (Baubeginn der gotischen Hallenkirche); Turmfassade 1703–1711; 1943 zerstört",
+ "arch": "Gotische Hallenkirche; Barockfassade des Turms von Sudfeld Vick"
 }

@@ -1,7 +1,7 @@
 {
  "title": "Leineschloss (Niedersächsischer Landtag)",
  "fact": "Stadtschloss der Welfen, ab 1816 von Laves umgebaut, 1943 zerstört, 1957–62 als Landtag wiederaufgebaut.",
- "studio": "Das Leineschloss (Stadtschloss) an der Leine: Georg Ludwig Friedrich Laves baute es ab 1816 zum Residenzschloss um und schuf den Säulenportikus zum Platz. 1943 brannte es aus; Dieter Oesterlen baute es 1957–1962 als Sitz des Niedersächsischen Landtags wieder auf. Der Plenarsaal wurde 2014–2017 neu gestaltet. Lange Mansardfassade zur Leine, Portikus mit sechs Säulen zum Hannah-Arendt-Platz.",
+ "studio": "Das Leineschloss (Stadtschloss) an der Leine: Georg Ludwig Friedrich Laves baute es ab 1816/17 zum Residenzschloss um und schuf den Säulenportikus zum Platz. 1943 brannte es nach einem Luftangriff aus; Dieter Oesterlen baute es 1957–1962 als Sitz des Niedersächsischen Landtags wieder auf. Der Plenarsaal wurde 2014–2017 neu gestaltet. Lange Mansardfassade zur Leine, Portikus mit sechs Säulen zum Hannah-Arendt-Platz.",
  "detail": "studio.html?lm=leineschloss",
  "minor": false,
  "osm": [
@@ -9,5 +9,10 @@
  ],
  "h": 24,
  "rank": 90,
- "group": "altstadt"
+ "group": "altstadt",
+ "seo": "Das Leineschloss am Hannah-Arendt-Platz in Hannover ist seit 1962 der Sitz des Niedersächsischen Landtags. Auf dem Grund eines mittelalterlichen Franziskanerklosters entstand im 17. Jahrhundert die Residenz der Welfenherzöge. Im 19. Jahrhundert baute Georg Ludwig Friedrich Laves sie zum Königsschloss um und stellte ihr einen Säulenportikus mit sechs korinthischen Säulen vor. 1943 brannte das Schloss nach einem Luftangriff fast vollständig aus. Der Architekt Dieter Oesterlen errichtete es von 1957 bis 1962 neu: Die lange Mansardfassade zur Leine erinnert an das historische Vorbild, dahinter schließt sich der moderne Plenarsaalflügel mit Glasdach an, dessen Saal 2014 bis 2017 umgestaltet wurde. So begegnen sich an der Altstadtkante Schlosstradition, klassizistische Strenge und Nachkriegsmoderne.",
+ "addr": "Hannah-Arendt-Platz 1, 30159 Hannover",
+ "year": "1962 (Wiederaufbau 1957–1962; Schloss ab 1636/37)",
+ "arch": "Georg Ludwig Friedrich Laves (Umbau ab 1816/17), Dieter Oesterlen (Wiederaufbau 1957–1962)",
+ "card_phi": 0
 }

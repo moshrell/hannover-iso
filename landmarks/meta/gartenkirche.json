@@ -1,7 +1,7 @@
 {
  "title": "Gartenkirche St. Marien",
  "fact": "Neugotische Hallenkirche aus Deister-Sandstein (1887–1891, Rudolph Eberhard Hillebrand); der einstige Turmhelm von fast 85 m brannte 1943 ab.",
- "studio": "Gartenkirche St. Marien an der Marienstraße, 1887–1891 von Rudolph Eberhard Hillebrand als neugotische Hallenkirche aus Deister-Sandstein gebaut (der Vorgängerbau von 1749 stand schon im Gartenfriedhof). Der Westturm trug einst einen Spitzhelm von fast 85 m; er brannte im Oktober 1943 nach Bomben ab und wurde nicht wieder aufgebaut, heute schließt ein flaches Pyramidendach den Turm. Zur Marienstraße zeigt das Querhaus einen Giebel mit großer Rosette und Portal, daneben ein Treppenturm mit Kegeldach; das hohe Schieferdach deckt alle drei Schiffe der Halle, im Osten schließt der Chor mit drei Seiten.",
+ "studio": "Gartenkirche St. Marien an der Marienstraße, 1887–1891 von Rudolph Eberhard Hillebrand als neugotische Hallenkirche aus Deister-Sandstein gebaut; ihr ging eine ältere Kirche aus dem 18. Jahrhundert im Gartenfriedhof voraus. Der Westturm trug einst einen Spitzhelm von fast 85 m; er brannte im Oktober 1943 nach Bomben ab und wurde nicht wiederaufgebaut, heute schließt ein flaches Pyramidendach den Turm. Zur Marienstraße zeigt das Querhaus einen Giebel mit großer Rosette und Portal, daneben ein Treppenturm mit Kegeldach; das hohe Schieferdach deckt alle drei Schiffe der Halle, im Osten schließt der Chor mit drei Seiten.",
  "detail": "studio.html?lm=gartenkirche",
  "minor": false,
  "h": 42.0,
@@ -19,5 +19,10 @@
    -1,
    0
   ]
- ]
+ ],
+ "card_phi": 270,
+ "seo": "Die Gartenkirche St. Marien steht an der Marienstraße in Hannovers Mitte, am Rand des Gartenfriedhofs. Der Architekt Rudolph Eberhard Hillebrand baute sie von 1887 bis 1891 als neugotische Hallenkirche aus Deistersandstein; geweiht wurde sie am 8. Februar 1891. Ihr ging eine ältere Kirche aus dem 18. Jahrhundert voraus. Der Westturm trug früher einen Spitzhelm von fast 85 Metern Höhe. Im Oktober 1943 brannte er nach einem Bombenangriff ab und wurde nicht wiederaufgebaut, heute schließt ein flaches Pyramidendach den Turm. Zur Straße zeigt das Querhaus einen Giebel mit großer Rosette und Portal, daneben steht ein Treppenturm mit Kegeldach. Nach dem Krieg wurde die Kirche wiederhergestellt und 1949 neu geweiht; von 2001 bis 2003 folgte eine umfassende Restaurierung.",
+ "addr": "Marienstraße 35, 30171 Hannover",
+ "year": "1887–1891",
+ "arch": "Rudolph Eberhard Hillebrand, Neugotik"
 }

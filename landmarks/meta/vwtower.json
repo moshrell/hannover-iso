@@ -1,12 +1,17 @@
 {
  "title": "VW-Tower",
  "fact": "Ehemaliger Fernmeldeturm „Telemoritz“ (1958–59), 141 m, mit drei VW-Logos auf der Spitze.",
- "studio": "Der frühere Fernmeldeturm der Bundespost („Telemoritz“) ist 141 m hoch und entstand 1958–59 nach Plänen von Fritz Leonhardt; seit 1960 in Betrieb, seit 1992 nicht mehr für den Rundfunk genutzt. Die drei runden Logoschilder trug er bis 2024.",
+ "studio": "Der frühere Fernmeldeturm der Bundespost („Telemoritz“) ist 141 m hoch, entstand 1958–59 nach Plänen von Fritz Leonhardt und ging 1960 in Betrieb. Auf dem schlanken Schaft sitzen ein breites Deck, drei Scheiben mit Fensterhälsen und der Mast; die Spitze prägten drei runde Logoschilder des Volkswagen-Konzerns.",
  "detail": "studio.html?lm=vwtower",
  "minor": false,
  "osm": [
   "w1247690037"
  ],
  "h": 141,
- "rank": 20
+ "rank": 20,
+ "card_phi": 270,
+ "seo": "Der VW-Tower an der Hamburger Allee ist ein 141 Meter hoher Fernmeldeturm aus Stahlbeton. Er entstand 1958 und 1959 nach Plänen des Ingenieurs Fritz Leonhardt und ging 1960 in Betrieb. Die Hannoveraner nennen ihn Telemoritz; der Spitzname spielt auf Wilhelm Buschs Max und Moritz an. Auf dem schlanken, leicht verjüngten Schaft sitzt ein breites Deck mit gerippter Brüstung, darüber folgen eine dunkle Trommel, drei schmale Scheiben mit Fensterhälsen und ein gestufter Mast. Auf der Spitze standen drei runde Logoschilder des Volkswagen-Konzerns, deren Name dem Turm bis heute anhaftet. Mit seiner Silhouette am Rand der Innenstadt, unweit des Hauptbahnhofs, gehört er zu den auffälligsten Wahrzeichen Hannovers.",
+ "addr": "Hamburger Allee 21, 30161 Hannover",
+ "year": "1958–1959",
+ "arch": "Fritz Leonhardt (Ingenieur); Stahlbetonturm, Nachkriegsmoderne"
 }

@@ -36,7 +36,12 @@ let quadCur = quadAll;
 const quadsExtra = (BB.extra || []).map(quadOf);   // Zusatzzonen mit allen Stufen (z. B. Telemax)
 // Teilrender: --at lat,lon,radius_m (mehrfach). Rechteck im Weltbild = Grundpunkt ± Radius, nach oben um Radius·1,3 (Gebäudehöhe)
 const AT = process.argv.flatMap((a, i, A) => a === '--at' ? [A[i + 1].split(',').map(Number)] : []);
-const RECTS = AT.length ? AT.map(([la, lo, r]) => { const [x, y] = wp(la, lo), px = (x - y) * CC - BX0, py = (x + y) / 2 - BY0; return [px - r, py - r * 1.3, px + r, py + r * .6]; }) : null;
+// Teilrender nach Namen: --lm name[,name…]  (Rechteck um die Gebäudezeichnung: Fußabdruck + Höhe, gleiche Umrechnung wie bei --at)
+const LMN = process.argv.flatMap((a, i, A) => a === '--lm' ? A[i + 1].split(',') : []);
+const LMR = LMN.length ? await page.evaluate(names => names.map(n => { const L = MITTE.lm[n], d = ISO.LM[n](ISO.H); return L ? { cx: L.cx, cy: L.cy, r: Math.max(L.w, L.d) * .75 + 25, h: d.h } : null; }), LMN) : [];
+LMR.forEach((o, i) => { if (!o) { console.error('--lm: Gebäude nicht gefunden', LMN[i]); process.exit(1); } });
+const RECTS = (AT.length || LMR.length) ? [...AT.map(([la, lo, r]) => { const [x, y] = wp(la, lo), px = (x - y) * CC - BX0, py = (x + y) / 2 - BY0; return [px - r, py - r * 1.3, px + r, py + r * .6]; }),
+  ...LMR.map(o => { const px = (o.cx - o.cy) * CC - BX0, py = (o.cx + o.cy) / 2 - BY0; return [px - o.r, py - Math.max(o.r * 1.3, o.h * 1.15), px + o.r, py + o.r * .6]; })] : null;
 if (RECTS) console.log('Teilrender, Rechtecke:', JSON.stringify(RECTS.map(r => r.map(Math.round))));
 function hits(x0, y0, x1, y1, quad = quadCur) {            // Rechteck gegen konvexes Viereck (Trennachsen)
   const R = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];

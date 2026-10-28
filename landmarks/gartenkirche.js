@@ -97,7 +97,27 @@ ISO.landmark('gartenkirche', H => {
       }
       return d + g;
     };
-    let s = K.box(TX0, TY0, Zh(0), TX1 - TX0, TY1 - TY0, TH, 'rs', { S: (l, h) => T('fr')(l, h, true), E: (l, h) => T('sd')(l, h, false) }, true);
+    // Westseite (Länge = Turmtiefe): Hauptportal mit Wimperg, darüber eine Lanzette, oben dasselbe Glockengeschoss wie im Süden; Wandkoordinaten: u wächst nach Süden
+    const Wd = (len, h) => {
+      const c = len / 2;
+      let d = crs(len, h, 1.2, 23.4, 1.5);
+      d += `<path class="dt" d="M.75 ${f2(h)}V0M${f2(len - .75)} ${f2(h)}V0`;
+      d += `${hline(len, h - 1)}${hline(len, h - 24.2)}${hline(len, h - 24.7)}"/>`;
+      [9.5, 17].forEach(z => { d += `<path class="dt" d="M0 ${f2(h - z)}h.75M${f2(len - .75)} ${f2(h - z)}h.75"/>`; });
+      // Portal: dunkle Öffnung im gestuften Spitzbogen, Kämpferlinie und Spitzgiebel darüber
+      d += `<path class="dt" d="${garch(c - 1.75, h - 6.4, 3.5, 6.4)}"/><path class="dt" d="${garch(c - 1.45, h - 5.9, 2.9, 5.9)}"/>`;
+      d += `<path class="lv" d="${garch(c - 1.15, h - 5.4, 2.3, 5.4)}"/><path class="dt" d="M${f2(c)} ${f2(h - 5.4)}V${f2(h)}"/>`;
+      // Lanzette über dem Portal (zwei Bahnen, Maßwerkkreis) und kleine Fensterschlitze in den Eckfeldern
+      const a = lan(h, c, 9.0, 16.0, 1.9, 1, 2); d += a.fr;
+      const b = lan(h, c - 3.1, 12.0, 15.2, .55, 1, 1), b2 = lan(h, c + 3.1, 12.0, 15.2, .55, 1, 1);
+      d += b.fr + b2.fr;
+      // Glockengeschoss
+      d += `<path class="dt" d="${garch(c - 2.6, h - 35.6, 5.2, 10.6)}"/>`;
+      const g = louvre(c - 1.75, h - 34.6, 1.4, 8.4) + louvre(c + .35, h - 34.6, 1.4, 8.4);
+      d += `<path class="dt" d="M${f2(c - 2.8)} ${f2(h - 36.2)}H${f2(c + 2.8)}"/>` + corbel(len, h - 37.0, .7);
+      return d + wins(a.wn + b.wn + b2.wn) + g;
+    };
+    let s = K.box(TX0, TY0, Zh(0), TX1 - TX0, TY1 - TY0, TH, 'rs', { S: (l, h) => T('fr')(l, h, true), E: (l, h) => T('sd')(l, h, false), W: Wd }, true);
     // Kranzgesims und Pyramidendach (Ziegel)
     s += K.box(TX0 - .35, TY0 - .35, Zh(TH), TX1 - TX0 + .7, TY1 - TY0 + .7, .6, 'st', {}, true);
     s += hip(K, TX0 - .35, TY0 - .35, TX1 + .35, TY1 + .35, Zh(TH + .6), Zh(TH + 4.4), 'tl');
@@ -105,15 +125,15 @@ ISO.landmark('gartenkirche', H => {
   } });
 
   /* ---------- Treppentürme am Westjoch: Südwestturm (groß) und Nordwestturm (klein), Kegeldächer aus Schiefer ---------- */
-  add({ id: 'sturret', fp: [3.8, 21.5, 8.7, 26.5], draw: K => {
-    const cx = 6.25, cy = 24.0, r = 2.45;
+  add({ id: 'sturret', fp: [3.1, 21.5, 7.3, 25.7], draw: K => {
+    const cx = 5.2, cy = 23.6, r = 2.1;
     const Wd = i => (l, h) => {
       let d = crs(l, h, 1.2, 11, 1.5) + `<path class="dt" d="${hline(l, h - 1)}${hline(l, h - 11)}${hline(l, h - 11.4)}"/>`;
       if (i === 1 || i === 2) { const w = Math.min(.8, l * .45), a = lan(h, l / 2, 3.2, 7.4, w, 1, 1), b = lan(h, l / 2, 8.2, 10.4, w * .8, 1, 1); d += a.fr + wins(a.wn) + b.fr + wins(b.wn); }
       return d;
     };
     let s = polyWall(K, cx, cy, r, Zh(0), Zh(11.4), 12, 'st', Wd);
-    s += cone(K, cx, cy, r + .25, Zh(11.4), Zh(17.8), 12, 'sl');
+    s += cone(K, cx, cy, r + .25, Zh(11.4), Zh(16.8), 12, 'sl');
     return s;
   } });
   add({ id: 'nturret', fp: [3.8, 5.4, 8.0, 9.8], draw: K => {
@@ -125,7 +145,7 @@ ISO.landmark('gartenkirche', H => {
   const PIERS = [13.0, 17.3, 21.8, 25.5], NX0 = 8.7;
   const mainRoof = (K, x0, x1) => roofPlane(K, [[x0, YS, Zh(EAVE)], [x1, YS, Zh(EAVE)], [x1, YC, Zh(RIDGE)], [x0, YC, Zh(RIDGE)]], 'sl', 2.4);
   // kleine Dachluken (Lüftungsklappen) dicht über der Traufe, wie auf den Kadern zu sehen
-  const hatch = (K, u, v) => { const z = EAVE + (YS - v) * KZ, w = .8, d = .6; return K.poly([[u - w / 2, v, Zh(z)], [u + w / 2, v, Zh(z)], [u + w / 2, v - d, Zh(z + d * KZ)], [u - w / 2, v - d, Zh(z + d * KZ)]], 'lv'); };
+  const hatch = (K, u, v) => { const z = EAVE + (YS - v) * KZ, w = .6, d = .45; return K.poly([[u - w / 2, v, Zh(z)], [u + w / 2, v, Zh(z)], [u + w / 2, v - d, Zh(z + d * KZ)], [u - w / 2, v - d, Zh(z + d * KZ)]], 'lv'); };
   add({ id: 'nave', fp: [NX0, YN, XA, YS], draw: K => {
     const W = (len, h) => {
       let d = crs(len, h, 1.2, 4.6, 1.8) + `<path class="dt" d="${hline(len, h - 1.0)}${hline(len, h - 4.9)}${hline(len, h - 5.1)}"/>`;
@@ -232,5 +252,6 @@ ISO.landmark('gartenkirche', H => {
     return s;
   } });
 
-  return { mods: M, lc: [23.77, 13.99], z0: 0, top: [4.85, 16, 42], label: 'Gartenkirche St. Marien', h: 42, len: 47.5 };
+  // pin: Punkt auf der Karte über der Mitte der Kirche (Firstmitte des Hauptdachs), nicht über dem Turm am Westrand
+  return { mods: M, lc: [23.77, 13.99], z0: 0, top: [4.85, 16, 42], pin: [23.5, YC, Zh(RIDGE + .5)], label: 'Gartenkirche St. Marien', h: 42, len: 47.5 };
 });
