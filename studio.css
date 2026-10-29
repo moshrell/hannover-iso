@@ -75,3 +75,6 @@
   @keyframes star { from { fill-opacity:.3; } to { fill-opacity:1; } }
   @keyframes breathe { from { opacity:.5; } to { opacity:.85; } }
   .rh .wn.ov { transition:opacity 1.6s ease-in-out; pointer-events:none; }
+
+/* Handy: der SVG-Filter (Weichzeichner) über allen Fenstern wird bei jeder Lichtänderung neu gerechnet und lässt auf Telefon-GPUs Flächen aufblitzen oder verschwinden (Neues Rathaus: 2000+ Elemente); im Bild ist der Unterschied kaum zu sehen */
+.stage .rh .wins { filter:none; }
