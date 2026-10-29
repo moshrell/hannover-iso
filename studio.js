@@ -47,82 +47,41 @@
   let sd = 5; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
   let st = ''; for (let i = 0; i < 40; i++) st += `<circle class="star" cx="${f2(vb[0] + rnd() * vb[2])}" cy="${f2(vb[1] + rnd() * vb[3] * .3)}" r="${f2(.15 + rnd() * .35)}" opacity="${f2(.15 + rnd() * .5)}"/>`;
   svg.querySelector('#all').insertAdjacentHTML('afterbegin', st);
-  ISO.clock(svg); setInterval(() => ISO.clock(svg), 20000);
+  ISO.clock(svg); setInterval(() => { ISO.clock(svg); if (typeof lit !== 'undefined') ISO.clock(lit); }, 20000);
 
   /* ---------- Licht ---------- */
-  /* Der Ablauf wird von JS getaktet statt von tausend CSS-Verzögerungen: Jedes Element wird erst zu seinem Zeitpunkt umgeschaltet
-     (dann übernimmt die CSS-Transition den weichen Übergang). So warten nie tausende Übergänge gleichzeitig, und nur ein paar
-     Dutzend Elemente pro Bild ändern sich. Der Zielzustand wird einmal aus dem Stylesheet gelesen (kein zweiter Farbsatz). */
-  const T = { win0: 1.2, floor: 1.1, winJit: 2.4, flood0: 6.2, sweep: 4.6, crown: 11.6 };
-  // Ausschalten: Fenster gehen mit der Fassade aus (gleiche Welle oben → unten), nicht erst danach
-  const OFF = { crown: 0, sweep: 4.2, flood0: .3, winJit: .4 };
-  const SPEED = .55, STATE = ['lamps', 'win', 'lit', 'crown'], PROPS = ['fill', 'stroke', 'opacity'];
+  /* Zwei fertige Ebenen übereinander: Nacht (unten, unverändert) und Licht (oben, komplett beleuchtet). Beim Einschalten wird die Lichtebene
+     von unten nach oben eingeblendet (weiche Kante, CSS-Maske); es ändert sich also nie ein Fenster oder eine Wand einzeln. Das war die Ursache fürs
+     Flackern auf Telefonen: Tausende gleichzeitig überblendete Elemente überfordern den Kachelspeicher der GPU (Flächen blitzen auf oder verschwinden). */
+  const STATE = ['lamps', 'win', 'lit', 'crown'];
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let prep = null, raf = 0;
-  function prepare() {
-    const inClk = el => !!el.closest('.clk');
-    const walls = [...svg.querySelectorAll('.bld .wsh, .bld .wsl, .bld .st, .bld .tl, .bld .cu, .bld .bk, .bld .sl, .bld .gz, .bld .lv, .bld .dt, .bld .mul, .bld .gb, .bld .rs, .bld .brz, .bld .gl, .bld .pl, .bld .kc, .bld .kz, .bld .kr, .bld .iron, .bld .glb')].filter(el => !inClk(el));
-    const wins = [...svg.querySelectorAll('.wn')].filter(el => !inClk(el));
-    const wr = walls.map(el => el.getBoundingClientRect()), ww = wins.map(el => el.getBoundingClientRect());
-    const top = Math.min(...wr.map(q => q.top)), base = Math.max(...wr.map(q => q.bottom)), span = Math.max(1, base - top);
-    const rel = r => Math.min(1, Math.max(0, (base - r.bottom) / span));
-    let s2 = 11; const r2 = () => (s2 = (s2 * 16807) % 2147483647) / 2147483647;
-    const when = new Map();   // Element → Zeitpunkt (Einheiten des Ablaufs) für Ein- und Ausschalten
-    walls.forEach((el, i) => { const h = rel(wr[i]); when.set(el, { on: T.flood0 + h * T.sweep, off: OFF.flood0 + (1 - h) * OFF.sweep }); });
-    wins.forEach((el, i) => { const h = rel(ww[i]), f = +el.dataset.f || 0, q = r2(), q3 = r2(); when.set(el, { on: T.win0 + f * T.floor + q * T.winJit, off: OFF.flood0 + (1 - h) * OFF.sweep + q * OFF.winJit, flick: q3 < .3 }); });
-    svg.querySelectorAll('.flood').forEach(el => when.set(el, { on: T.flood0 + .4, off: OFF.flood0 }));
-    svg.querySelectorAll('.clk *').forEach(el => when.set(el, { on: T.flood0 + .8 * T.sweep, off: OFF.flood0 + .2 * OFF.sweep }));
-    svg.querySelectorAll('.lant, .lant-h').forEach(el => when.set(el, { on: T.crown, off: OFF.crown }));
-    return { when, items: [], stars: [...svg.querySelectorAll('.star')], crown: [...svg.querySelectorAll('.lant-h')] };
-  }
-  /* Beide Zustände einmal aus dem Stylesheet lesen (Übergänge dabei aus). Als Element des Ablaufs zählt jedes, dessen Farbe/Deckkraft sich
-     zwischen Nacht und Licht wirklich ändert; was nicht in der Zeitliste steht, geht gleich zu Beginn um. */
-  function probe() {
-    const was = STATE.filter(c => svg.classList.contains(c)), inst = svg.classList.contains('instant');
-    svg.classList.add('instant'); STATE.forEach(c => svg.classList.remove(c));
-    const els = [...svg.querySelectorAll('*')].filter(el => !el.closest('defs') && !el.classList.contains('star'));
-    const read = () => els.map(el => { const cs = getComputedStyle(el); return PROPS.map(k => cs.getPropertyValue(k)); });
-    const dark = read(); STATE.forEach(c => svg.classList.add(c)); const bright = read();
-    STATE.forEach(c => { if (!was.includes(c)) svg.classList.remove(c); });
-    svg.getBoundingClientRect(); if (!inst) svg.classList.remove('instant');
-    els.forEach((el, i) => {
-      const diff = PROPS.map((_, k) => k).filter(k => dark[i][k] !== bright[i][k]);
-      if (diff.length) prep.items.push({ ...(prep.when.get(el) || { on: T.flood0, off: OFF.flood0 }), el, offV: dark[i], onV: bright[i], diff, lit: false });
-    });
-  }
-  const put = (it, v) => it.diff.forEach(k => it.el.style.setProperty(PROPS[k], v[k]));       // Wert festhalten bzw. umschalten (Transition läuft)
-  const free = it => it.diff.forEach(k => it.el.style.removeProperty(PROPS[k]));            // Wert dem Stylesheet überlassen
-  svg.addEventListener('animationend', e => { if (e.animationName === 'wflick') e.target.style.animation = ''; });
+  const lit = svg.cloneNode(true);
+  lit.removeAttribute('role'); lit.setAttribute('aria-hidden', 'true'); lit.setAttribute('class', 'rh lit-layer static ' + STATE.join(' '));
+  lit.style.visibility = 'hidden'; stage.appendChild(lit);
+  svg.classList.add('static');                                  // keine Einzel-Übergänge: Zustand je Ebene fest
+  svg.setAttribute('class', svg.getAttribute('class') + ' night-layer');
+  const MASK = 'linear-gradient(to top, #000 0, #000 33.3%, transparent 66.6%)';
+  const setMask = on => { ['webkitMaskImage', 'maskImage'].forEach(k => { lit.style[k] = on ? MASK : ''; }); ['webkitMaskSize', 'maskSize'].forEach(k => { lit.style[k] = on ? '100% 300%' : ''; }); };
+  const setPos = p => { lit.style.webkitMaskPosition = lit.style.maskPosition = `0% ${p}%`; };
+  const DUR = 5200 * (calm ? .4 : 1);
   const state = { lit: false }, bLight = document.getElementById('b-light'), read = document.getElementById('read');
-  /* Vorbereiten (einmal, vor dem ersten Einschalten): Elemente sammeln, Zielwerte lesen und den Nacht-Zustand festhalten.
-     Das ändert nichts am Bild; danach färbt der Klassenwechsel am svg nichts mehr um, jedes Element wird einzeln freigegeben. */
-  function warm() {
-    if (prep) return;
-    prep = prepare(); probe();
-    if (!svg.classList.contains('instant') && !calm) { prep.items.forEach(it => put(it, it.offV)); svg.style.setProperty('--ts', Math.max(.45, Math.min(1, 1500 / prep.items.length)).toFixed(2)); }
-  }
+  let doneT = 0;
   function applyLight() {
-    warm();
-    const on = state.lit, quick = svg.classList.contains('instant') || calm;
-    cancelAnimationFrame(raf); raf = 0;
-    if (quick) { prep.items.forEach(it => { free(it); it.lit = on; }); STATE.forEach(c => svg.classList.toggle(c, on)); life(on, true); finish(on); return; }
-    // Die Klassen (lit, win, …) gehen beim ersten Einschalten an und bleiben; Aussehen und Zeitpunkt bestimmt je Element der festgehaltene Wert:
-    // Einschalten = Wert freigeben (das Stylesheet gilt), Ausschalten = Wert auf den Nachtwert setzen; die CSS-Transition macht den weichen Übergang.
-    if (on) STATE.forEach(c => svg.classList.add(c));
+    const on = state.lit, quick = svg.classList.contains('instant');
+    clearTimeout(doneT);
+    const EZ = `${DUR}ms cubic-bezier(.45,.05,.35,1)`, trans = quick ? 'none' : `-webkit-mask-position ${EZ}, mask-position ${EZ}`;
+    lit.style.transition = 'none'; svg.style.visibility = '';
+    if (quick) { setMask(false); lit.style.visibility = on ? 'visible' : 'hidden'; svg.style.visibility = on ? 'hidden' : ''; life(on, true); finish(on); return; }
+    lit.style.visibility = 'visible'; setMask(true); setPos(on ? 0 : 100); lit.getBoundingClientRect();   // Startwert festhalten
+    lit.style.transition = trans;
     life(on, false);
-    const q = prep.items.filter(it => it.lit !== on).map(it => [(on ? it.on : it.off) * SPEED * 1000, it]).sort((a, b) => a[0] - b[0]), t0 = performance.now();
-    let n = 0;
-    const tick = now => {
-      const t = now - t0;
-      while (n < q.length && q[n][0] <= t) {
-        const it = q[n++][1];
-        if (on) { free(it); if (it.flick) it.el.style.animation = 'wflick .8s linear'; } else put(it, it.offV);
-        it.lit = on;
-      }
-      if (n < q.length) raf = requestAnimationFrame(tick);
-      else { raf = 0; life(on, true); }
-    };
-    raf = requestAnimationFrame(tick);
+    requestAnimationFrame(() => setPos(on ? 100 : 0));
+    // Am Ende: Maske weg (Lichtebene voll sichtbar, Nachtebene verdeckt) bzw. Lichtebene weg; beides spart der GPU die Maske
+    doneT = setTimeout(() => {
+      lit.style.transition = 'none'; setMask(false);
+      if (on) { svg.style.visibility = 'hidden'; } else { lit.style.visibility = 'hidden'; }
+      life(on, true);
+    }, DUR + 120);
     finish(on);
   }
   const finish = on => { read.textContent = on ? 'Abendlicht · Fenster, Fassade' : 'Nacht'; };
@@ -131,15 +90,15 @@
   let pool = null, ovs = [], gen = 0;
   function life(on, settled) {
     const set = (els, f) => els.forEach((el, i) => { el.style.animation = on && settled && !calm ? f(i) : ''; });
-    set(prep.crown, () => 'breathe 5s ease-in-out infinite alternate');
-    set(prep.stars, i => `star ${3 + (i % 5)}s ease-in-out ${(i * .7) % 4}s infinite alternate`);
+    set([...lit.querySelectorAll('.lant-h')], () => 'breathe 5s ease-in-out infinite alternate');
+    set([...svg.querySelectorAll('.star'), ...lit.querySelectorAll('.star')], i => `star ${3 + (i % 5)}s ease-in-out ${(i * .7) % 4}s infinite alternate`);
     if (on && settled && !calm) startChurn(); else if (!on) stopChurn();
   }
   /* Fenster-Quelle: alle Teilpfade (Fenster) der .wn-Elemente. In zusammengefassten Pfaden (ein <path> je Klasse) lässt sich ein Fenster nicht
      einzeln dimmen; deshalb liegt über dem ausgewählten Fenster ein kleines dunkles Deckfenster (Pfad aus denselben Koordinaten), das ein-/ausblendet. */
   function buildPool() {
     const src = []; let n = 0;
-    svg.querySelectorAll('.wn:not(.off):not(.ov)').forEach(el => {
+    lit.querySelectorAll('.wn:not(.off):not(.ov)').forEach(el => {
       if (el.closest('.clk')) return;
       let d = el.getAttribute('d');
       if (!d) { if (el.tagName !== 'rect') return; const [x, y, w, h] = ['x', 'y', 'width', 'height'].map(k => +el.getAttribute(k)); d = `M${x} ${y}h${w}v${h}h${-w}z`; }
@@ -174,7 +133,6 @@
   const setLit = v => { state.lit = v; bLight.setAttribute('aria-pressed', v); applyLight(); };
   bLight.addEventListener('click', () => { demo.forEach(clearTimeout); demo = []; setLit(!state.lit); });
   read.textContent = 'Nacht';
-  setTimeout(warm, 120);   // vorab lesen, damit das Einschalten ohne Ruckler startet
-  if (q.has('sofort')) { svg.classList.add('instant'); setLit(true); }
+    if (q.has('sofort')) { svg.classList.add('instant'); setLit(true); }
   else demo = [setTimeout(() => setLit(true), 700)];   // bleibt an; der Knopf schaltet zurück auf Nacht
 })();
