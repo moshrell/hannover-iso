@@ -139,7 +139,6 @@ def phi_of(k, v):
     long_y = k in ('leineschloss', 'opernhaus')
     if k not in ('neuesRathaus', 'marktkirche', 'altesRathaus', 'leineschloss', 'hauptbahnhof', 'aegidienkirche'):
         norm = lambda a: (a + math.pi) % (2 * math.pi) - math.pi
-        if k == 'opernhaus': return 0.0       # frei auf dem Opernplatz: genau wie in der Detailansicht
         # Modul-Längsachse (lokal x) liegt auf der echten Längsachse; nur die Richtung der Front wird gewählt
         cs = [tl, tl + math.pi] if max(v['w'], v['d']) / min(v['w'], v['d']) >= 1.2 else [tl + i * math.pi / 2 for i in range(4)]
         rot = lambda ph, x, y: (x * math.cos(ph) - y * math.sin(ph), x * math.sin(ph) + y * math.cos(ph))

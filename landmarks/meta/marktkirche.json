@@ -1,14 +1,30 @@
 {
- "title": "marktkirche",
- "fact": "",
- "studio": "",
+ "title": "Marktkirche St. Georgii et Jacobi",
+ "kat": "Kirchen",
+ "fact": "Backsteingotik, 14. Jh. · Turm rund 97 m · 1943 zerstört, bis 1952 wiederaufgebaut.",
+ "studio": "Die Marktkirche ist die Hauptkirche der Altstadt Hannovers: eine dreischiffige Backstein-Hallenkirche aus dem 14. Jahrhundert mit einem rund 97 m hohen Westturm. Nach der Zerstörung 1943 wurde sie bis 1952 in historischer Form wiederaufgebaut; am Westportal arbeitete der Bildhauer Gerhard Marcks.",
  "detail": "studio.html?lm=marktkirche",
  "minor": false,
  "osm": [
   "w5121355"
  ],
  "h": 99,
- "rank": 90,
- "pin": false,
- "group": "altstadt"
+ "rank": 5,
+ "group": "altstadt",
+ "face": [
+  "compass",
+  [
+   0,
+   1
+  ],
+  [
+   0,
+   1
+  ]
+ ],
+ "card_phi": 270,
+ "seo": "Die Marktkirche St. Georgii et Jacobi steht mitten in der Altstadt von Hannover am Hanns-Lilje-Platz, nur wenige Schritte vom Alten Rathaus entfernt. Die dreischiffige Hallenkirche entstand im 14. Jahrhundert aus rotem Backstein und gehört zur norddeutschen Backsteingotik. Ein mächtiges, steiles Satteldach überspannt Mittelschiff und Seitenschiffe, im Osten schließt der Chor mehrseitig. Der Westturm ragt rund 97 Meter auf und prägt die Silhouette der Innenstadt; er sollte einst höher werden, doch das Geld reichte nicht, und man setzte einen schlanken Helm auf. Bei einem Luftangriff 1943 schwer zerstört, wurde die Kirche nach dem Krieg bis 1952 in ihrer historischen Gestalt wiederaufgebaut. Das Westportal geht auf den Bildhauer Gerhard Marcks zurück und erinnert an dunkle Kapitel der deutschen Geschichte.",
+ "addr": "Hanns-Lilje-Platz 2, 30159 Hannover",
+ "year": "14. Jh. (Wiederaufbau bis 1952)",
+ "arch": "Backsteingotik, dreischiffige Hallenkirche; Westportal von Gerhard Marcks"
 }

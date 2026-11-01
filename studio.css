@@ -34,43 +34,51 @@
   .stage { --ar:1.39; position:relative; width:100%; aspect-ratio:var(--ar); }
   @media (min-width:900px) { .stage { width:min(100%, 880px, calc((100svh - 2 * clamp(24px, 5vh, 56px)) * var(--ar))); } }
   .stage svg { position:absolute; inset:0; width:100%; height:100%; display:block; user-select:none; -webkit-user-select:none; transition:opacity .45s var(--ease), transform .45s var(--ease); }
-  /* Ränder weich ausblenden: Teich und Gelände enden nicht an einer harten Kante */
-  .stage svg { -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 6%, #000 88%, transparent);
-               -webkit-mask-composite:source-in; mask-image:linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 6%, #000 88%, transparent); mask-composite:intersect; }
+  /* Ränder weich ausblenden: Teich und Gelände enden nicht an einer harten Kante. Als Deckschicht in Hintergrundfarbe statt CSS-Maske auf der Zeichnung
+     (eine Maske auf einem großen, sich ändernden SVG zwingt die Telefon-GPU, die ganze Fläche in jedem Bild neu zu mischen). */
+  .stage::after { content:""; position:absolute; inset:0; pointer-events:none;
+                  background:linear-gradient(90deg, var(--bg), transparent 7%, transparent 93%, var(--bg)), linear-gradient(180deg, var(--bg), transparent 6%, transparent 88%, var(--bg)); }
+  .rh.static * { transition:none !important; }
   .stage svg.out { opacity:0; transform:scale(.97); }
   .ctrl { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; align-items:center; }
   .btn { appearance:none; border:1px solid rgba(255,231,163,.35); background:rgba(255,231,163,.06); color:var(--txt);
-         font:500 .95rem/1 inherit; padding:.85rem 1.1rem; border-radius:999px; cursor:pointer; display:inline-flex; gap:.6rem; align-items:center; min-height:46px;
-         transition:background .3s, border-color .3s, box-shadow .3s; }
+         font:500 .95rem/1 inherit; padding:.85rem 1.1rem; border-radius:999px; cursor:pointer; display:inline-flex; gap:.6rem; align-items:center; min-height:48px; -webkit-tap-highlight-color:transparent;
+         transition:background .3s, border-color .3s, box-shadow .3s, transform .2s; }
   .btn:hover { background:rgba(255,231,163,.12); }
+  .btn:active { transform:scale(.95); background:rgba(255,231,163,.2); }
   .btn:focus-visible { outline:2px solid var(--glow); outline-offset:3px; }
   .btn[aria-pressed="true"] { background:rgba(255,231,163,.18); border-color:var(--glow); box-shadow:0 0 22px rgba(255,231,163,.25); }
   .btn i { width:9px; height:9px; border-radius:50%; background:var(--glow); box-shadow:0 0 10px var(--glow); flex:none; }
-  .btn.ic { width:46px; padding:0; justify-content:center; font-size:1.25rem; }
+  .btn.ic { width:48px; padding:0; justify-content:center; font-size:1.25rem; }
   .side { font:500 .78rem/1.5 ui-monospace, Menlo, monospace; letter-spacing:.08em; color:var(--glow-d); min-width:12ch; text-align:center; }
   .read { flex:1 1 100%; font:500 .78rem/1.5 ui-monospace, Menlo, monospace; color:var(--mut); letter-spacing:.06em; }
 
   .credit { margin-top:2rem; font:.72rem/1.5 ui-monospace, Menlo, monospace; color:rgba(237,232,221,.35); }
 
-    /* Abendablauf im Studio doppelt so schnell wie in iso.css */
-  .rh .st, .rh .tl, .rh .cu, .rh .bk, .rh .sl, .rh .gz, .rh .lv, .rh .dt, .rh .mul, .rh .clockface, .rh .hand, .rh .gb, .rh .rs, .rh .brz, .rh .gl { transition:fill .92s var(--soft) var(--d, 0s), stroke .92s var(--soft) var(--d, 0s); }
-  .rh .wn { transition:fill .61s var(--soft) var(--d, 0s), stroke .61s var(--soft) var(--d, 0s), opacity .61s var(--soft) var(--d, 0s); }
-  .rh .wsh, .rh .wsl { transition:opacity .92s var(--soft) var(--d, 0s); }
-  .rh .lamp, .rh .lant { transition:fill .69s var(--soft) var(--d, 0s); }
-  .rh .lamp-g, .rh .lamp-r, .rh .lant-h { transition:opacity .77s var(--soft) var(--d, 0s); }
+    /* Abendablauf im Studio doppelt so schnell wie in iso.css; --ts (studio.js) kürzt die Übergänge bei Gebäuden mit sehr vielen Elementen */
+  .rh .st, .rh .tl, .rh .cu, .rh .bk, .rh .sl, .rh .gz, .rh .lv, .rh .dt, .rh .mul, .rh .clockface, .rh .hand, .rh .gb, .rh .rs, .rh .brz, .rh .gl, .rh .pl, .rh .kc, .rh .kz, .rh .kr, .rh .iron, .rh .glb { transition:fill calc(.92s * var(--ts, 1)) var(--soft), stroke calc(.92s * var(--ts, 1)) var(--soft); }
+  .rh .wn { transition:fill calc(.61s * var(--ts, 1)) var(--soft), stroke calc(.61s * var(--ts, 1)) var(--soft), opacity calc(.61s * var(--ts, 1)) var(--soft); }
+  .rh .wsh, .rh .wsl { transition:opacity calc(.92s * var(--ts, 1)) var(--soft); }
+  .rh .lamp, .rh .lant { transition:fill .69s var(--soft); }
+  .rh .lamp-g, .rh .lamp-r, .rh .lant-h { transition:opacity .77s var(--soft); }
   /* Einbettung in die Karte (?embed): nur Zeichnung + Knopf */
   html.embed .intro, html.embed .credit { display:none; }
   html.embed .wrap { display:block; min-height:0; padding:8px 12px 16px; max-width:none; }
-  html.embed .stage { width:min(100%, calc((100svh - 96px) * var(--ar))); margin:0 auto; }
+  html.embed .stage { width:min(100%, calc((100svh - 112px) * var(--ar))); margin:0 auto; }
+  /* In der Karte darf der Rahmen selbst nie scrollen: sonst „klebt“ ein Wisch über der Zeichnung am Rahmen (Chrome), und die Karte darunter lässt sich auf dem Telefon nicht weiterschieben */
+  html.embed, html.embed body { height:100%; overflow:hidden; }
   html.embed .side-col { max-width:880px; margin:0 auto; }
   @media (max-width:899px) { html.embed .wrap { min-height:100svh; display:flex; flex-direction:column; justify-content:center; } }
   /* Bedienleiste in der Einbettung: mittig und fest, damit nichts springt */
   html.embed .ctrl { flex-direction:column; justify-content:center; align-items:center; gap:8px; }
   html.embed .read { flex:none; width:100%; text-align:center; min-height:1.5em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-  /* Abendlicht-Ablauf: Fenster flackern kurz auf, dann ruhiges Leben (einzelne Fenster, Sterne, Laternenkrone atmen) */
+  /* Abendlicht-Ablauf: der Ablauf wird in studio.js getaktet; hier nur die Keyframes. Kurzes Aufflackern beim Einschalten (wflick, nur einzelne Fenster),
+     Sterne und Laternenkrone atmen, Deckfenster (.ov) blenden einzelne Fenster weich aus und wieder ein. */
   @keyframes wflick { 20% { opacity:.3; } 38% { opacity:1; } 52% { opacity:.45; } 70% { opacity:1; } }
-  @keyframes wtw { 0%, 84%, 100% { opacity:1; } 88% { opacity:.25; } 92% { opacity:1; } 95% { opacity:.45; } }
   @keyframes star { from { fill-opacity:.3; } to { fill-opacity:1; } }
   @keyframes breathe { from { opacity:.5; } to { opacity:.85; } }
-  .rh.win:not(.instant) .wn { animation:wflick .8s linear var(--d, 0s) backwards; }
+  .rh .wn.ov { transition:opacity 1.6s ease-in-out; pointer-events:none; }
+
+/* Handy: der SVG-Filter (Weichzeichner) über allen Fenstern wird bei jeder Lichtänderung neu gerechnet und lässt auf Telefon-GPUs Flächen aufblitzen oder verschwinden (Neues Rathaus: 2000+ Elemente); im Bild ist der Unterschied kaum zu sehen */
+.stage .rh .wins { filter:none; }

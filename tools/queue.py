@@ -39,7 +39,7 @@ if sys.argv[1] == 'claim':
         os.makedirs(f'ref/{i}', exist_ok=True)
         open(f'ref/{i}/CLAIM.md', 'w').write(f'Взято в работу {time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())} (метка {secrets.token_hex(4)}). Агент здания {i}.\n')
         sh('git', 'add', f'ref/{i}/CLAIM.md')
-        sh('git', '-c', 'user.name=lm-agent', '-c', 'user.email=lm-agent@invalid', 'commit', '-q', '-m', f'Взято в работу: {i}')
+        sh('git', '-c', 'user.name=Claude', '-c', 'user.email=noreply@anthropic.com', 'commit', '-q', '-m', f'Взято в работу: {i}')
         old = heads.get('lm/' + i)   # влитая старая ветка перезаписывается только если за это время никто её не менял (force-with-lease)
         r = sh('git', 'push', '-q', *(['--force-with-lease=lm/%s:%s' % (i, old)] if old else []), 'origin', f'lm/{i}', check=False)
         if r.returncode == 0:

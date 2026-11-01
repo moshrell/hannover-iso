@@ -76,6 +76,7 @@
 
     /* ---------- Fassaden (Wandkoordinaten: u nach rechts, v nach unten ab Oberkante) ---------- */
     const rect = (x, y, w, h) => `M${f2(x)} ${f2(y)}h${f2(w)}v${f2(h)}h${f2(-w)}z`;
+    const FRONT = [.57, .82];
     const archP = (x, y, w, h) => `M${f2(x)} ${f2(y + h)}V${f2(y + w / 2)}A${f2(w / 2)} ${f2(w / 2)} 0 0 1 ${f2(x + w)} ${f2(y + w / 2)}V${f2(y + h)}z`;
     const disc = (cx, cy, r) => `M${f2(cx - r)} ${f2(cy)}a${f2(r)} ${f2(r)} 0 1 0 ${f2(2 * r)} 0a${f2(r)} ${f2(r)} 0 1 0 ${f2(-2 * r)} 0z`;
     function windows(len, h, o) {
@@ -100,20 +101,30 @@
     const TURM = { fh: 9, bay: 3.4, ww: 1.2, wh: 4.4, sill: 1.5, mx: 1.4, arch: 1, pOff: .55, pDim: .2, pHi: .05 };
     const SMALL = { fh: 7.4, bay: 3.6, ww: 1.6, wh: 4, sill: 1.6, mx: 1.2, arch: 1, ...LIT };
     const path = (c, d, f) => `<path class="${c}"${f ? ` data-f="${f}"` : ''} d="${d}"/>`;
-    function deco(p) {
-      const id = IDS[p.part];
+    const ringDt = (cx, cy, r) => path('dt', disc(cx, cy, r));
+    const spokes = (cx, cy, r) => path('dt', Array.from({ length: 6 }, (_, i) => { const a = i * Math.PI / 3 + .3; return `M${f2(cx + r * Math.cos(a))} ${f2(cy + r * Math.sin(a))}L${f2(cx - r * Math.cos(a))} ${f2(cy - r * Math.sin(a))}`; }).join(''));
+    // Wandnormale (wie K.wall: (−dy, dx)); „front“ = Südseite des Turms (Portal), zur Karte hin
+    const nrm = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); return [-dy / l, dx / l]; };
+    function deco(p, a, b) {
+      const id = IDS[p.part], n = nrm(a, b), front = n[0] * FRONT[0] + n[1] * FRONT[1] > .6;
       return (len, h) => {
         if (len < 2.2 || h < 1) return '';
-        if (id === 'turm') {   // Portal unten, Uhr, hohe Spitzbogenfenster
-          let s = windows(len, h - 5.6, TURM) + hlines(len, [h - 13, h - 3.2]);
-          if (len > 4) s += path('wn hi', disc(len / 2, 6.2, 1.15), 4) + path('wn dim', archP(len / 2 - 1.3, h - 5.2, 2.6, 5.2), 1);
+        if (id === 'turm') {   // Eckpfeiler, Schallarkaden, Uhr, Portal + Rose (Südseite)
+          let s = path('dt', `M.55 0V${f2(h)}M${f2(len - .55)} 0V${f2(h)}`) + hlines(len, [h - 11.5, h - 20, h - 33]);
+          s += path('wn' + (rnd() < .5 ? ' hi' : ''), archP(len / 2 - 1.55, 1.8, .95, 5.4) + archP(len / 2 + .6, 1.8, .95, 5.4), 4);
+          if (h > 36) s += `<circle class="clockface" cx="${f2(len / 2)}" cy="${f2(h - 33 + 1.9)}" r="1.25"/>` + ringDt(len / 2, h - 33 + 1.9, 1.7);
+          if (front) s += `<path class="brz" d="${archP(len / 2 - 1.3, h - 6.4, 2.6, 6.4)}"/>` + path('wn', disc(len / 2, h - 12.8, .95), 3) + ringDt(len / 2, h - 12.8, 1.4);
+          else s += path('wn', rect(len / 2 - .35, h - 18, .7, 3.4) + rect(len / 2 - .35, h - 27, .7, 3.4), 2) + path('wn dim', archP(len / 2 - .45, h - 9, .9, 4), 1);
           return s;
         }
-        if (id.startsWith('sgiebel')) {   // Südgiebel: Rose, Bogenfenster, Portal
-          let s = path('wn dim', disc(len / 2, 2.6, 1.5), 4) + path('dt', disc(len / 2, 2.6, 1.9)) + windows(len, h - 3.8, GABL);
-          return s + hlines(len, [h - 4.4]);
+        if (id.startsWith('sgiebel') || id.startsWith('giebel')) {   // Giebelfront: Rose mit Speichen, zwei Rundbogenfenster, Lisenen
+          const c = len / 2, big = id.startsWith('s'), rr = big ? 1.6 : 1.9, ry = big ? 3.3 : 3.9;
+          let s = path('dt', `M.5 0V${f2(h)}M${f2(len - .5)} 0V${f2(h)}`) + ringDt(c, ry, rr + .45) + path('wn hi', disc(c, ry + .3, rr), 4) + spokes(c, ry + .3, rr);
+          const wy = ry + rr + 1.6;
+          if (h - wy > 3) s += path('wn', archP(c - 2.1, wy, 1.4, Math.min(5.2, h - wy - .4)) + archP(c + .7, wy, 1.4, Math.min(5.2, h - wy - .4)), 2);
+          if (big && h - wy > 3) s = s.replace(/$/, '') + hlines(len, [h - 1.2]);
+          return s;
         }
-        if (id.startsWith('giebel')) return windows(len, h, GABL) + hlines(len, [2.2]);
         if (id === 'hall') return windows(len, h, NAVE) + hlines(len, [h - 1.4]);
         if (id === 'anbau-w') return path('wn dim', archP(len / 2 - 1.2, h - 3.4, 2.4, 3.4), 1) + hlines(len, [h - 1]);
         return windows(len, h, SMALL) + hlines(len, [h - 1.2]);
@@ -121,11 +132,21 @@
     }
 
     /* ---------- Dächer ---------- */
+    const shd = (K, nx, ny) => (ny * K.view[0] - nx * K.view[1] >= 0 ? 'fr' : 'sd');
+    const vface = (K, pts, nx, ny, mat) => K.facing(nx, ny) <= 1e-6 ? '' : `<path class="${mat} ${shd(K, nx, ny)}" d="${K.path(pts)}Z"/>`;
     const MATS = ['sl', 'cu', 'rs'];
     function roof(K, q) {
       const { zw, h, shape, rh, mc, r } = q, z = Z0 + zw, zt = Z0 + h, mat = MATS[mc];
       const cx = r.reduce((a, p) => a + p[0], 0) / r.length, cy = r.reduce((a, p) => a + p[1], 0) / r.length;
-      if (shape === 0) return K.poly(r.map(p => [p[0], p[1], zt]), 'pl tp');
+      const ln = (...pts) => `<path class="dt cu-d" d="${K.path(pts)}"/>`;
+      if (shape === 0) {
+        let t = K.poly(r.map(p => [p[0], p[1], zt]), 'pl tp');
+        if (zw === 44) for (let i = 0; i < r.length; i++) {   // Turm: vier Wimperge unter dem Helm
+          const a = r[i], b = r[(i + 1) % r.length], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, zt + 4.2];
+          t += vface(K, [[a[0], a[1], zt], [b[0], b[1], zt], m], -(b[1] - a[1]), b[0] - a[0], 'pl') + ln([a[0], a[1], zt], m, [b[0], b[1], zt]);
+        }
+        return t;
+      }
       if (shape === 1) { let s = ''; for (let i = 0; i < r.length; i++) { const a = r[i], b = r[(i + 1) % r.length]; s += K.face([[a[0], a[1], z], [b[0], b[1], z], [cx, cy, zt]], mat); } return s; }
       if (shape === 4) {
         let R = 0; r.forEach(p => R += Math.hypot(p[0] - cx, p[1] - cy)); R /= r.length;
@@ -151,7 +172,8 @@
       const hip = shape === 3 && (u1 - u0) > 2 * hw ? hw : 0;
       const A = W(u0, v0, z), B = W(u1, v0, z), C = W(u1, v1, z), Dd = W(u0, v1, z), R0 = W(u0 + hip, vm, zt), R1 = W(u1 - hip, vm, zt);
       let s = K.face([A, B, R1, R0], mat) + K.face([C, Dd, R0, R1], mat);
-      s += hip ? K.face([B, C, R1], mat) + K.face([Dd, A, R0], mat) : K.face([B, C, R1], 'pl') + K.face([Dd, A, R0], 'pl');
+      s += hip ? K.face([B, C, R1], mat) + K.face([Dd, A, R0], mat) : vface(K, [B, C, R1], ux, uy, 'pl') + vface(K, [Dd, A, R0], -ux, -uy, 'pl');
+      if (mat === 'sl') s += ln(R0, R1);   // Kupferpatina am First
       if (shape === 2 && mc === 0) {   // grüne Kupferkante (Ortgang) am zugewandten Giebelende
         const e = K.facing(ux, uy) > 0 ? [B, R1, C] : K.facing(-ux, -uy) > 0 ? [Dd, R0, A] : null;
         if (e) s += `<path class="cu-d" fill="none" stroke-width="1.4" d="${K.path(e)}"/>`;
@@ -169,7 +191,7 @@
       let s = '';
       info.forEach(({ i, ps }) => {
         ps.slice().sort((a, b) => dep(a.cx, a.cy) - dep(b.cx, b.cy)).forEach(p => {
-          if (p.z1 - p.z0 > .05) for (let k = 0; k < p.v.length; k++) if (p.m >> k & 1) s += K.wall(p.v[k], p.v[(k + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'pl', deco(p));
+          if (p.z1 - p.z0 > .05) for (let k = 0; k < p.v.length; k++) if (p.m >> k & 1) s += K.wall(p.v[k], p.v[(k + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'pl', deco(p, p.v[k], p.v[(k + 1) % p.v.length]));
         });
         s += roof(K, PART[i]);
       });

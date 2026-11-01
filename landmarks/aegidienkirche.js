@@ -19,12 +19,20 @@ ISO.landmark('aegidienkirche', H => {
     for (let i = 0; i < 5; i++) { const a = BUT[i], b = BUT[i + 1], w = i > 2 ? 3 : 2.6; s += hole((a + b) / 2 - x0, WH - .7, w, 6.4, wallH); }
     return s; };
   const buttLines = (x0, len, h) => BUT.filter(b => b > x0 + .3 && b < x0 + len - .3).map(b => vl(b - x0, 0, h)).join('');
-  // Jochgiebel auf der Wandkrone (Wandkoordinaten: Fuß y = 0, nach oben negativ); sh = Schattenklasse
-  const gables = (x0, sh) => { let s = '';
-    for (let i = 0; i < 5; i++) { const a = BUT[i] - x0 + .35, b = BUT[i + 1] - x0 - .35, m = (a + b) / 2;
-      s += `<path class="rs ${sh}" d="M${f2(a)} 0L${f2(m)} ${f2(-GR)}L${f2(b)} 0Z"/><path class="dt" d="M${f2(a + 1.1)} -.4L${f2(m)} ${f2(-GR + .7)}L${f2(b - 1.1)} -.4"/>`
-        + `<circle class="wn off" data-f="1" cx="${f2(m)}" cy="${f2(-GR * .42)}" r=".5"/>`; }
+  // Jochgiebel auf der Wandkrone (Wandkoordinaten: Fuß y = 0, nach oben negativ); sh = Schattenklasse.
+  // Ruine: die Giebel sind unterschiedlich hoch erhalten (hs = Höhenfaktor je Joch), einzelne sind abgebrochen (br = Index, Spitze fehlt, ausgefranste Kante)
+  const GS = [1, .94, 1, .8, .92], GN = [.96, 1, .86, 1, .9];
+  const gables = (x0, sh, hs, br) => { let s = '';
+    for (let i = 0; i < 5; i++) { const a = BUT[i] - x0 + .35, b = BUT[i + 1] - x0 - .35, m = (a + b) / 2, H = GR * hs[i], hw = (b - a) / 2;
+      if (i === br) {
+        const q = (u, v) => `${f2(m + u * hw)} ${f2(-H * v)}`;
+        s += `<path class="rs ${sh}" d="M${f2(a)} 0L${q(-.34, .66)}L${q(-.2, .56)}L${q(-.05, .7)}L${q(.12, .6)}L${q(.3, .72)}L${q(.48, .5)}L${f2(b)} 0Z"/>`
+          + `<path class="dt" d="M${f2(a + 1.1)} -.4L${q(-.34, .6)}M${q(.5, .44)}L${f2(b - 1.1)} -.4"/>`;
+      } else {
+        s += `<path class="rs ${sh}" d="M${f2(a)} 0L${f2(m)} ${f2(-H)}L${f2(b)} 0Z"/><path class="dt" d="M${f2(a + 1.1)} -.4L${f2(m)} ${f2(-H + .7)}L${f2(b - 1.1)} -.4"/>`
+          + `<circle class="wn off" data-f="1" cx="${f2(m)}" cy="${f2(-H * .42)}" r=".5"/>`; } }
     return s; };
+
   // Strebepfeiler (außen, Südseite) mit kleiner Pyramide
   const pier = (K, cx, y0, d, zh) => {
     const a = .5; let s = K.box(cx - a, y0, Z0, 2 * a, d, zh, 'rs', {}, false);
@@ -45,7 +53,7 @@ ISO.landmark('aegidienkirche', H => {
     let s = K.box(TX1, YN, Z0, L, T, WH, 'rs', {
       S: (l, h) => shade(l, h) + hl(0, l, .5) + buttLines(TX1, l, h) + bayWins(TX1, h),
       E: (l, h) => '' }, true);
-    s += K.wall([TX1, YN + T], [XE - 1.1, YN + T], Z0 + WH, Z0 + WH + .01, 'rs', () => gables(TX1, shadeK(K, 0, 1)));
+    s += K.wall([TX1, YN + T], [XE - 1.1, YN + T], Z0 + WH, Z0 + WH + .01, 'rs', () => gables(TX1, shadeK(K, 0, 1), GN, 2));
     return s; } });
 
   /* ---------- Westende der Seitenschiffe (stoßen an den Turm) ---------- */
@@ -70,7 +78,7 @@ ISO.landmark('aegidienkirche', H => {
     let s = K.box(TX1, YS - T, Z0, L, T, WH, 'rs', {
       S: (l, h) => hl(0, l, .5) + hl(0, l, h * .38) + bayWins(TX1, h),
       E: (l, h) => hl(0, l, .5) }, true);
-    s += K.wall([TX1, YS], [XE, YS], Z0 + WH, Z0 + WH + .01, 'rs', () => gables(TX1, shadeK(K, 0, 1)));
+    s += K.wall([TX1, YS], [XE, YS], Z0 + WH, Z0 + WH + .01, 'rs', () => gables(TX1, shadeK(K, 0, 1), GS, 3));
     BUT.forEach(b => { s += pier(K, b, YS, .9, WH + 1.6); });
     return s; } });
 
@@ -136,5 +144,5 @@ ISO.landmark('aegidienkirche', H => {
     s += `<path class="dt cu-d" d="${K.path([[cx, cy, z + 17.4], [cx, cy, z + 19.8]])}"/>`;
     return s; } });
 
-  return { mods: M, ground, lc: [33.2, 11.1], z0: 0, top: [12.4, 10.5, 57], label: 'Aegidienkirche', h: 57, len: 51 };
+  return { mods: M, ground, lc: [33.2, 11.1], z0: 0, top: [12.4, 10.5, 57], pin: [33.2, 11.1, 21], label: 'Aegidienkirche', h: 57, len: 50.3 };
 });

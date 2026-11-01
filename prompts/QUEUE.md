@@ -6,12 +6,12 @@
 - `fertig` — сделано и влито в `main`;
 - `manuell` — Степан уже ведёт это здание вручную в своём чате (ветки ещё может не быть), `claim` его не берёт.
 
-«Занято» определяется не этой таблицей, а наличием ветки `lm/<id>` в репозитории: её создаёт команда `python3 tools/queue.py claim` (создание ветки атомарно, два агента не возьмут одно здание). Порядок строк = приоритет.
+«Занято» определяется не этой таблицей, а наличием ветки `lm/<id>` в репозитории: её создаёт команда `python3 tools/queue.py claim` (создание ветки атомарно, два агента не возьмут одно здание). Порядок строк = приоритет. Строки `p_<id>` — доработка уже готового здания (`prompts/POLISH.md`), `p_licht` — общий свет и плавность карточек; здание `<id>` в `ref/` и `landmarks/` — то же, что в строке выше.
 
 | id | статус | что это |
 |---|---|---|
-| nordlb | ready | NORD/LB (стеклянная башня и квартал), v1 в mitte2.js |
-| marktkirche | ready | Marktkirche, v1 в altstadt.js |
+| nordlb | fertig | NORD/LB (стеклянная башня и квартал), v1 в mitte2.js |
+| marktkirche | fertig | Marktkirche, v1 в altstadt.js |
 | altesRathaus | fertig | Altes Rathaus, v1 в altstadt.js |
 | leineschloss | fertig | Leineschloss / Landtag (файл Степана назывался votum) |
 | heinzvonheidenarena | fertig | стадион Hannover 96 (бывш. HDI-Arena) |
@@ -21,12 +21,41 @@
 | vwtower | fertig | VW-Tower (старая радиобашня), новое |
 | heizkraftwerklinden | fertig | Heizkraftwerk Linden, новое |
 | telemax | fertig | Telemax (282 м, вне зоны плиток), новое |
-| landesmuseum | ready | Landesmuseum, v2 → доработка по кадрам |
-| welfenschloss | ready | Welfenschloss, v2 → доработка по кадрам |
+| landesmuseum | fertig | Landesmuseum, v2 → доработка по кадрам |
+| welfenschloss | fertig | Welfenschloss, v2 → доработка по кадрам |
 | wangenheim | fertig | Wangenheimpalais, v1 в mitte2.js |
 | beginenturm | fertig | Beginenturm, малая точка, v1 в mitte2.js |
-| georgenpalais | ready | Georgenpalais (Wilhelm-Busch-Museum), новое |
-| anzeiger | ready | Anzeiger-Hochhaus (Höger 1928, клинкер, зелёный купол), v1 в mitte2.js |
-| ihmezentrum | ready | Ihme-Zentrum (бруталистский комплекс, Linden), новое, большое |
-| hcc | ready | HCC / Stadthalle с Kuppelsaal, новое, вне зоны плиток |
-| markuskirche | ready | Markuskirche (Hannover-List), новое |
+| georgenpalais | fertig | Georgenpalais (Wilhelm-Busch-Museum), новое |
+| anzeiger | fertig | Anzeiger-Hochhaus (Höger 1928, клинкер, зелёный купол), v1 в mitte2.js |
+| ihmezentrum | fertig | Ihme-Zentrum (бруталистский комплекс, Linden), новое, большое |
+| hcc | fertig | HCC / Stadthalle с Kuppelsaal, новое, вне зоны плиток |
+| markuskirche | fertig | Markuskirche (Hannover-List), новое |
+| p_licht | fertig | Свет и плавность анимации в карточках (studio.js/studio.css), без перерисовки зданий |
+| p_aegidienkirche | fertig | Доработка: Aegidienkirche |
+| p_altesRathaus | fertig | Доработка: Altes Rathaus |
+| p_marktkirche | fertig | Доработка: Marktkirche |
+| p_leineschloss | fertig | Доработка: Leineschloss / Landtag |
+| p_heinzvonheidenarena | fertig | Доработка: Heinz von Heiden Arena |
+| p_neustaedter | fertig | Доработка: Neustädter Hof- und Stadtkirche |
+| p_gartenkirche | fertig | Доработка: Gartenkirche St. Marien |
+| p_vwtower | fertig | Доработка: VW-Tower |
+| p_heizkraftwerklinden | fertig | Доработка: Heizkraftwerk Linden |
+| p_telemax | fertig | Доработка: Telemax |
+| p_landesmuseum | fertig | Доработка: Landesmuseum |
+| p_welfenschloss | fertig | Доработка: Welfenschloss (Universität) |
+| p_wangenheim | fertig | Доработка: Wangenheimpalais |
+| p_beginenturm | fertig | Доработка: Beginenturm |
+| p_georgenpalais | fertig | Доработка: Georgenpalais |
+| p_anzeiger | fertig | Доработка: Anzeiger-Hochhaus |
+| p_ihmezentrum | ready | Доработка: Ihme-Zentrum |
+| p_hcc | fertig | Доработка: HCC / Stadthalle |
+| p_markuskirche | fertig | Доработка: Markuskirche |
+| p_nordlb | ready | Доработка: NORD/LB |
+| p_neuesRathaus | wartet | Доработка: Neues Rathaus |
+| p_opernhaus | fertig | Доработка: Opernhaus |
+| p_hauptbahnhof | wartet | Доработка: Hauptbahnhof |
+| p_kreuzkirche | wartet | Доработка: Kreuzkirche |
+| p_waterloo | wartet | Доработка: Waterloosäule |
+| p_kroepcke | wartet | Доработка: Kröpcke-Uhr |
+| p_christuskirche | wartet | Доработка: Christuskirche |
+| p_clemens | wartet | Доработка: Basilika St. Clemens |

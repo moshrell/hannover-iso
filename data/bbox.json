@@ -18,6 +18,12 @@
       9.7945,
       52.3975,
       9.806
+    ],
+    [
+      52.3722,
+      9.7635,
+      52.38,
+      9.777
     ]
   ],
   "_extra": "Zusätzliche Detailzonen außerhalb von core (S,W,N,E), z. B. Telemax: auch dort alle Stufen bis 3 px/m"

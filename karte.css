@@ -1,62 +1,213 @@
-/* karte.css — Seite der Kachelkarte (mobil zuerst) */
-:root { --bg:#0A0E0C; --txt:#EDE8DD; --mut:rgba(237,232,221,.58); --glow:#FFE7A3; --glow-d:#C9A96E; }
-* { box-sizing:border-box; }
-html, body { margin:0; background:var(--bg); color:var(--txt); }
-body { font-family:ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif; }
-.wrap { max-width:1280px; margin:0 auto; padding:20px 16px 48px; }
-.eb { font:500 .7rem/1.6 ui-monospace, "Cascadia Mono", Menlo, monospace; letter-spacing:.2em; text-transform:uppercase; color:var(--glow-d); }
-h1 { font:400 clamp(1.8rem, 5vw, 3rem)/1.05 "Palatino Linotype", Palatino, Georgia, serif; margin:.4rem 0 .3rem; }
-.sub { color:var(--mut); margin:0 0 1rem; font-size:.95rem; max-width:62ch; }
+/* karte.css — Kachelkarte Hannover. Alle Klassen mit km-Präfix: dieselbe Datei läuft eigenständig (karte.html)
+   und eingebettet in der Website-Seite /hannover-karte/ (Kravets Webdesign), ohne deren Stile zu stören.
+   Mobil zuerst; Buttons ≥ 48 px; Farben/Rundungen wie die Website (Gold, Elfenbein, tiefes Grün-Schwarz). */
+.km, .km-after, .km-page {
+  --km-bg:#0A0E0C; --km-txt:#EDE8DD; --km-mut:rgba(237,232,221,.62); --km-glow:#FFE7A3; --km-gold:#C9A96E;
+  --km-line:rgba(237,232,221,.14); --km-e:cubic-bezier(.22,.61,.36,1);
+  --km-sans:Geist, ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+  --km-serif:"Instrument Serif", "Palatino Linotype", Palatino, Georgia, serif;
+  --km-mono:GeistMono, ui-monospace, "Cascadia Mono", Menlo, monospace;
+}
+.km *, .km *::before, .km *::after { box-sizing:border-box; }
 
-/* Kartenfenster: feste Höhe → nichts springt */
-.map { position:relative; height:min(72svh, 820px); min-height:420px; overflow:hidden; border-radius:14px; background:var(--bg);
-       border:1px solid rgba(255,231,163,.12); touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; contain:strict; }
-.map.drag { cursor:grabbing; }
-.poster, .lv { position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform; }
-.map:not(.ready) .poster { width:100% !important; height:100% !important; object-fit:cover; }
-canvas { position:absolute; left:0; top:0; display:block; }
-.map.ready .poster { visibility:hidden; }
-.world { position:absolute; inset:0; }
-.labels { position:absolute; inset:0; pointer-events:none; }
-/* Leuchtpunkte statt Schildern: verdecken nichts; Name nur beim Zeigen (Maus) und in der Detailansicht */
-.pin { position:absolute; left:0; top:0; width:36px; height:36px; padding:0; border:0; background:none; cursor:pointer; pointer-events:auto; will-change:transform; }
-.pin::before { content:""; position:absolute; left:50%; top:50%; width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:50%;
-               background:var(--glow); box-shadow:0 0 0 3px rgba(10,14,12,.65), 0 0 14px 3px rgba(255,231,163,.7); }
-.pin::after { content:attr(data-n); position:absolute; left:50%; bottom:100%; transform:translateX(-50%); opacity:0; transition:opacity .2s;
-              font:500 .72rem/1.2 ui-monospace, Menlo, monospace; letter-spacing:.08em; color:var(--txt); white-space:nowrap; pointer-events:none;
-              background:rgba(10,14,12,.85); border:1px solid rgba(255,231,163,.4); border-radius:999px; padding:.35rem .6rem; }
-@media (hover:hover) { .pin:hover::after { opacity:1; } }
-.pin:focus-visible { outline:2px solid var(--glow); outline-offset:2px; border-radius:50%; }
-.pin:focus-visible::after { opacity:1; }
-.hud { position:absolute; display:flex; gap:8px; }
-.hud.tr { top:10px; right:10px; flex-direction:column; }
-.hud.bl { left:10px; bottom:10px; right:10px; }
-.btn { appearance:none; border:1px solid rgba(255,231,163,.35); background:rgba(10,14,12,.78); color:var(--txt);
-       font:500 .95rem/1 inherit; padding:.8rem 1.05rem; border-radius:999px; cursor:pointer; display:inline-flex; gap:.6rem; align-items:center; min-height:44px; }
-.btn:hover { background:rgba(255,231,163,.12); }
-.btn:focus-visible { outline:2px solid var(--glow); outline-offset:3px; }
-.btn.ic { width:44px; padding:0; justify-content:center; font-size:1.2rem; }
-.hint { font:500 .72rem/1.4 ui-monospace, Menlo, monospace; color:var(--mut); background:rgba(10,14,12,.65); padding:.3rem .55rem; border-radius:6px; }
+/* ---------- eigenständige Seite (karte.html): Telefon zuerst, ab 1000 px eigene Anordnung ---------- */
+.km-page { margin:0; background:var(--km-bg); color:var(--km-txt); font-family:var(--km-sans); -webkit-text-size-adjust:100%; }
+.km-page .km-wrap { max-width:1280px; margin:0 auto; padding:0 16px; }
+.km-page h1, .km-page h2, .km-page h3 { font-weight:400; font-family:var(--km-serif); margin:0; }
+.km-page h1 em, .km-page h2 em { font-style:italic; color:var(--km-glow); }
+.km-hero { padding-top:28px !important; padding-bottom:18px !important; }
+.km-hero h1 { font-size:clamp(2.1rem, 9vw, 4.6rem); line-height:1.02; margin:.5rem 0 .7rem; letter-spacing:-.01em; }
+.km-sub { color:var(--km-mut); margin:0; font-size:.98rem; line-height:1.6; max-width:62ch; }
+.km-sub b { color:var(--km-txt); font-weight:500; }
+html.km-lock { overflow:hidden; }
+@media (min-width:1000px) {
+  .km-hero { display:grid; grid-template-columns:1.25fr 1fr; grid-template-rows:auto auto; column-gap:56px; align-items:end; padding-top:56px !important; padding-bottom:28px !important; }
+  .km-hero .km-eb { grid-column:1 / -1; }
+  .km-hero h1 { margin:.6rem 0 0; }
+  .km-hero .km-sub { padding-bottom:.5rem; }
+}
 
-.list { display:grid; gap:10px; margin:18px 0 0; padding:0; list-style:none; }
-@media (min-width:720px) { .list { grid-template-columns:repeat(2, 1fr); } }
-.list button { all:unset; box-sizing:border-box; display:block; width:100%; cursor:pointer; padding:14px 16px; border-radius:12px; border:1px solid rgba(255,231,163,.14); background:rgba(255,231,163,.03); }
-.list button:hover, .list button:focus-visible { border-color:rgba(255,231,163,.45); }
-.list b { display:block; font:400 1.15rem/1.2 "Palatino Linotype", Palatino, Georgia, serif; margin-bottom:4px; }
-.list span { color:var(--mut); font-size:.9rem; line-height:1.45; }
-.credit { margin-top:2rem; font:.72rem/1.6 ui-monospace, Menlo, monospace; color:rgba(237,232,221,.42); }
-.credit a { color:inherit; }
+.km-eb { font:500 .7rem/1.6 var(--km-mono); letter-spacing:.2em; text-transform:uppercase; color:var(--km-gold); margin:0; display:block; }
 
-/* Detailansicht: auf dem Telefon ganzer Bildschirm, am Rechner großes Fenster */
-.detail { padding:0; border:1px solid rgba(255,231,163,.2); border-radius:16px; background:var(--bg); color:var(--txt);
-          width:min(1100px, 100vw - 24px); height:min(860px, 100svh - 24px); max-width:none; max-height:none; overflow:hidden; }
-.detail::backdrop { background:rgba(4,6,5,.78); }
-.detail[open] { display:flex; flex-direction:column; }
-@media (max-width:719px) { .detail { width:100vw; height:100svh; border-radius:0; border:0; } }
-.d-head { display:flex; gap:12px; align-items:flex-start; justify-content:space-between; padding:14px 14px 0 16px; }
-.d-head h2 { font:400 1.5rem/1.1 "Palatino Linotype", Palatino, Georgia, serif; margin:.2rem 0 .2rem; }
-.d-head p { margin:0; color:var(--mut); font-size:.88rem; line-height:1.45; max-width:60ch; }
-#detail-frame { flex:1; width:100%; border:0; background:var(--bg); }
-/* Nebenpunkte: kleiner, erst beim Heranzoomen */
-.pin.minor::before { width:9px; height:9px; margin:-4.5px 0 0 -4.5px; box-shadow:0 0 0 2px rgba(10,14,12,.65), 0 0 10px 2px rgba(255,231,163,.55); }
-.map.far .pin.minor { visibility:hidden; }
+/* ---------- Kartenfenster: feste Höhe → nichts springt ---------- */
+.km-map { position:relative; height:min(74svh, 820px); min-height:420px; overflow:hidden; border-radius:18px; background:var(--km-bg);
+          border:1px solid var(--km-line); touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; contain:strict; }
+.km-map.drag { cursor:grabbing; }
+.km-poster, .km-lv { position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform; }
+.km-map:not(.ready) .km-poster { width:100% !important; height:100% !important; object-fit:cover; }
+.km-map canvas { position:absolute; left:0; top:0; display:block; }
+.km-map.ready .km-poster { visibility:hidden; }
+.km-world { position:absolute; inset:0; }
+.km-labels { position:absolute; inset:0; pointer-events:none; }
+
+/* Leuchtpunkte: verdecken nichts; Name beim Zeigen (Maus) und beim Fokus; Tippfläche 44 px */
+.km-pin { position:absolute; left:0; top:0; width:44px; height:44px; padding:0; border:0; background:none; cursor:pointer; pointer-events:auto; will-change:transform; -webkit-tap-highlight-color:transparent; }
+.km-pin::before { content:""; position:absolute; left:50%; top:50%; width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:50%;
+                  background:var(--km-glow); box-shadow:0 0 0 3px rgba(10,14,12,.65), 0 0 14px 3px rgba(255,231,163,.7); transition:transform .25s var(--km-e); }
+.km-pin::after { content:attr(data-n); position:absolute; left:50%; bottom:100%; transform:translateX(-50%) translateY(4px); opacity:0; transition:opacity .2s, transform .25s var(--km-e);
+                 font:500 .72rem/1.2 var(--km-mono); letter-spacing:.08em; color:var(--km-txt); white-space:nowrap; pointer-events:none;
+                 background:rgba(10,14,12,.88); border:1px solid rgba(201,169,110,.45); border-radius:999px; padding:.4rem .7rem; }
+@media (hover:hover) { .km-pin:hover::after { opacity:1; transform:translateX(-50%); } .km-pin:hover::before { transform:scale(1.35); } }
+.km-pin:focus-visible { outline:2px solid var(--km-glow); outline-offset:-6px; border-radius:50%; }
+.km-pin:focus-visible::after { opacity:1; transform:translateX(-50%); }
+.km-pin.minor::before { width:9px; height:9px; margin:-4.5px 0 0 -4.5px; box-shadow:0 0 0 2px rgba(10,14,12,.65), 0 0 10px 2px rgba(255,231,163,.55); }
+.km-map.far .km-pin.minor { visibility:hidden; }
+.km-pin.off { visibility:hidden; pointer-events:none; }
+
+/* ---------- Bedienung: Knöpfe rechts oben, Hinweis links unten ---------- */
+.km-hud { position:absolute; z-index:2; }
+.km-tr { top:12px; right:12px; display:flex; flex-direction:column; gap:10px; }
+.km-bl { left:12px; bottom:12px; right:72px; pointer-events:none; }
+.km-btn { appearance:none; -webkit-appearance:none; border:1px solid rgba(201,169,110,.4); background:rgba(10,14,12,.8); color:var(--km-txt);
+          -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+          font:500 .95rem/1 var(--km-sans); padding:0 1.2rem; border-radius:999px; cursor:pointer; display:inline-flex; gap:.6rem; align-items:center; justify-content:center;
+          min-height:48px; text-decoration:none; -webkit-tap-highlight-color:transparent;
+          transition:background .25s, border-color .25s, color .25s, transform .2s var(--km-e); }
+.km-btn svg { width:20px; height:20px; flex:none; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.km-btn:hover { background:rgba(201,169,110,.16); border-color:var(--km-gold); color:#fff; }
+.km-btn:active { transform:scale(.93); background:rgba(201,169,110,.26); }
+.km-btn:focus-visible { outline:2px solid var(--km-glow); outline-offset:3px; }
+.km-btn:disabled { opacity:.35; cursor:default; pointer-events:none; }
+.km-ic { width:48px; padding:0; }
+.km-gold { background:var(--km-gold); border-color:var(--km-gold); color:#0A0E0C; }
+.km-gold:hover { background:#E8D3A4; border-color:#E8D3A4; color:#0A0E0C; }
+/* Hinweis: eine Zeile, verschwindet bei der ersten Berührung */
+.km-hint { display:inline-block; max-width:100%; font:500 .72rem/1 var(--km-mono); letter-spacing:.06em; color:var(--km-txt); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+           background:rgba(10,14,12,.78); border:1px solid rgba(201,169,110,.3); border-radius:999px; padding:.65rem .95rem;
+           -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); transition:opacity .5s var(--km-e), transform .5s var(--km-e); }
+.km-hint.gone { opacity:0; transform:translateY(8px); visibility:hidden; transition:opacity .5s var(--km-e), transform .5s var(--km-e), visibility 0s .5s; }
+
+@media (min-width:1000px) { .km-map { height:min(80svh, 900px); } }
+
+/* ---------- Auswahl der Wahrzeichen: Filter nach Art + Bildkacheln (echter Text für Suchmaschinen) ---------- */
+.km-page .km-pick { padding-top:56px; }
+.km-pick h2, .km-about h2 { font-size:clamp(1.8rem, 6.5vw, 3rem); line-height:1.06; margin:.45rem 0 .6rem; }
+.km-chips { display:flex; gap:8px; overflow-x:auto; margin:18px -16px 0; padding:2px 16px 6px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.km-chips::-webkit-scrollbar { display:none; }
+.km-chip { appearance:none; -webkit-appearance:none; flex:none; display:inline-flex; align-items:center; gap:.55rem; min-height:44px; padding:0 1rem; border-radius:999px; cursor:pointer;
+           border:1px solid var(--km-line); background:transparent; color:var(--km-txt); font:500 .88rem/1 var(--km-sans); white-space:nowrap; -webkit-tap-highlight-color:transparent;
+           transition:background .25s, border-color .25s, color .25s; }
+.km-chip small { font:500 .68rem/1 var(--km-mono); color:var(--km-mut); }
+.km-chip:hover { border-color:rgba(201,169,110,.55); }
+.km-chip:focus-visible { outline:2px solid var(--km-glow); outline-offset:2px; }
+.km-chip[aria-pressed="true"] { background:var(--km-gold); border-color:var(--km-gold); color:#0A0E0C; }
+.km-chip[aria-pressed="true"] small { color:rgba(10,14,12,.65); }
+
+.km-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); grid-auto-flow:dense; gap:10px; margin:16px 0 0; padding:0; list-style:none; }
+.km-grid li { display:flex; min-width:0; }
+.km-grid li[hidden] { display:none; }
+.km-grid .big { grid-column:span 2; }
+@media (min-width:640px) { .km-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; } .km-grid .big { grid-row:span 2; } }
+.km-tile { all:unset; box-sizing:border-box; position:relative; display:flex; flex-direction:column; width:100%; cursor:pointer; border-radius:16px; overflow:hidden;
+           border:1px solid var(--km-line); background:var(--km-bg); color:var(--km-txt); font-family:var(--km-sans);
+           -webkit-tap-highlight-color:transparent; transition:border-color .3s, box-shadow .3s, transform .2s var(--km-e); }
+.km-th { position:relative; display:block; aspect-ratio:1 / 1; flex:none; }
+.big .km-th { flex:1 1 auto; aspect-ratio:auto; min-height:min(78vw, 320px); }
+.km-th img { position:absolute; inset:7%; width:86%; height:86%; object-fit:contain; transition:transform .6s var(--km-e), filter .6s var(--km-e); }
+.km-tt { display:block; padding:2px 12px 12px; }
+.km-tt b { display:block; font:400 1.05rem/1.2 var(--km-serif); }
+.km-tt small { display:block; margin-top:4px; font:500 .66rem/1.3 var(--km-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--km-mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.big .km-tt { padding:4px 16px 16px; }
+.big .km-tt b { font-size:clamp(1.3rem, 4vw, 1.7rem); }
+.km-tile:active { transform:scale(.98); }
+.km-tile:focus-visible { outline:2px solid var(--km-glow); outline-offset:2px; }
+@media (hover:hover) {
+  .km-tile:hover { border-color:rgba(201,169,110,.6); box-shadow:0 0 0 1px rgba(201,169,110,.2), 0 18px 50px -20px rgba(255,231,163,.25); }
+  .km-tile:hover .km-th img { transform:scale(1.05); filter:brightness(1.12); }
+}
+@media (min-width:1000px) {
+  .km-page .km-pick { padding-top:88px; }
+  .km-pick { display:grid; grid-template-columns:minmax(260px, 300px) 1fr; column-gap:48px; align-items:start; }
+  .km-pick-head { position:sticky; top:32px; }
+  .km-chips { flex-direction:column; overflow:visible; margin:26px 0 0; padding:0; gap:6px; }
+  .km-chip { justify-content:space-between; width:100%; border-color:transparent; border-radius:12px; padding:0 14px; }
+  .km-chip:hover { background:rgba(201,169,110,.08); border-color:transparent; }
+  .km-grid { margin:0; }
+}
+@media (min-width:1200px) { .km-grid { grid-template-columns:repeat(4, minmax(0, 1fr)); } }
+
+/* ---------- Über das Projekt: ein Haus mit Schieber Nacht ↔ Abendlicht, daneben kurzer Text ---------- */
+.km-page .km-about { padding-top:72px; }
+.km-about { display:grid; gap:28px; }
+.km-cmp { position:relative; margin:0; aspect-ratio:1000 / 965; border-radius:20px; overflow:hidden; border:1px solid var(--km-line); background:var(--km-bg);
+          touch-action:pan-y; cursor:ew-resize; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; }
+.km-cmp img { position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none; -webkit-user-drag:none; }
+.km-cmp-lit { position:absolute; inset:0; clip-path:inset(0 100% 0 0); }
+.km-cmp-line { position:absolute; top:0; bottom:0; left:0; width:2px; margin-left:-1px; pointer-events:none;
+               background:linear-gradient(transparent, var(--km-glow) 18%, var(--km-glow) 82%, transparent); box-shadow:0 0 18px 2px rgba(255,231,163,.45); }
+.km-cmp-knob { position:absolute; top:50%; left:0; width:48px; height:48px; margin:-24px 0 0 -24px; padding:0; border-radius:50%; cursor:ew-resize;
+               border:1px solid var(--km-gold); background:rgba(10,14,12,.86); color:var(--km-glow); display:flex; align-items:center; justify-content:center;
+               box-shadow:0 0 0 6px rgba(255,231,163,.08), 0 0 26px rgba(255,231,163,.35); -webkit-tap-highlight-color:transparent; touch-action:none; }
+.km-cmp-knob svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.km-cmp-knob:focus-visible { outline:2px solid var(--km-glow); outline-offset:4px; }
+.km-cmp figcaption { position:absolute; left:12px; right:12px; bottom:12px; display:flex; justify-content:space-between; pointer-events:none; }
+.km-cmp figcaption span { font:500 .66rem/1 var(--km-mono); letter-spacing:.14em; text-transform:uppercase; color:var(--km-txt);
+                          background:rgba(10,14,12,.75); border:1px solid var(--km-line); border-radius:999px; padding:.55rem .8rem; }
+.km-about h2 { margin:.5rem 0 .9rem; }
+.km-lead { margin:0; font-size:1.05rem; line-height:1.65; max-width:56ch; }
+.km-figs { display:flex; flex-wrap:wrap; gap:6px 26px; margin:1.6rem 0 1.4rem; padding:1.1rem 0; border-block:1px solid var(--km-line); }
+.km-figs span { font:500 .68rem/1.2 var(--km-mono); letter-spacing:.14em; text-transform:uppercase; color:var(--km-mut); }
+.km-figs b { display:block; margin-bottom:.35rem; font:400 clamp(1.8rem, 7vw, 2.6rem)/1 var(--km-serif); letter-spacing:0; text-transform:none; color:var(--km-glow); text-shadow:0 0 22px rgba(255,231,163,.35); }
+.km-cta { margin-top:1.5rem; }
+@media (min-width:1000px) {
+  .km-page .km-about { padding-top:110px; }
+  .km-about { grid-template-columns:minmax(0, 1.1fr) minmax(0, 1fr); gap:64px; align-items:center; }
+}
+.km-credit { margin:56px 0 0; padding-bottom:calc(32px + env(safe-area-inset-bottom)); font:.72rem/1.7 var(--km-mono); color:rgba(237,232,221,.5); }
+.km-credit a { color:inherit; }
+
+/* ---------- Detailansicht ----------
+   Telefon: Bogen von unten, oben das Haus groß, darunter Text (die Fläche scrollt); Wischen am Kopf nach unten schließt.
+   Rechner (ab 900 px): großes Fenster, links das Haus über die ganze Höhe, rechts Geschichte und Steckbrief. */
+.km-detail { padding:0; border:0; background:transparent; color:var(--km-txt); max-width:none; max-height:none; overflow:visible;
+             position:fixed; inset:auto 0 0 0; margin:0; width:100%; height:calc(100svh - 10px);
+             transform:translateY(100%); transition:transform .42s var(--km-e); font-family:var(--km-sans); }
+.km-detail.on { transform:none; }
+.km-detail[open] { display:block; }
+.km-detail::backdrop { background:rgba(4,6,5,.8); opacity:0; transition:opacity .35s var(--km-e); }
+.km-detail.on::backdrop { opacity:1; }
+.km-sheet { height:100%; display:flex; flex-direction:column; background:var(--km-bg); border:1px solid rgba(201,169,110,.28); border-bottom:0;
+            border-radius:22px 22px 0 0; overflow:hidden; box-shadow:0 -18px 60px rgba(0,0,0,.55); }
+.km-top { position:relative; flex:none; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 10px 6px 18px; touch-action:none; cursor:grab; }
+.km-handle { position:absolute; left:50%; top:8px; width:42px; height:4px; margin-left:-21px; border-radius:4px; background:rgba(237,232,221,.28); }
+.km-count { margin:0; font:500 .68rem/1.4 var(--km-mono); letter-spacing:.16em; text-transform:uppercase; color:var(--km-mut); }
+.km-count b { color:var(--km-gold); font-weight:500; }
+.km-top .km-btn { flex:none; }
+.km-body { flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
+.km-stage { position:relative; height:min(60svh, 132vw); }
+.km-stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; background:transparent; opacity:0; transition:opacity .35s var(--km-e); }
+.km-stage iframe.ready { opacity:1; }
+.km-stage-pre { position:absolute; left:12%; top:8px; width:76%; height:calc(100% - 118px); object-fit:contain; opacity:.45; }
+.km-stage-pre:not([src]) { display:none; }
+.km-info { padding:4px 18px 28px; }
+.km-info h2 { font:400 clamp(1.9rem, 7vw, 3.2rem)/1.05 var(--km-serif); margin:.45rem 0 .7rem; }
+.km-fact { margin:0; color:var(--km-txt); font-size:1.02rem; line-height:1.55; max-width:60ch; }
+.km-text { margin:.9rem 0 0; color:var(--km-mut); font-size:.94rem; line-height:1.7; max-width:62ch; }
+.km-text:empty { display:none; }
+.km-facts { margin:1.4rem 0 0; display:grid; gap:0; border-top:1px solid var(--km-line); }
+.km-facts:empty { display:none; }
+.km-facts div { display:grid; grid-template-columns:7.5rem 1fr; gap:12px; padding:.75rem 0; border-bottom:1px solid var(--km-line); }
+.km-facts dt { font:500 .66rem/1.7 var(--km-mono); letter-spacing:.12em; text-transform:uppercase; color:var(--km-gold); }
+.km-facts dd { margin:0; font-size:.92rem; line-height:1.55; }
+.km-facts a { color:var(--km-txt); text-decoration-color:rgba(201,169,110,.6); text-underline-offset:3px; }
+.km-foot { flex:none; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid var(--km-line); }
+.km-nav { display:flex; gap:10px; }
+.km-nav .km-btn { background:transparent; }
+.km-nav .km-btn:hover { background:rgba(201,169,110,.16); }
+@media (min-width:900px) {
+  .km-detail { inset:0; margin:auto; width:min(1320px, 100vw - 48px); height:min(880px, 100svh - 48px); transform:translateY(24px) scale(.975); opacity:0;
+               transition:transform .42s var(--km-e), opacity .3s var(--km-e); }
+  .km-detail.on { transform:none; opacity:1; }
+  .km-sheet { border:1px solid rgba(201,169,110,.28); border-radius:20px; }
+  .km-handle { display:none; }
+  .km-top { cursor:default; padding:14px 14px 0 26px; }
+  .km-body { display:grid; grid-template-columns:minmax(0, 1.45fr) minmax(340px, 1fr); overflow:hidden; }
+  .km-stage { height:auto; min-height:0; }
+  .km-info { overflow-y:auto; overscroll-behavior:contain; padding:24px 40px 36px 8px; display:flex; flex-direction:column; justify-content:safe center; }
+  .km-foot { padding:12px 18px; }
+}
+/* prefers-reduced-motion (Regel der Website): Animationen bleiben, nur gedämpft */
+@media (prefers-reduced-motion: reduce) {
+  .km-detail, .km-detail::backdrop, .km-hint, .km-pin::before, .km-pin::after, .km-tile, .km-th img, .km-stage iframe { transition-duration:.18s; }
+}
+.km-eb[hidden] { display:none !important; }

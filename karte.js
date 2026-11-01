@@ -3,12 +3,13 @@
    sofort sichtbar (Poster), flüssig auf dem Telefon, kaum Speicher. Wahrzeichen öffnen sich per Tipp als Detailansicht. */
 (() => {
   'use strict';
-  const BASE = 'tiles/';
-  // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): Altstadt = ein Punkt für alle drei Bauten
-  // Pins aus landmarks/meta/*.json (window.LMETA, von tools/build-landmarks.py erzeugt); Altstadt = Sammelpunkt für drei Bauten
+  const mapEl = document.getElementById('map');
+  const ROOT = (mapEl && mapEl.dataset.base) || '';   // Website-Seite: Karte liegt unter /vorschau/karte-ksn0/, die Seite selbst woanders
+  const BASE = ROOT + 'tiles/';
+  // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): ein Punkt pro Gebäude, über dem höchsten Punkt der Zeichnung
+  // Pins aus landmarks/meta/*.json (window.LMETA, von tools/build-landmarks.py erzeugt); Position aus tiles/meta.js (labels)
   const FACTS = {};
-  Object.entries(window.LMETA || {}).forEach(([n, m]) => { if (m.pin === false) return; FACTS[n] = { t: m.title, f: m.fact, d: m.detail, from: [n], minor: !!m.minor }; });
-  FACTS.altstadt = { t: 'Altstadt', f: 'Marktkirche (Backsteingotik, 14. Jh., Turm 97 m), Altes Rathaus mit Treppengiebeln und das Leineschloss – heute Sitz des Niedersächsischen Landtags.', d: 'altstadt.html', from: ['marktkirche', 'altesRathaus', 'leineschloss'] };
+  Object.entries(window.LMETA || {}).forEach(([n, m]) => { if (m.pin === false) return; FACTS[n] = { t: m.title, f: m.fact, d: m.detail, from: [n], minor: !!m.minor, r: m.rank == null ? 50 : m.rank, k: m.kat || 'Weitere', m }; });
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
   const labelsEl = document.getElementById('labels');
   const v = { x: 0, y: 0, z: 1 };
@@ -24,13 +25,16 @@
     world.appendChild(cv); fit();
     poster.addEventListener('load', apply); if (poster.complete) apply();
     // Punkte aus den gerenderten Positionen der Bauten (Mittelwert bei Gruppen)
+    // Gebäude ohne gerenderte Position (z. B. beim Hochladen: Dateien erscheinen nacheinander) bekommen keinen Punkt statt eines Punkts in der Ecke
     M.pins = Object.entries(FACTS).map(([name, F]) => {
       const ls = F.from.map(n => M.labels.find(l => l.name === n)).filter(Boolean);
-      const p = { name, x: ls.reduce((s, l) => s + l.x, 0) / ls.length, y: ls.reduce((s, l) => s + l.y, 0) / ls.length };
-      const b = document.createElement('button'); b.className = 'pin' + (F.minor ? ' minor' : ''); b.dataset.n = F.t; b.setAttribute('aria-label', F.t + ' – Detailansicht öffnen');
-      b.addEventListener('click', () => openDetail(name)); labelsEl.appendChild(b); p.el = b; return p;
-    });
+      if (!ls.length) { console.error('karte: keine Position für', name); return null; }
+      const p = { name, r: F.r, x: ls.reduce((s, l) => s + l.x, 0) / ls.length, y: ls.reduce((s, l) => s + l.y, 0) / ls.length };
+      const b = document.createElement('button'); b.className = 'km-pin' + (F.minor ? ' minor' : ''); b.dataset.n = F.t; b.setAttribute('aria-label', F.t + ' – Detailansicht öffnen');
+      b.addEventListener('click', () => openDetail(name, b)); labelsEl.appendChild(b); p.el = b; return p;
+    }).filter(Boolean).sort((a, b) => a.r - b.r);
   }
+  const PIN_GAP = 38;   // Mindestabstand zwischen gezeigten Punkten (px)
   const levelFor = z => { const dpr = Math.min(2, window.devicePixelRatio || 1); for (let i = 0; i < M.levels.length; i++) if (M.levels[i].s * 2 >= z * dpr * .9) return i; return M.levels.length - 1; };
   /* Zeichnen auf EINE Leinwand statt riesiger Ebenen: nie schwarz (Poster + grobe Stufen liegen immer darunter), kein Bild-Ziehen am PC */
   function fit() {
@@ -38,6 +42,7 @@
     if (W * H * DPR * DPR > 4.5e6) DPR = Math.max(1, Math.sqrt(4.5e6 / (W * H)));
     cw = W; ch = H; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); cv.style.width = W + 'px'; cv.style.height = H + 'px';
   }
+  const id0 = (i, key) => i + '/' + key;
   function want(i, key) {
     const id = i + '/' + key; let e = cache.get(id);
     if (e) { e.u = fno; return e; }
@@ -66,16 +71,31 @@
         if (!e.ok || !inView) continue;
         const a = Math.min(1, (now - e.t0) / 220); if (a < 1) fading = true;
         const dx = Math.floor((v.x + tx * ts) * DPR), dy = Math.floor((v.y + ty * ts) * DPR);
-        ctx.globalAlpha = a; ctx.drawImage(e.im, dx, dy, Math.ceil((v.x + (tx + 1) * ts) * DPR) - dx, Math.ceil((v.y + (ty + 1) * ts) * DPR) - dy);
+        ctx.globalAlpha = a;
+        try { ctx.drawImage(e.im, dx, dy, Math.ceil((v.x + (tx + 1) * ts) * DPR) - dx, Math.ceil((v.y + (ty + 1) * ts) * DPR) - dy); }
+        catch (err) { console.error('karte: Kachel kaputt', id0(i, key), err); cache.delete(id0(i, key)); apply(); }   // sonst bricht ein verworfenes Bild das ganze Bild (Karte schwarz)
       }
     }
     ctx.globalAlpha = 1;
     if (cache.size > 260) { const old = [...cache.entries()].filter(([id, e]) => !id.startsWith('0/') && e.u < fno - 30).sort((a, b) => a[1].u - b[1].u);
       for (let n = 0; n < old.length && cache.size > 200; n++) cache.delete(old[n][0]); }
     map.classList.toggle('far', v.z < .8);
-    M.pins.forEach(p => { p.el.style.transform = `translate3d(${(v.x + p.x * v.z).toFixed(1)}px, ${(v.y + p.y * v.z).toFixed(1)}px, 0) translate(-50%, -50%)`; });
+    // Punkte: wichtigste zuerst; ein Punkt, der näher als PIN_GAP an einem schon gezeigten liegt, wird ausgeblendet (beim Heranzoomen kommen die übrigen dazu)
+    const shown = [];
+    M.pins.forEach(p => {
+      const sx = v.x + p.x * v.z, sy = v.y + p.y * v.z - 12;
+      p.el.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0) translate(-50%, -50%)`;
+      const inView = sx > -20 && sx < cw + 20 && sy > -20 && sy < ch + 20;
+      const ok = inView && !shown.some(q => Math.hypot(q[0] - sx, q[1] - sy) < PIN_GAP);
+      if (ok) shown.push([sx, sy]);
+      if (ok !== p.on) { p.on = ok; p.el.classList.toggle('off', !ok); }
+    });
     if (fading) apply();
   }
+  // Nach der Detailansicht (große Seite im Rahmen, auf dem Telefon knapper Speicher): Leinwand neu anlegen und alles neu zeichnen, sonst bleibt die Karte manchmal schwarz
+  const redraw = () => { if (!M) return; fit(); apply(); };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) redraw(); });
+  window.addEventListener('pageshow', redraw);
   const apply = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; tiles(); }); };
 
   /* ---------- Verschieben, Zoomen ---------- */
@@ -106,7 +126,10 @@
     if (v.z > zo) fly(cx, cy, zo);
   }, 350); };
   const pts = new Map(); let last = null, moved = 0;
-  map.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; map.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); map.classList.add('drag'); last = null; moved = 0; });
+  const hint = document.getElementById('hint'), hideHint = () => { if (hint) hint.classList.add('gone'); };
+  let tapPin = null, tapDone = null, multi = false;
+  map.addEventListener('click', () => { const pb = tapDone; tapDone = null; if (pb) pb.click(); });
+  map.addEventListener('pointerdown', e => { const pb = e.target.closest('.km-pin'); if (e.target.closest('button') && !pb) return; hideHint(); tapDone = null; if (!pts.size) { tapPin = pb; multi = false; } else { multi = true; } map.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); map.classList.add('drag'); last = null; moved = 0; });
   map.addEventListener('pointermove', e => {
     if (!pts.has(e.pointerId)) return;
     pts.set(e.pointerId, [e.clientX, e.clientY]);
@@ -119,45 +142,181 @@
     }
     last = cur;
   });
-  const up = e => { pts.delete(e.pointerId); last = null; if (!pts.size) { map.classList.remove('drag'); settle(); } };
+  const up = e => {
+    const had = pts.has(e.pointerId); pts.delete(e.pointerId); last = null;
+    if (!pts.size) {
+      map.classList.remove('drag');
+      // Tipp auf einen Punkt (Zeiger war gefangen, daher kein click am Button): öffnen, wenn kaum bewegt und nicht mit zwei Fingern
+      tapDone = (had && e.type === 'pointerup' && tapPin && !multi && moved < 8) ? tapPin : null; tapPin = null;   // geöffnet wird erst im folgenden click (sonst trifft er die geöffnete Detailansicht und schließt sie)
+      settle();
+    }
+  };
   map.addEventListener('pointerup', up); map.addEventListener('pointercancel', up);
   map.addEventListener('dragstart', e => e.preventDefault());
-  map.addEventListener('wheel', e => { e.preventDefault(); const r = map.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0016), e.clientX - r.left, e.clientY - r.top); settle(); }, { passive: false });
-  map.addEventListener('dblclick', e => { if (e.target.closest('button')) return; const r = map.getBoundingClientRect(); zoomAt(1.8, e.clientX - r.left, e.clientY - r.top); });
-  document.getElementById('zin').addEventListener('click', () => { zoomAt(1.5, map.clientWidth / 2, map.clientHeight / 2); settle(); });
-  document.getElementById('zout').addEventListener('click', () => zoomAt(1 / 1.5, map.clientWidth / 2, map.clientHeight / 2));
-  document.getElementById('zall').addEventListener('click', () => fly((M.box[0] + M.box[2]) / 2, (M.box[1] + M.box[3]) / 2, zMin));
+  map.addEventListener('wheel', e => { e.preventDefault(); e.stopPropagation(); hideHint(); const r = map.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0016), e.clientX - r.left, e.clientY - r.top); settle(); }, { passive: false });
+  map.addEventListener('dblclick', e => { if (e.target.closest('button') && !e.target.closest('.km-pin')) return; const r = map.getBoundingClientRect(); zoomAt(1.8, e.clientX - r.left, e.clientY - r.top); });
+  document.getElementById('zin').addEventListener('click', () => { hideHint(); zoomAt(1.5, map.clientWidth / 2, map.clientHeight / 2); settle(); });
+  document.getElementById('zout').addEventListener('click', () => { hideHint(); zoomAt(1 / 1.5, map.clientWidth / 2, map.clientHeight / 2); });
+  document.getElementById('zall').addEventListener('click', () => { hideHint(); fly((M.box[0] + M.box[2]) / 2, (M.box[1] + M.box[3]) / 2, zMin); });
   window.addEventListener('resize', () => { if (M) { fit(); zMin = Math.min(map.clientWidth / (M.box[2] - M.box[0]), map.clientHeight / (M.box[3] - M.box[1])) * .95; clamp(); apply(); } });
 
-  /* ---------- Detailansicht eines Wahrzeichens (eigene Seite im Rahmen, mit Abendlicht) ---------- */
+  /* ---------- Detailansicht eines Wahrzeichens (eigene Seite im Rahmen, mit Abendlicht) ----------
+     Telefon: unterer Bogen (Wischen nach unten, Esc, Tippen daneben, × oder „Zur Karte“ schließen). Rechner: Fenster. */
   const dlg = document.getElementById('detail'), frame = document.getElementById('detail-frame'), dTitle = document.getElementById('detail-title'), dFact = document.getElementById('detail-fact');
-  function openDetail(name) {
-    const F = FACTS[name]; if (!F) return;
-    dTitle.textContent = F.t; dFact.textContent = F.f;
-    const p = M.pins.find(q => q.name === name); if (p) fly(p.x, p.y + 40, Math.max(v.z, 1.6));
-    frame.src = F.d + (F.d.includes('?') ? '&' : '?') + 'embed';
-    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  const dEb = document.getElementById('detail-eb'), dTop = document.getElementById('detail-top'), root = document.documentElement;
+  const ORDER = Object.keys(FACTS);
+  let filter = '';   // gewählte Art in der Auswahl: Weiter/Zurück bleiben innerhalb dieser Art
+  const order = () => filter ? ORDER.filter(n => FACTS[n].k === filter) : ORDER;
+  const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;   // Regel der Website: nur gedämpft (kürzer), nicht abgeschaltet
+  const wide = () => window.matchMedia('(min-width:720px)').matches;
+  let openedAt = 0, current = null, closing = false, opener = null, closeT = 0;
+  const dText = document.getElementById('detail-text'), dFacts = document.getElementById('detail-facts'), dCount = document.getElementById('detail-count');
+  const dPre = document.getElementById('detail-pre'), dBody = document.getElementById('detail-body');
+  frame.addEventListener('load', () => { if (frame.getAttribute('src') !== 'about:blank') frame.classList.add('ready'); });
+  // Steckbrief: nur Felder, die in landmarks/meta/<name>.json stehen; Adresse führt zur Karte von OpenStreetMap
+  function facts(m) {
+    dFacts.textContent = '';
+    [['Baujahr', m.year], ['Architektur', m.arch], ['Adresse', m.addr]].forEach(([k, val]) => {
+      if (!val) return;
+      const d = document.createElement('div'), dt = document.createElement('dt'), dd = document.createElement('dd');
+      dt.textContent = k;
+      if (k === 'Adresse') { const a = document.createElement('a'); a.href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(val); a.rel = 'noopener'; a.target = '_blank'; a.textContent = val; dd.appendChild(a); }
+      else dd.textContent = val;
+      d.append(dt, dd); dFacts.appendChild(d);
+    });
   }
-  const closeDetail = () => { dlg.close ? dlg.close() : dlg.removeAttribute('open'); };
+  function fill(name) {
+    const F = FACTS[name], m = F.m;
+    current = name; dTitle.textContent = F.t; dFact.textContent = F.f;
+    dEb.textContent = F.k; dEb.hidden = false;
+    dText.textContent = m.seo || (m.studio && m.studio !== F.f ? m.studio : '');
+    facts(m);
+    const L = order(), i = L.indexOf(name);
+    dCount.innerHTML = ''; const b = document.createElement('b'); b.textContent = String(i + 1).padStart(2, '0'); dCount.append(b, ` / ${String(L.length).padStart(2, '0')}` + (filter ? ' · ' + filter : ''));
+    if (m.thumb) dPre.src = ROOT + 'landmarks/thumbs/' + name + '.webp'; else dPre.removeAttribute('src');
+    frame.classList.remove('ready'); dBody.scrollTop = 0; const info = dBody.querySelector('.km-info'); if (info) info.scrollTop = 0;
+    frame.src = ROOT + F.d + (F.d.includes('?') ? '&' : '?') + 'embed';
+  }
+  function openDetail(name, from) {
+    const F = FACTS[name]; if (!F) return;
+    const p = M.pins.find(q => q.name === name);
+    if (dlg.open) { if (closing) return; fill(name); if (p) focus(p.x, p.y + 40, Math.max(v.z, 1.6)); return; }
+    opener = from || document.activeElement; fill(name);
+    if (p) fly(p.x, p.y + 40, Math.max(v.z, 1.6));
+    const sb = window.innerWidth - root.clientWidth;   // Scrollbalken-Breite, damit die Seite beim Sperren nicht springt
+    root.classList.add('km-lock'); if (sb > 0) root.style.paddingRight = sb + 'px';
+    openedAt = performance.now();
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    requestAnimationFrame(() => requestAnimationFrame(() => { if (dlg.open && !closing) dlg.classList.add('on'); }));
+  }
+  function closeDetail() {
+    if (!dlg.open || closing) return;
+    closing = true; dlg.classList.remove('on');
+    const fin = () => { clearTimeout(closeT); if (!closing) return; closing = false; dlg.style.transition = ''; dlg.style.transform = ''; if (dlg.close) dlg.close(); else { dlg.removeAttribute('open'); dlg.dispatchEvent(new Event('close')); } };
+    closeT = setTimeout(fin, reduced() ? 260 : 480);
+    dlg.addEventListener('transitionend', function te(e) { if (e.target !== dlg || e.propertyName !== 'transform') return; dlg.removeEventListener('transitionend', te); fin(); });
+  }
+  const stepTo = d => { if (!current || closing) return; const L = order().includes(current) ? order() : ORDER, i = L.indexOf(current); openDetail(L[(i + d + L.length) % L.length]); };
   document.getElementById('detail-close').addEventListener('click', closeDetail);
-  dlg.addEventListener('close', () => { frame.src = 'about:blank'; });
-  dlg.addEventListener('click', e => { if (e.target === dlg) closeDetail(); });
-
-  /* ---------- Liste unter der Karte (echter Text für Google) ---------- */
-  const list = document.getElementById('list');
-  Object.entries(FACTS).forEach(([name, F]) => {
-    const li = document.createElement('li'); const b = document.createElement('button');
-    b.innerHTML = `<b></b><span></span>`; b.firstChild.textContent = F.t; b.lastChild.textContent = F.f;
-    b.addEventListener('click', () => openDetail(name)); li.appendChild(b); list.appendChild(li);
+  document.getElementById('detail-back').addEventListener('click', closeDetail);
+  document.getElementById('detail-prev').addEventListener('click', () => stepTo(-1));
+  document.getElementById('detail-next').addEventListener('click', () => stepTo(1));
+  dlg.addEventListener('cancel', e => { e.preventDefault(); closeDetail(); });
+  // Website: eigenes weiches Scrollen hört das Rad am ganzen Fenster ab und würde den Text in der Detailansicht blockieren → Rad hier nicht weitergeben
+  dlg.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
+  dlg.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') stepTo(-1); else if (e.key === 'ArrowRight') stepTo(1); });
+  dlg.addEventListener('click', e => { if (e.target === dlg && performance.now() - openedAt > 450) closeDetail(); });
+  dlg.addEventListener('close', () => {
+    if (!dlg.open) { frame.src = 'about:blank'; frame.classList.remove('ready'); }
+    dlg.classList.remove('on'); closing = false; current = null; clearTimeout(closeT);
+    root.classList.remove('km-lock'); root.style.paddingRight = '';
+    redraw(); setTimeout(redraw, 400);
+    if (opener && opener.focus && document.contains(opener)) { try { opener.focus({ preventScroll: true }); } catch (err) { console.error('karte: Fokus', err); } }
+    opener = null;
   });
+  // Wischen nach unten an Griff/Kopf schließt (nur Telefon)
+  let sw = null;
+  dTop.addEventListener('pointerdown', e => { if (wide() || closing || e.target.closest('button')) return; sw = { id: e.pointerId, y0: e.clientY, t0: performance.now(), dy: 0 }; dTop.setPointerCapture(e.pointerId); dlg.style.transition = 'none'; });
+  dTop.addEventListener('pointermove', e => { if (!sw || e.pointerId !== sw.id) return; sw.dy = Math.max(0, e.clientY - sw.y0); dlg.style.transform = `translateY(${sw.dy}px)`; });
+  const swEnd = e => {
+    if (!sw || e.pointerId !== sw.id) return;
+    const dy = sw.dy, fast = dy / Math.max(1, performance.now() - sw.t0) > .6; sw = null;
+    dlg.style.transition = ''; void dlg.offsetHeight; dlg.style.transform = '';
+    if (dy > 110 || (fast && dy > 30)) closeDetail();
+  };
+  dTop.addEventListener('pointerup', swEnd); dTop.addEventListener('pointercancel', swEnd);
+
+  /* ---------- Auswahl unter der Karte: Filter nach Art + Bildkacheln ----------
+     Steht die Liste schon im HTML (Website-Seite, für Suchmaschinen vorab erzeugt: li[data-lm] mit button.km-tile), wird sie nur verbunden. */
+  const list = document.getElementById('list'), chips = document.getElementById('chips');
+  const short = y => String(y || '').split(/\s\(|;/)[0].trim();
+  if (list) {
+    if (!list.querySelector('[data-lm]')) Object.entries(FACTS).forEach(([name, F]) => {
+      const li = document.createElement('li'); li.dataset.lm = name; li.dataset.kat = F.k; if (F.r <= 1) li.className = 'big';
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'km-tile';
+      const th = document.createElement('span'); th.className = 'km-th';
+      if (F.m.thumb) { const im = new Image(); im.src = ROOT + 'landmarks/thumbs/' + name + '.webp'; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.width = F.m.thumb[0]; im.height = F.m.thumb[1]; th.appendChild(im); }
+      const tt = document.createElement('span'); tt.className = 'km-tt'; const tb = document.createElement('b'), ts = document.createElement('small');
+      tb.textContent = F.t; ts.textContent = short(F.m.year) || F.k; tt.append(tb, ts);
+      b.append(th, tt); li.appendChild(b); list.appendChild(li);
+    });
+    list.querySelectorAll('[data-lm]').forEach(li => { const b = li.querySelector('button'), name = li.dataset.lm; if (b && FACTS[name]) b.addEventListener('click', () => openDetail(name, b)); });
+    if (chips) {
+      const kats = [...new Set(Object.values(FACTS).map(F => F.k))];
+      const all = [['', 'Alle', ORDER.length], ...kats.map(k => [k, k, ORDER.filter(n => FACTS[n].k === k).length])];
+      const btns = all.map(([k, label, n]) => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'km-chip'; b.setAttribute('aria-pressed', k === filter);
+        const sm = document.createElement('small'); sm.textContent = n; b.append(label, sm);
+        b.addEventListener('click', () => {
+          filter = k; btns.forEach(x => x.setAttribute('aria-pressed', x === b));
+          list.querySelectorAll('[data-lm]').forEach(li => { li.hidden = !!k && li.dataset.kat !== k; });
+        });
+        chips.appendChild(b); return b;
+      });
+    }
+  }
+  document.querySelectorAll('[data-km-count]').forEach(el => { el.textContent = ORDER.length; });
+
+  /* ---------- Über das Projekt: Schieber Nacht ↔ Abendlicht ---------- */
+  const cmp = document.getElementById('cmp');
+  if (cmp) {
+    const lit = document.getElementById('cmp-lit'), line = document.getElementById('cmp-line'), knob = document.getElementById('cmp-knob');
+    let val = 0, touched = false, demoRaf = 0;
+    const set = v => { val = Math.max(0, Math.min(100, v)); lit.style.clipPath = `inset(0 ${(100 - val).toFixed(2)}% 0 0)`; line.style.left = knob.style.left = val.toFixed(2) + '%'; knob.setAttribute('aria-valuenow', Math.round(val)); };
+    const fromX = x => { const r = cmp.getBoundingClientRect(); set((x - r.left) / r.width * 100); };
+    const stopDemo = () => { touched = true; cancelAnimationFrame(demoRaf); };
+    let drag = null;
+    cmp.addEventListener('pointerdown', e => { stopDemo(); drag = { id: e.pointerId, x: e.clientX, y: e.clientY, on: e.target === knob || e.pointerType === 'mouse' }; if (drag.on) { cmp.setPointerCapture(e.pointerId); fromX(e.clientX); } });
+    cmp.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (!drag.on) { if (Math.abs(e.clientX - drag.x) > 8 && Math.abs(e.clientX - drag.x) > Math.abs(e.clientY - drag.y)) { drag.on = true; cmp.setPointerCapture(e.pointerId); } else return; }   // Telefon: senkrecht wischen scrollt die Seite
+      fromX(e.clientX);
+    });
+    const end = e => { if (drag && e.pointerId === drag.id) { if (!drag.on && e.type === 'pointerup') fromX(e.clientX); drag = null; } };
+    cmp.addEventListener('pointerup', end); cmp.addEventListener('pointercancel', end);
+    knob.addEventListener('keydown', e => { const d = { ArrowLeft: -5, ArrowDown: -5, ArrowRight: 5, ArrowUp: 5, Home: -100, End: 100 }[e.key]; if (d == null) return; e.preventDefault(); stopDemo(); set(val + d); });
+    set(0);
+    // Einmal von selbst aufziehen, sobald der Abschnitt zu sehen ist
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => { if (!es.some(x => x.isIntersecting) || touched) return; io.disconnect();
+        const t0 = performance.now(), D = reduced() ? 900 : 2400, ease = t => 1 - Math.pow(1 - t, 3);
+        const step = now => { if (touched) return; const t = Math.min(1, (now - t0) / D); set(62 * ease(t)); if (t < 1) demoRaf = requestAnimationFrame(step); };
+        demoRaf = requestAnimationFrame(step);
+      }, { threshold: .45 });
+      io.observe(cmp);
+    } else set(62);
+  }
 
   /* ---------- Start ---------- */
+  // Eichung: Telefon 390 × 624 (z = 1.5) zeigt 260 × 416 Welteinheiten um den Punkt „Rathaus + START“ (Rathaus groß, darunter ein Stück Maschteich).
+  // Dieses Fenster muss auf jedem Kartenblock ganz sichtbar sein → Zoom = kleinerer der beiden Faktoren, nach oben begrenzt.
+  const START = { dx: -30, dy: 75 }, REF = { w: 260, h: 416, zMax: 2.2 };
+  const startZoom = () => Math.max(zMin, Math.min(REF.zMax, map.clientWidth / REF.w, map.clientHeight / REF.h));
   try {
     setup(window.TILES);
     zMin = Math.min(map.clientWidth / (M.box[2] - M.box[0]), map.clientHeight / (M.box[3] - M.box[1])) * .95;
-    // Start: nah am Neuen Rathaus, Altstadt noch im Bild
-    const nr = M.pins.find(p => p.name === 'neuesRathaus'), al = M.pins.find(p => p.name === 'altstadt');
-    focus(nr.x * .62 + al.x * .38, nr.y * .62 + al.y * .38, Math.max(zMin, map.clientWidth < 700 ? 1.15 : 1.5));
+    const nr = M.pins.find(p => p.name === 'neuesRathaus');
+    focus(nr.x + START.dx, nr.y + START.dy, startZoom());
     map.classList.add('ready');
   } catch (err) { console.error('karte:', err); }
 })();

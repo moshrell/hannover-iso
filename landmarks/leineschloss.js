@@ -203,6 +203,6 @@
       return s;
     } });
 
-    return { mods: M, lc: [37.33, 86.07], z0: 0, ground: K => K.poly(COURT.map(p => [p[0], p[1], Z0]), 'court'), top: [37, 86, 24], label: 'Leineschloss · Landtag', h: 24, len: 172.1 };
+    return { mods: M, lc: [37.33, 86.07], z0: 0, pin: [70, 72, 19], ground: K => K.poly(COURT.map(p => [p[0], p[1], Z0]), 'court'), top: [37, 86, 24], label: 'Leineschloss · Landtag', h: 24, len: 172.1 };
   });
 })();

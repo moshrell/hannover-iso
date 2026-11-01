@@ -1,32 +1,34 @@
-# Telemax — Bericht (Branch `lm/telemax`)
+# Telemax: отчёт (доработка p_telemax)
 
-**Gemacht:** neues Gebäude `landmarks/telemax.js` + `landmarks/meta/telemax.json` (OSM w590712193, w724093583, w724093584). Ein Modul, 282 m: Sockel-Pyramide, verjüngter Betonschaft, Antennenfeld, 10 Plattformen mit Technikräumen und Fachwerk-Untersicht, Kopf mit 3×3 Öffnungen, weißer Mastfuß, rotbrauner GRP-Zylinder, Stahlspitze. Kein eigener Code außerhalb der erlaubten Dateien.
+Ветка `lm/p_telemax`. Модуль `landmarks/telemax.js` (v2), мета `landmarks/meta/telemax.json`, разбор кадров `INDEX.md` (в INDEX.md остаётся прежняя запись про 10 плошадок, она устарела: правильно 7).
 
-**Wichtig für den Sammler:** Der Turm liegt **außerhalb** der Detailzone `core` in `data/bbox.json` (Turm ≈ 52.3931 N, 9.7997 E; `core` endet bei E 9.7618). Vor dem Rendern die Zone erweitern (z. B. `--at 52.3931,9.7997,150` oder `core` nach Osten ausdehnen), sonst erscheint er nur grob.
+## Что исправлено по сравнению с v1
+- **Плошадок 7, а не 10.** По кадрам v_03/v_05 видно семь тёмных плит с белыми технической комнатами между ними; de.wikipedia тоже называет семь антенных плит. Ширина плит: внизу ≈ 32 м, вверху ≈ 22 м; под каждой плитой скошенная нижняя часть.
+- **Кабина управления:** 20-метровый куб с тёмными панелями (сетка 4 × 3) висит под нижней плитой и смещён на восток (v_03, v_05; Wikipedia: «асимметрично»). Раньше был симметричный «антенный ящик».
+- **Шахта шире:** основание ≈ 11 м (Wikipedia), к верху ≈ 8,6 м (было 8 → 6,8 м).
+- **Мачта:** белый фундамент мачты, рыже-коричневый GRP-цилиндр 30 м (visit-hannover), стальной шпиль; общая высота теперь ровно 282 м (раньше шпиль доходил до ≈ 286 м). Лишняя верхняя плита над головой убрана.
+- **Точка:** `pin` над шпилем башни по центру (`[22, 22, 287]`).
 
-## Seite → Kadr
-| Seite | Kadr | Hinweis |
-|---|---|---|
-| Süd/Südost (Kartenansicht) | v_01, v_02, v_03 | v_03 Hauptvorlage |
-| West | v_04 | Plattform-Untersichten |
-| Nordwest | v_05 | Kopf, Plattformstapel |
-| Nordost | v_06 | Mast |
+## Размеры и карта
+- `len` = 44 м, размер OSM по трём контурам 45 × 31 м, итоговый `fit` ≈ ×1,02 (в допуске).
+- Карта: `sh tools/preview.sh telemax 1` показывает башню на месте, вид с юго-востока совпадает с кадром v_03 (337°); `face` не нужен, башня почти симметрична. `card_phi` не задан (0): с этой стороны хорошо видны кабина и все плиты.
+- Башня вне зоны `core` в `data/bbox.json` (≈ 52,3931 N, 9,7997 E): сборщик перед рендером плиток должен расширить зону (`--at 52.3931,9.7997,150`), иначе она будет грубой.
 
-## Nicht sichtbar / nach Analogie
-- Kontrollraum am Sockel (laut visit-hannover «asymmetrisch platziert»): nicht klar erkennbar, nicht gezeichnet.
-- Alle vier Seiten identisch gezeichnet (Schaft, Panels, Plattformen); echte Unterschiede einzelner Seiten (Panels sichtbar nur auf manchen Seiten) nicht belegt.
-- Keine Nachtaufnahme: keine Sonderbeleuchtung (Magenta-Anstrahlung zu CeBIT war nur gelegentlich; Wikipedia/visit-hannover).
-- Rote Hinderniskennzeichnung nicht gezeichnet.
+## Сверка
+- `vergleich-5.png`: карточка (слева), кадры v_05 (посередине) и v_03 (справа). Совпадают: число плит и сужение вверх, голова с отверстиями, кабина под нижней плитой, длинная светлая шахта. Старые `vergleich-1…4.png` относятся к версии с 10 плитами.
+- Телефон 390 px: башня целиком в кадре, ошибок в консоли нет.
 
-## Fakten (zwei Quellen)
-282 m, 1992 fertig (Wikipedia, visit-hannover); Aussichtsplattform 185 m nicht öffentlich, 85 t Stahlmast, 30 m GRP-Zylinder (visit-hannover). Maße der Plattformen und des Schafts sind aus den Kadern geschätzt, nicht amtlich.
+## Что осталось / не хватает
+- Отверстия головы на кадрах неправильной формы (скруглённые квадраты разного размера), нарисована ровная сетка 3 × 3.
+- Высоты ярусов (нижняя плита ≈ 138 м, верх стека ≈ 225 м, голова ≈ 229–245 м) оценены по пропорциям кадров, не по обмеру; Wikipedia называет только общую высоту 282 м, платформу на 185 м и 50-метровую стальную мачту с GRP 30 м сверху, что с кадрами согласуется грубо. Нужен боковой кадр на уровне земли или чертёж, чтобы проверить.
+- Ночного фото нет: окна и отверстия светятся общей системой, особой подсветки нет (магентовая подсветка к CeBIT была давно и разово), красные огни заграждения не нарисованы.
+- Все четыре стороны нарисованы одинаково, различий сторон кадры не показывают.
+- Адреса нет: visit-hannover и Wikipedia дают только район Groß-Buchholz, поле `addr` не заполнено.
 
-## Sichtprüfung
-- `vergleich-1.png` (Start) → `vergleich-2.png` (Schaft dünner, Sockel kleiner, Technikräume) → `vergleich-3.png` (Panel, Kopf) → `vergleich-4.png` (Plattformen schmaler, mehr Luft dazwischen). Links Studio, Mitte v_03, rechts v_05. Rest: Detail unter Fenstergröße.
-- Studio: `telefon-390.png` (390 px; Turm ist schmal, ≈ 190 px breit, ganz im Bild).
-- `sh tools/preview.sh telemax` nicht gemacht: außerhalb der Detailplatten gibt es keine Karte zum Vergleichen.
+## Факты (по двум источникам)
+282 м, 1989–1992, Dissing+Weitling, платформа 185 м закрыта, GRP-цилиндр 30 м, магентовая подсветка к CeBIT (de.wikipedia.org, visit-hannover.com). Число плит (7), кабина 20 м, основание шахты 11 м: de.wikipedia.org и кадры.
 
-## Für Sammler / `core/`
-- Bounding-Box erweitern (siehe oben); danach `render-tiles.mjs --at …`.
-- Hinweis an die Werkzeuge: `tools/studio-shot.mjs`, `preview.sh`, `map-crop.mjs` suchen Chromium 1194, ist jetzt 1243 (`CHROME=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome`); `map-crop.mjs` ruft `SCENE.region` nicht auf (schwarzes Bild).
-- `tools/new-landmark.py` akzeptiert mehrere OSM-IDs nicht (`w1,w2` schlägt fehl); ich habe die zweite/dritte ID von Hand in die JSON geschrieben.
+## От core/ и сборщика
+- Расширить зону плиток (см. выше), затем `render-tiles.mjs --at …`.
+- Новых материалов не нужно.
+- Для инструментов: `CHROME=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome`; `tools/new-landmark.py` не принимает несколько OSM-id через запятую (в этом здании id вписаны в json вручную).

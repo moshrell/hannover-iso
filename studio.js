@@ -13,9 +13,11 @@
   document.title = def.label + ' · Hannover';
 
   /* ---------- Zeichnen ---------- */
-  const K = ISO.kernel({ lcx: def.lc[0], lcy: def.lc[1] });
+  // Drehung nur in der Karte-Detailansicht: meta `card_phi` (Grad) stellt die schönste Seite nach vorn; auf der Karte bleibt die echte Lage (phi aus OSM / `face`)
+  const phi = (+((window.LMETA || {})[name] || {}).card_phi || 0) * Math.PI / 180;
+  const K = ISO.kernel({ lcx: def.lc[0], lcy: def.lc[1], phi });
   const fps = def.mods.map(m => m.fp), x0 = Math.min(...fps.map(f => f[0])) - 10, y0 = Math.min(...fps.map(f => f[1])) - 10, x1 = Math.max(...fps.map(f => f[2])) + 10, y1 = Math.max(...fps.map(f => f[3])) + 10;
-  const r = ISO.drawLandmark(name, { lcx: def.lc[0], lcy: def.lc[1] });
+  const r = ISO.drawLandmark(name, { lcx: def.lc[0], lcy: def.lc[1], phi });
   let s = `<defs>
     <filter id="wglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation=".9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <filter id="bloom" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
@@ -45,61 +47,92 @@
   let sd = 5; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
   let st = ''; for (let i = 0; i < 40; i++) st += `<circle class="star" cx="${f2(vb[0] + rnd() * vb[2])}" cy="${f2(vb[1] + rnd() * vb[3] * .3)}" r="${f2(.15 + rnd() * .35)}" opacity="${f2(.15 + rnd() * .5)}"/>`;
   svg.querySelector('#all').insertAdjacentHTML('afterbegin', st);
-  ISO.clock(svg); setInterval(() => ISO.clock(svg), 20000);
+  ISO.clock(svg); setInterval(() => { ISO.clock(svg); if (typeof lit !== 'undefined') ISO.clock(lit); }, 20000);
 
   /* ---------- Licht ---------- */
-  const T = { win0: 1.2, floor: 1.1, winJit: 2.4, flood0: 6.2, sweep: 4.6, crown: 11.6 };
-  const OFF = { crown: 0, sweep: 2.6, flood0: .3, win0: 2.4, floor: .7, winJit: .9 };
-  const SPEED = .55;
-  const setD = (el, d) => el.style.setProperty('--d', `${(d * SPEED).toFixed(2)}s`);
-  let prep = null;
-  function prepare() {
-    const inClk = el => !!el.closest('.clk');
-    const walls = [...svg.querySelectorAll('.bld .wsh, .bld .wsl, .bld .st, .bld .tl, .bld .cu, .bld .bk, .bld .sl, .bld .gz, .bld .lv, .bld .dt, .bld .mul, .bld .gb, .bld .rs, .bld .brz, .bld .gl, .bld .pl, .bld .kc, .bld .kz, .bld .kr, .bld .iron, .bld .glb')].filter(el => !inClk(el));
-    const rects = walls.map(el => el.getBoundingClientRect());
-    const top = Math.min(...rects.map(q => q.top)), base = Math.max(...rects.map(q => q.bottom)), span = Math.max(1, base - top);
-    let s2 = 11; const r2 = () => (s2 = (s2 * 16807) % 2147483647) / 2147483647;
-    return {
-      walls: walls.map((el, i) => [el, Math.min(1, Math.max(0, (base - rects[i].bottom) / span))]),
-      clocks: [...svg.querySelectorAll('.clk *')],
-      wins: [...svg.querySelectorAll('.wn')].filter(el => !inClk(el)).map(el => [el, +el.dataset.f || 0, r2()]),
-      // ein Dutzend heller Fenster flackert im Ruhezustand gelegentlich (kein Dauer-Blinken: nur kurze Dips alle paar Sekunden)
-      twinkle: [...svg.querySelectorAll('.wn:not(.off)')].filter(el => !inClk(el)).filter((_, i) => i % 29 === 7).slice(0, 14),
-      stars: [...svg.querySelectorAll('.star')],
-      crown: [...svg.querySelectorAll('.lant, .lant-h')], flood: [...svg.querySelectorAll('.flood')],
-    };
-  }
+  /* Zwei fertige Ebenen übereinander: Nacht (unten, unverändert) und Licht (oben, komplett beleuchtet). Beim Einschalten wird die Lichtebene
+     von unten nach oben eingeblendet (weiche Kante, CSS-Maske); es ändert sich also nie ein Fenster oder eine Wand einzeln. Das war die Ursache fürs
+     Flackern auf Telefonen: Tausende gleichzeitig überblendete Elemente überfordern den Kachelspeicher der GPU (Flächen blitzen auf oder verschwinden). */
+  const STATE = ['lamps', 'win', 'lit', 'crown'];
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const lit = svg.cloneNode(true);
+  lit.removeAttribute('role'); lit.setAttribute('aria-hidden', 'true'); lit.setAttribute('class', 'rh lit-layer static ' + STATE.join(' '));
+  lit.style.visibility = 'hidden'; stage.appendChild(lit);
+  svg.classList.add('static');                                  // keine Einzel-Übergänge: Zustand je Ebene fest
+  svg.setAttribute('class', svg.getAttribute('class') + ' night-layer');
+  const MASK = 'linear-gradient(to top, #000 0, #000 33.3%, transparent 66.6%)';
+  const setMask = on => { ['webkitMaskImage', 'maskImage'].forEach(k => { lit.style[k] = on ? MASK : ''; }); ['webkitMaskSize', 'maskSize'].forEach(k => { lit.style[k] = on ? '100% 300%' : ''; }); };
+  const setPos = p => { lit.style.webkitMaskPosition = lit.style.maskPosition = `0% ${p}%`; };
+  const DUR = 5200 * (calm ? .4 : 1);
   const state = { lit: false }, bLight = document.getElementById('b-light'), read = document.getElementById('read');
+  let doneT = 0;
   function applyLight() {
-    prep = prep || prepare();
-    const on = state.lit;
-    prep.wins.forEach(([el, f, q2]) => setD(el, on ? T.win0 + f * T.floor + q2 * T.winJit : OFF.win0 + (4 - f) * OFF.floor + q2 * OFF.winJit));
-    prep.walls.forEach(([el, h]) => setD(el, on ? T.flood0 + h * T.sweep : OFF.flood0 + (1 - h) * OFF.sweep));
-    prep.flood.forEach(el => setD(el, on ? T.flood0 + .4 : OFF.flood0));
-    prep.clocks.forEach(el => setD(el, on ? T.flood0 + .8 * T.sweep : OFF.flood0 + .2 * OFF.sweep));
-    prep.crown.forEach(el => setD(el, on ? T.crown : OFF.crown));
-    svg.getBoundingClientRect();
-    ['lamps', 'win', 'lit', 'crown'].forEach(c => svg.classList.toggle(c, on));
-    life(on);
-    read.textContent = on ? 'Abendlicht · Fenster, Fassade' : 'Nacht';
+    const on = state.lit, quick = svg.classList.contains('instant');
+    clearTimeout(doneT);
+    const EZ = `${DUR}ms cubic-bezier(.45,.05,.35,1)`, trans = quick ? 'none' : `-webkit-mask-position ${EZ}, mask-position ${EZ}`;
+    lit.style.transition = 'none'; svg.style.visibility = '';
+    if (quick) { setMask(false); lit.style.visibility = on ? 'visible' : 'hidden'; svg.style.visibility = on ? 'hidden' : ''; life(on, true); finish(on); return; }
+    lit.style.visibility = 'visible'; setMask(true); setPos(on ? 0 : 100); lit.getBoundingClientRect();   // Startwert festhalten
+    lit.style.transition = trans;
+    life(on, false);
+    requestAnimationFrame(() => setPos(on ? 100 : 0));
+    // Am Ende: Maske weg (Lichtebene voll sichtbar, Nachtebene verdeckt) bzw. Lichtebene weg; beides spart der GPU die Maske
+    doneT = setTimeout(() => {
+      lit.style.transition = 'none'; setMask(false);
+      if (on) { svg.style.visibility = 'hidden'; } else { lit.style.visibility = 'hidden'; }
+      life(on, true);
+    }, DUR + 120);
+    finish(on);
   }
-  /* Ruhezustand: nach dem Einschalten atmen Laternenkrone und Sterne, einzelne Fenster flackern kurz (element.style, keine Inline-Stile im Markup) */
-  let lifeT = 0;
-  function life(on) {
-    clearTimeout(lifeT);
-    const set = (els, f) => els.forEach((el, i) => { el.style.animation = on ? f(i) : ''; });
-    if (!on) { set(prep.twinkle, () => ''); set(prep.crown, () => ''); set(prep.stars, () => ''); return; }
-    const wait = svg.classList.contains('instant') ? 0 : (T.crown + 2) * SPEED * 1000;
-    lifeT = setTimeout(() => {
-      set(prep.twinkle, i => `wtw ${9 + (i * 3) % 7}s linear ${(i * 1.7) % 6}s infinite`);
-      set(prep.crown.filter(el => el.classList.contains('lant-h')), () => 'breathe 5s ease-in-out infinite alternate');
-      set(prep.stars, i => `star ${3 + (i % 5)}s ease-in-out ${(i * .7) % 4}s infinite alternate`);
-    }, wait);
+  const finish = on => { read.textContent = on ? 'Abendlicht · Fenster, Fassade' : 'Nacht'; };
+  /* Ruhezustand: Laternenkrone und Sterne atmen; ein paar Prozent der Fenster gehen immer wieder weich aus und wieder an. */
+  const NS = 'http://www.w3.org/2000/svg', rr = (a, b) => a + Math.random() * (b - a);
+  let pool = null, ovs = [], gen = 0;
+  function life(on, settled) {
+    const set = (els, f) => els.forEach((el, i) => { el.style.animation = on && settled && !calm ? f(i) : ''; });
+    set([...lit.querySelectorAll('.lant-h')], () => 'breathe 5s ease-in-out infinite alternate');
+    set([...svg.querySelectorAll('.star'), ...lit.querySelectorAll('.star')], i => `star ${3 + (i % 5)}s ease-in-out ${(i * .7) % 4}s infinite alternate`);
+    if (on && settled && !calm) startChurn(); else if (!on) stopChurn();
+  }
+  /* Fenster-Quelle: alle Teilpfade (Fenster) der .wn-Elemente. In zusammengefassten Pfaden (ein <path> je Klasse) lässt sich ein Fenster nicht
+     einzeln dimmen; deshalb liegt über dem ausgewählten Fenster ein kleines dunkles Deckfenster (Pfad aus denselben Koordinaten), das ein-/ausblendet. */
+  function buildPool() {
+    const src = []; let n = 0;
+    lit.querySelectorAll('.wn:not(.off):not(.ov)').forEach(el => {
+      if (el.closest('.clk')) return;
+      let d = el.getAttribute('d');
+      if (!d) { if (el.tagName !== 'rect') return; const [x, y, w, h] = ['x', 'y', 'width', 'height'].map(k => +el.getAttribute(k)); d = `M${x} ${y}h${w}v${h}h${-w}z`; }
+      const subs = d.split(/(?=M)/).filter(Boolean); src.push({ el, subs, i0: n }); n += subs.length;
+    });
+    return { src, n };
+  }
+  function startChurn() {
+    if (ovs.length) return;
+    pool = pool || buildPool();
+    const W = pool.n; if (W < 8) return;
+    const CAP = 96, want = W * .07, m = Math.max(1, Math.min(6, Math.ceil(want / CAP))), K = Math.max(3, Math.min(CAP, Math.round(want / m))), my = ++gen;
+    const pick = () => { let i = Math.floor(Math.random() * W), lo = 0, hi = pool.src.length - 1; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (pool.src[mid].i0 <= i) lo = mid; else hi = mid - 1; } const s = pool.src[lo], a = Math.min(i - s.i0, Math.max(0, s.subs.length - m)); return [s, a]; };
+    for (let k = 0; k < K; k++) {
+      const el = document.createElementNS(NS, 'path'); el.setAttribute('class', 'wn off ov'); el.style.opacity = '0';
+      const o = { el, t: 0 }; ovs.push(o);
+      const wait = () => { o.t = setTimeout(dark, rr(1, 10) * 1000); };
+      const dark = () => {
+        if (my !== gen) return;
+        const [s, a] = pick(); el.setAttribute('d', s.subs.slice(a, a + m).join('')); s.el.after(el);
+        o.t = setTimeout(() => { if (my !== gen) return; el.style.opacity = '1'; o.t = setTimeout(() => { if (my !== gen) return; el.style.opacity = '0'; o.t = setTimeout(wait, 1800); }, rr(2.5, 9) * 1000); }, 80);
+      };
+      o.t = setTimeout(dark, rr(.3, 10) * 1000);
+    }
+  }
+  function stopChurn() {
+    gen++; const old = ovs; ovs = [];
+    old.forEach(o => { clearTimeout(o.t); o.el.style.opacity = '0'; });
+    setTimeout(() => old.forEach(o => o.el.remove()), 2000);
   }
   let demo = [];
   const setLit = v => { state.lit = v; bLight.setAttribute('aria-pressed', v); applyLight(); };
   bLight.addEventListener('click', () => { demo.forEach(clearTimeout); demo = []; setLit(!state.lit); });
   read.textContent = 'Nacht';
-  if (q.has('sofort')) { svg.classList.add('instant'); setLit(true); }
+    if (q.has('sofort')) { svg.classList.add('instant'); setLit(true); }
   else demo = [setTimeout(() => setLit(true), 700)];   // bleibt an; der Knopf schaltet zurück auf Nacht
 })();
