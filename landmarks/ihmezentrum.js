@@ -64,7 +64,8 @@
     };
 
     /* ---------- Fassaden (Wandkoordinaten: u nach rechts, v nach unten ab Oberkante) ---------- */
-    const rect = (x, y, w, h) => `M${f2(x)} ${f2(y)}h${f2(w)}v${f2(h)}h${f2(-w)}z`;
+    const f1 = v => (Math.round(v * 10) / 10).toString();
+    const rect = (x, y, w, h) => `M${f1(x)} ${f1(y)}h${f1(w)}v${f1(h)}h${f1(-w)}z`;
     const MAT = { 0: 'kc', 1: 'kc', 2: 'pl' };
     // Fensterfeld: ein Pfad je (Klasse × Etagengruppe)
     function windows(len, h, o) {
@@ -81,7 +82,7 @@
       }
       return Object.entries(acc).map(([k, v]) => { const [f, ...c] = k.split(' '); return `<path class="wn${c.length ? ' ' + c.join(' ') : ''}" data-f="${f}" d="${v.join('')}"/>`; }).join('');
     }
-    const lines = (len, ys) => ys.length ? `<path class="dt" d="${ys.map(y => `M0 ${f2(y)}H${f2(len)}`).join('')}"/>` : '';
+    const lines = (len, ys) => ys.length && len >= 6 ? `<path class="dt" d="${ys.map(y => `M0 ${f1(y)}H${f1(len)}`).join('')}"/>` : '';
     const STRIP = { fh: 3.1, bay: 3.8, ww: 2.2, wh: 1.4, sill: .9, mx: 1.2, pOff: .42, pDim: .22, pHi: .06 };
     const TOWER = { fh: 3.2, bay: 2.9, ww: 1.9, wh: 1.7, sill: .9, mx: 1.0, pOff: .44, pDim: .22, pHi: .05 };
     function deco(p) {
@@ -102,6 +103,15 @@
       };
     }
 
+    // Wand wie K.wall, aber Anstrahlungs-Streifen nur bei großen Wänden (spart ~25 % SVG)
+    const wall2 = (K, L, R, z0, z1, mat, deco) => {
+      const dx = R[0] - L[0], dy = R[1] - L[1], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
+      if (K.facing(nx, ny) <= 1e-6) return '';
+      const h = z1 - z0, t = K.plane([L[0], L[1], z1], [dx / len, dy / len, 0], [0, 0, -1]);
+      let sh = '';
+      if (len >= 9 && h >= 9) sh = `<rect class="wsh" fill="#000" opacity="0" width="${f2(len)}" height="${f2(h * .5)}"/><rect class="wsh" fill="#000" opacity="0" width="${f2(len)}" height="${f2(h * .22)}"/><rect class="wsl" fill="#FFCF73" opacity="0" y="${f2(h * .78)}" width="${f2(len)}" height="${f2(h * .22)}"/>`;
+      return `<g transform="${t}"><rect class="${mat} ${ny * K.view[0] - nx * K.view[1] >= 0 ? 'fr' : 'sd'}" width="${f2(len)}" height="${f2(h)}"/>${sh}${deco ? deco(len, h) : ''}</g>`;
+    };
     /* ---------- Zeichnen ---------- */
     const draw = K => {
       let s = '';
@@ -112,7 +122,7 @@
         const mat = MAT[p.k], v = p.v, n = v.length;
         // Dach eines Teils als EIN Polygon (keine Nähte der Zerlegung), gezeichnet beim ersten Stück
         if (!topDone.has(p.part)) { topDone.add(p.part); const t = T[p.part]; const pts = []; for (let i = 0; i < t.length; i += 2) pts.push([t[i], t[i + 1], Z0 + p.z1]); s += K.poly(pts, mat + ' tp'); }
-        for (let i = 0; i < n; i++) if (p.m >> i & 1) s += K.wall(v[i], v[(i + 1) % n], Z0 + p.z0, Z0 + p.z1, mat, deco(p));
+        for (let i = 0; i < n; i++) if (p.m >> i & 1) s += wall2(K, v[i], v[(i + 1) % n], Z0 + p.z0, Z0 + p.z1, mat, deco(p));
       });
       return s;
     };
@@ -125,6 +135,6 @@
       return lo.slice(0, -1).concat(up.slice(0, -1));
     })();
     const M = [{ id: 'ihme', fp, draw }];
-    return { mods: M, lc: [0, 0], z0: 0, top: [-140, 60, Z0 + 92], label: 'Ihme-Zentrum', h: 92, len: 150 };
+    return { mods: M, lc: [0, 0], z0: 0, top: [-140, 60, Z0 + 92], pin: [-40, 14, Z0 + 96], label: 'Ihme-Zentrum', h: 92, len: 150 };
   });
 })();
