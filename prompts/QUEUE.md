@@ -52,7 +52,7 @@
 | p_markuskirche | fertig | Доработка: Markuskirche |
 | p_nordlb | ready | Доработка: NORD/LB |
 | p_neuesRathaus | wartet | Доработка: Neues Rathaus |
-| p_opernhaus | wartet | Доработка: Opernhaus |
+| p_opernhaus | fertig | Доработка: Opernhaus |
 | p_hauptbahnhof | wartet | Доработка: Hauptbahnhof |
 | p_kreuzkirche | wartet | Доработка: Kreuzkirche |
 | p_waterloo | wartet | Доработка: Waterloosäule |
