@@ -38,6 +38,7 @@
       for (let i = 0; i < 5; i++) {
         const u = (i + .5) * (len / 5);
         w += winRows(u, h, i === 2 ? [1, 2] : [0, 1, 2], 1.6);
+        q += `<path class="pl fr" d="M${f2(u - 1.25)} ${f2(h - 9.1)}H${f2(u + 1.25)}L${f2(u)} ${f2(h - 9.85)}Z"/>`;   // Dreiecksverdachung über dem Hauptgeschoss-Fenster (Kader)
       }
       q += `<rect class="gl" x="${f2(len / 2 - 1.3)}" y="${f2(h - 4.1)}" width="2.6" height="3.3"/>` + vl(len / 2, h - 4.1, h - .8);
       q += vl(.45, 0, h - .8) + vl(len - .45, 0, h - .8);               // Eckpilaster
@@ -80,7 +81,7 @@
     add({ id: 'wpPort', fp: [21.2, YR, 31.9, 24.8], parent: 'wp', side: 'S', draw: K => {
       const x0 = 21.65, x1 = 31.45, y0 = YR, y1 = 23.6, zc = Z0 + .5, zt = Z0 + 4.4;
       let s = K.box(x0 - .5, y0, Z0, x1 - x0 + 1, y1 - y0 + 1.1, .5, 'st');                                    // Stufe/Sockel
-      for (let i = 0; i < 4; i++) s += lathe(K, x0 + 1.0 + i * (x1 - x0 - 2.0) / 3, y1 - .6, [[zc, .66], [zc + .35, .58], [zt - .8, .52], [zt - .3, .58], [zt, .7]], 'st fr', 2);
+      for (let i = 0; i < 6; i++) s += lathe(K, x0 + .85 + i * (x1 - x0 - 1.7) / 5, y1 - .6, [[zc, .6], [zc + .35, .53], [zt - .8, .47], [zt - .3, .53], [zt, .64]], 'st fr', 2);   // sechs Säulen (Kader Google Earth, Nov. 2026; Faltblatt des Ministeriums: sechs toskanische Säulen)
       s += K.box(x0, y0, zt, x1 - x0, y1 - y0, .7, 'st', { S: l => hl(0, l, .25) });                          // Gebälk + Balkonplatte
       const zb = zt + .7;
       s += K.wall([x0, y1 - .2], [x1, y1 - .2], zb, zb + 1.0, 'st', l => hl(0, l, .18) + Array.from({ length: Math.floor(l / .7) }, (_, i) => vl(.35 + i * .7, .18, 1.0)).join(''));
