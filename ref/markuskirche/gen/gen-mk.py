@@ -26,9 +26,9 @@ def uv(u, v):
 def poly(pts): return Polygon([uv(*p) for p in pts])
 def rect(u0, u1, v0, v1): return [(u0, v0), (u1, v0), (u1, v1), (u0, v1)]
 def octagon(cu, cv, r): return [(cu + r * math.cos(math.pi / 8 + k * math.pi / 4), cv + r * math.sin(math.pi / 8 + k * math.pi / 4)) for k in range(8)]
-SH = {'flat': 0, 'pyramidal': 1, 'gabled': 2, 'hipped': 3, 'dome': 4}
+SH = {'flat': 0, 'pyramidal': 1, 'gabled': 2, 'hipped': 3, 'dome': 4, 'apse': 5}
 DORM = [(-11.5, 3.5), (-3.5, 3.5), (5.5, 3.5)]          # Mitte u, halbe Breite der drei Giebel an der NNW-Seite
-SGIE = [(-17.5, -6.5, -12.2), (5.7, 14.3, -10.0)]        # zwei Giebel an der Südfassade beidseits des Turms: u0, u1, vorderste Kante
+SGIE = [(-15.0, -4.6, -10.0), (5.7, 14.3, -10.0)]        # zwei Giebel an der Südfassade beidseits des Turms: u0, u1, vorderste Kante
 hall = box(-20, -9, 15, 15)
 for cu, hw in DORM: hall = hall.difference(box(cu - hw, 7, cu + hw, 15.5))
 for u0, u1, vf in SGIE: hall = hall.difference(box(u0, -9.5, u1, -3))
@@ -42,8 +42,12 @@ def add(id, ring_uv, z0, zw, shape='flat', rh=0, mc=0, sw=0, name=''):
 add('hall', hall, 0, 11, 'gabled', 13.5)
 for i, (cu, hw) in enumerate(DORM): add('giebel%d' % (i + 1), rect(cu - hw, cu + hw, 7, 15.3), 0, 11, 'gabled', 8.5)
 for i, (u0, u1, vf) in enumerate(SGIE): add('sgiebel%d' % (i + 1), rect(u0, u1, vf, -3), 0, 11, 'gabled', 8.5, sw=1)
-add('chor-o', [(15, -8), (21, -6), (23.5, -2.5), (24, 2.4), (20, 9.5), (22.5, 11), (22.8, 14), (21, 15.7), (15, 15.5)], 0, 11, 'gabled', 9)
-add('anbau-w', rect(-23, -19.5, -5, 4), 0, 7, 'gabled', 5, sw=1)
+APS = [(15 + 8 * math.cos(a), 3 + 8 * math.sin(a)) for a in [math.radians(d) for d in (-90, -45, 0, 45, 90)]]
+add('apsis', APS, 0, 11, 'apse', 8.5)            # polygonaler Chor im Osten (5/8), Zeltdach bis zur Sehne (k07, k11)
+add('sakristei', rect(15, 21, 10.5, 15.5), 0, 5, 'hipped', 3)
+add('anbau-w', rect(-23.5, -20, -3, 9), 0, 8, 'gabled', 5.5, sw=1)   # Vorhalle vor dem Westgiebel (doppeltes Dach, k06/k09)
+for i, (cu, cv) in enumerate([(-20.6, -9.6), (-20.6, 15.6)]): add('eckturm%d' % (i + 1), octagon(cu, cv, 1.7), 0, 14, 'pyramidal', 6)
+add('fiale', octagon(-15.6, -10.4, 1.25), 0, 13, 'pyramidal', 4)
 add('turm', rect(TOWER[0], TOWER[1], TOWER[2], TOWER[3]), 0, 44)
 add('helm', octagon((TOWER[0] + TOWER[1]) / 2, (TOWER[2] + TOWER[3]) / 2, 3.7), 44, 44, 'pyramidal', 26)
 add('erker', octagon(15.4, -10.8, 2.0), 0, 15, 'pyramidal', 5, mc=1)
@@ -127,5 +131,5 @@ la, lo = unproj(CX, CY)
 json.dump({'anchor': [round(la, 6), round(lo, 6), E], 'parts': out, 'tops': tops, 'ids': [p['id'] for p in parts]}, open(os.path.join(HERE, 'parts.json'), 'w'), separators=(',', ':'))
 with open(os.path.join(HERE, 'TEILE.md'), 'w') as f:
     f.write('# Bauteile der Markuskirche (Schätzung nach Kadern, Umriss OSM w44834907)\n\nAnker (meta point): %.6f, %.6f, Kante %d m\n\n| # | Teil | von z | Wand bis | Dach | Dachhöhe |\n|---|---|---|---|---|---|\n' % (la, lo, E))
-    for i, p in enumerate(parts): f.write('| %d | %s | %.1f | %.1f | %s | %.1f |\n' % (i, p['id'], p['z0'], p['zw'], ['flach', 'Pyramide', 'Satteldach', 'Walmdach', 'Kuppel'][p['shape']], p['rh']))
+    for i, p in enumerate(parts): f.write('| %d | %s | %.1f | %.1f | %s | %.1f |\n' % (i, p['id'], p['z0'], p['zw'], ['flach', 'Pyramide', 'Satteldach', 'Walmdach', 'Kuppel', 'Apsis'][p['shape']], p['rh']))
 print(len(parts), 'Teile,', npieces, 'Stücke; Anker', round(la, 6), round(lo, 6))
