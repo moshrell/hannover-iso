@@ -21,13 +21,14 @@
     };
 
     // Flügelfassade (je 9 Achsen, Pilasterstreifen, mittig Rundbogentür): zwei Reihen kleiner Sprossenfenster
-    const wing = (len, h) => {
+    const wing = arch => (len, h) => {
       const n = 9; let q = hl(0, len, .3) + hl(0, len, .8) + hl(0, len, h - .02), w = '';
       for (let i = 0; i <= n; i++) q += vl(i * PW, .8, h - .3);
       for (let i = 0; i < n; i++) {
         const cx = (i + .5) * PW;
         if (i === 4) {
-          w += `<path class="lv" d="M${f2(cx - .85)} ${f2(h - .8)}V${f2(h - 3)}A.85 .85 0 0 1 ${f2(cx + .85)} ${f2(h - 3)}V${f2(h - .8)}Z"/>`;
+          w += arch ? `<path class="lv" d="M${f2(cx - .85)} ${f2(h - .8)}V${f2(h - 3)}A.85 .85 0 0 1 ${f2(cx + .85)} ${f2(h - 3)}V${f2(h - .8)}Z"/>`
+            : `<rect class="lv" x="${f2(cx - .6)}" y="${f2(h - 2.5)}" width="1.2" height="1.7"/>`;
           q += hl(cx - 1.15, cx + 1.15, h - 3.9) + vl(cx - 1.15, h - 3.9, h - .8) + vl(cx + 1.15, h - 3.9, h - .8);
         } else { w += winR(cx - .55, h - 2.5, 1.1, 1.5, 0); q += hl(cx - .7, cx + .7, h - .95); }
         if (i !== 4) w += winR(cx - .55, 1.3, 1.1, 1.45, 1);
@@ -63,13 +64,15 @@
       return s;
     };
     // Nordhang ist aus Südost verdeckt (Blick über den First) → nur Süd-Gauben zeichnen
-    const dormers = (K, xs, yN, yS, slope, zE) => xs.map(x => dormer(K, x, 1, yS, slope, zE)).join('');
+    // Gauben nur auf dem Hang, der zum Betrachter zeigt (sonst ragen sie über den First); Nord nach k03
+    const dormers = (K, xs, yN, yS, slope, zE, xn = []) => (K.facing(0, 1) > 1e-6 ? xs.map(x => dormer(K, x, 1, yS, slope, zE)).join('') : '')
+      + (K.facing(0, -1) > 1e-6 ? xn.map(x => dormer(K, x, -1, yN, slope, zE)).join('') : '');
     const chimney = (K, x, z) => K.box(x - .35, D / 2 - .35, z - .6, .7, .7, 2.0, 'pl', {});   // schlanke Schornsteinköpfe auf dem First (v_06), kein Turm
     const OV = .5;
     // Körper
-    body('wW', 0, XA, { N: wing, S: wing, W: endWall }, WW);
+    body('wW', 0, XA, { N: wing(false), S: wing(true), W: endWall }, WW);
     body('wC', XA, XB, { N: mid(11), S: mid(11) });
-    body('wE', XB, L, { N: wing, S: wing, E: endWall }, WW);
+    body('wE', XB, L, { N: wing(false), S: wing(true), E: endWall }, WW);
     // Mittelrisalit (Süd 2,5 m, Nord 1,5 m) + Freitreppe nördlich
     // Südrisalit: dreiseitig (Mittelteil + zwei schräge Seiten), wie auf v_06
     add({ id: 'rS', fp: [RX0, D, RX1, D + 2.5], draw: K => {
@@ -94,7 +97,7 @@
       s += dir < 0 ? K.face([[e0, y1, zw], [e0, y0, zw], [r0, ym, zr]], 'tl') : K.face([[e1, y0, zw], [e1, y1, zw], [r1, ym, zr]], 'tl');
       return s;
     };
-    add({ id: 'dW', fp: [0, 0, XA, D], above: 'wW', draw: K => wingRoof(K, 0, XA, -1) + dormers(K, [4.3, 11.2, 18], -OV, D + OV, sw, zw) + [8, 12, 17].map(x => chimney(K, x, zw + wz)).join('') });
+    add({ id: 'dW', fp: [0, 0, XA, D], above: 'wW', draw: K => wingRoof(K, 0, XA, -1) + dormers(K, [6.5, 12, 17.5], -OV, D + OV, sw, zw, [6.5, 11.7, 17.2]) + [8, 12, 17].map(x => chimney(K, x, zw + wz)).join('') });
     add({ id: 'dC', fp: [XA, 0, XB, D], above: 'wC', draw: K => {
       let s = hip(K, XA - OV, -OV, XB + OV, D + OV, ze, ze + cz, 'tl');
       // Quer-Walmdach des Risalits (Süd) und (Nord)
@@ -107,10 +110,10 @@
       s += K.face([[RX1 + OV, yn, ze], [RX0 - OV, yn, ze], [xm, yn + hw + OV, zS]], 'tl');
       s += K.face([[RX1 + OV, -OV, ze], [RX1 + OV, yn, ze], [xm, yn + hw + OV, zS], [xm, 4.5, zS]], 'tl');
       s += K.face([[RX0 - OV, yn, ze], [RX0 - OV, -OV, ze], [xm, 4.5, zS], [xm, yn + hw + OV, zS]], 'tl');
-      s += dormers(K, [XA + 5, XA + 9, XB - 9, XB - 5], -OV, D + OV, sc);
+      s += dormers(K, [], -OV, D + OV, sc, ze, [31.5, 34.2, 45.8, 48.5]);
       return s + [31, 35.5, 40, 44.5, 49].map(x => chimney(K, x, ze + cz)).join('');
     } });
-    add({ id: 'dE', fp: [XB, 0, L, D], above: 'wE', draw: K => wingRoof(K, XB, L, 1) + dormers(K, [XB + 4.4, XB + 11.2, XB + 18.1], -OV, D + OV, sw, zw) + [63, 68, 72].map(x => chimney(K, x, zw + wz)).join('') });
+    add({ id: 'dE', fp: [XB, 0, L, D], above: 'wE', draw: K => wingRoof(K, XB, L, 1) + dormers(K, [XB + 5.2, XB + 15.7], -OV, D + OV, sw, zw, [XB + 6.9, XB + 12.1, XB + 17]) + [63, 68, 72].map(x => chimney(K, x, zw + wz)).join('') });
     // Eingeschossiger Anbau am Ostende (graues Dach, in v_06/v_07 sichtbar; nicht in der OSM-Kontur)
     add({ id: 'an', fp: [L, .5, L + 5, 6.5], parent: 'wE', side: 'E', draw: K => K.box(L, .5, Z0, 5, 6, 3.4, 'pl', { E: (len, h) => hl(0, len, .4) + wins(winR(1.3, 1, 1.3, 1.8, 0) + winR(3.6, 1, 1.3, 1.8, 0)), S: (len, h) => hl(0, len, .4) + wins(winR(1.2, 1, 1.3, 1.8, 0) + winR(3.2, 1, 1.3, 1.8, 0)) }) + hip(K, L - .3, .2, L + 5.3, 6.8, Z0 + 3.4, Z0 + 4.9, 'sl') });
     return { mods: M, lc: [L / 2, D / 2], z0: 0, top: [L / 2, D / 2, Z0 + 17], pin: [L / 2, D / 2, Z0 + 18.6], label: 'Georgenpalais', h: 17, len: L };
