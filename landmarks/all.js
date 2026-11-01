@@ -279,9 +279,9 @@ ISO.landmark('aegidienkirche', H => {
   ISO.landmark('anzeiger', H => {
     const { f2, hl, winR, winG, wins, lathe, groupM } = H, M = [], add = m => (M.push(m), m);
     const PITCH = 2.3;                                    // Pfeilerabstand
-    const HT = 46;                                        // Traufe (Oberkante Gesims) über Gelände
+    const HT = 39;                                        // Traufe (Oberkante Gesims) über Gelände: Gesamthöhe 51 m (structurae, archiweb, Aurubis) – Kuppel 12 m = 39 m bis Gesims
     const MX1 = 32.3, MY1 = 14.2, WX0 = 4.9, WX1 = 26.9, WY1 = 23.6;   // Ostriegel (y 0–MY1) / Westvorbau (y MY1–WY1)
-    const DCX = MX1 / 2, DCY = WY1 / 2, DR = 11.2;        // Kuppelmitte und -radius (Kuppel ≈ so breit wie das Haus)
+    const DCX = MX1 / 2, DCY = WY1 / 2, DR = 9.0, DH = 12;   // Kuppelmitte, -radius (Ø ≈ 18 m ≈ 0,8 × Breite der Schriftfassade, Nachtfoto) und -höhe (12 m)
 
     /* ---------- Fassade (Wandkoordinaten: u entlang, y von der Oberkante nach unten) ---------- */
     const bays = len => { const a = [], n = Math.max(1, Math.round(len / PITCH)), p = len / n; for (let i = 0; i < n; i++) a.push([i * p, p]); return a; };
@@ -312,57 +312,107 @@ ISO.landmark('aegidienkirche', H => {
       return s;
     } });
 
-    /* ---------- Kuppel: überhöhte Halbkugel (≈ 12 m hoch) mit Rippen ---------- */
+    /* ---------- Kuppel: überhöhte Halbkugel (12 m hoch, Ø ≈ 18 m) mit Rippen, Fugenringen und kleiner Laterne ---------- */
     add({ id: 'azDome', fp: [0, 0, MX1, WY1], above: 'azBody', draw: K => {
-      const zk = Z0 + HT, prof = []; for (let i = 0; i <= 14; i++) { const t = i / 14; prof.push([zk + 12 * Math.sin(t * Math.PI / 2), DR * Math.cos(t * Math.PI / 2) + .1]); }
-      return lathe(K, DCX, DCY, prof, 'cu', 10, [4, 8, 11]);
+      const zk = Z0 + HT, prof = []; for (let i = 0; i <= 14; i++) { const t = i / 14; prof.push([zk + DH * Math.sin(t * Math.PI / 2), DR * Math.cos(t * Math.PI / 2) + .1]); }
+      let s = lathe(K, DCX, DCY, prof, 'cu', 12, []);
+      // Fugenringe: sichtbare Hälfte, an Lücken unterbrochen (keine Sehne quer über die Kuppel)
+      [3, 6, 9].forEach(i => {
+        const [z, r] = prof[i]; let seg = [], d = '';
+        for (let j = 0; j <= 72; j++) { const a = Math.PI * 2 * j / 72; if (K.facing(Math.cos(a), Math.sin(a)) > .02) seg.push([DCX + r * Math.cos(a), DCY + r * Math.sin(a), z]); else { if (seg.length > 1) d += K.path(seg); seg = []; } }
+        if (seg.length > 1) d += K.path(seg);
+        s += `<path class="dt cu-d" d="${d}"/>`;
+      });
+      s += lathe(K, DCX, DCY, [[zk + DH - .2, 1.5], [zk + DH + .9, 1.3]], 'cu', 0, []);   // Laterne auf dem Scheitel
+      return s;
     } });
 
-    return { mods: M, lc: [MX1 / 2, WY1 / 2], z0: 0, top: [DCX, DCY, 59], label: 'Anzeiger-Hochhaus', h: 59, len: 32.3 };
+    return { mods: M, lc: [MX1 / 2, WY1 / 2], z0: 0, top: [DCX, DCY, Z0 + HT + DH + 1], label: 'Anzeiger-Hochhaus', h: 51, len: 32.3, pin: [DCX, DCY, Z0 + HT + DH + 5] };
   });
 })();
 
 
 ;/* ===== beginenturm.js ===== */
-/* Beginenturm (um 1357, Am Hohen Ufer, Hannover) – Modul. Rest der mittelalterlichen Stadtbefestigung: runder Wehrturm aus hellem Bruchstein,
-   unten leicht verbreitert, zwei Mauerbänder, kleine Scharten, Wappenstein, zwölfseitiges Ziegel-Pyramidendach; steht an der Südwestecke des Historischen Museums.
-   Nach Google-Earth-Kadern ref/beginenturm/foto/ (v_01–v_04, v_06 = Rundturm; v_05 zeigt einen anderen, quadratischen Turm am Museum, nicht gezeichnet).
-   Lokal: x Ost, y Süd, z Höhe, Gelände z = 1. */
+/* Beginenturm (um 1357, Am Hohen Ufer 3, Hannover) – Modul. Einziger vollständig erhaltener Turm der mittelalterlichen Stadtbefestigung, heute Teil des Historischen Museums.
+   Runder Wehrturm aus hellem Kalk-Bruchstein, unten leicht verbreitert, zwei Mauerbänder, wenige Schießscharten, Konsolkranz, zwölfseitiges Biberschwanz-Pyramidendach.
+   Gesamthöhe 24 m (hannover.de); Wand ≈ 19,2 m, Kranz ≈ 0,8 m, Dach ≈ 4 m (aus den Kadern ref/beginenturm/foto/ v_01–v_04 nachgemessen).
+   Lokal: x Ost, y Süd (face = echte Himmelsrichtungen), z Höhe, Gelände z = 1. Lage der Öffnungen nach den Kadern:
+   Süd (v_04): Scharte oben (z ≈ 16), ausgebrochenes Loch (z ≈ 9); Nord (v_01/v_02): Scharte oben mit Wappenstein (z ≈ 17); WNW (v_03): Wappenstein oben, Scharte (z ≈ 10,5).
+   Die Ostseite verdeckt der Museumsbau (nicht gezeichnet), v_05 zeigt einen anderen, quadratischen Turm. Alles selbst gezeichnet. */
 (() => {
   const Z0 = 1, C = 5, R = 4.9, TAU = Math.PI * 2;
+  const ZW = 19.2, ZK = 20.0, ZT = 24.0;                  // Oberkante der Wand, Oberkante des Konsolkranzes, Dachspitze (m über Gelände)
   ISO.landmark('beginenturm', H => {
-    const { f2, hull, lathe } = H, M = [];
+    const { f2, hull, lathe, rnd, setSeed } = H, M = [];
     const vis = (K, a) => K.facing(Math.cos(a), Math.sin(a)) > 0;
     const dk = (K, a) => Math.sin(a) * K.view[0] - Math.cos(a) * K.view[1] < 0;
     const pathOf = pts => 'M' + hull(pts).map(p => p.map(f2).join(' ')).join('L') + 'Z';
-    // sichtbare Schattenhälfte eines Drehkörpers (wie fr/sd bei den Kastenwänden)
+    const rAt = z => z < 4.2 ? 5.35 - (5.35 - R - .1) * z / 4.2 : R + .1 - .1 * Math.min(1, (z - 4.2) / 3);   // verbreiterter Sockel, darüber fast zylindrisch
+    // sichtbare Schattenhälfte (nur die Wand): wie fr/sd bei den Kastenwänden
     const half = (K, prof, cls) => {
       const pts = []; prof.forEach(([z, r]) => { for (let i = 0; i < 60; i++) { const a = TAU * i / 60; if (vis(K, a) && dk(K, a)) pts.push(K.P(C + r * Math.cos(a), C + r * Math.sin(a), z)); } });
       return pts.length > 2 ? `<path class="${cls} sd" d="${pathOf(pts)}"/>` : '';
     };
-    // Detail an einem Punkt der Mantelfläche: Winkel a, Höhe z
+    // Fläche der sichtbaren Mantelhälfte zwischen zwei Höhen (für Anstrahlung unten / Abdunklung oben, wie wsh/wsl bei K.wall)
+    const band = (K, z0, z1) => {
+      const pts = []; for (let i = 0; i < 60; i++) { const a = TAU * i / 60; if (vis(K, a)) [z0, z1].forEach(z => pts.push(K.P(C + rAt(z) * Math.cos(a), C + rAt(z) * Math.sin(a), Z0 + z))); }
+      return pts.length > 2 ? pathOf(pts) : '';
+    };
+    // sichtbare Bogenstücke eines Rings (r, z) als Teilpfade; an der Rückseite wird getrennt, damit keine Sehne entsteht
+    const arcs = (K, r, z, step = 72) => { let d = '', run = []; const flush = () => { if (run.length > 1) d += K.path(run); run = []; }; for (let i = 0; i <= step; i++) { const a = TAU * i / step; if (!vis(K, a)) { flush(); continue; } run.push([C + r * Math.cos(a), C + r * Math.sin(a), Z0 + z]); } flush(); return d; };
     const at = (K, a, z, r) => K.P(C + r * Math.cos(a), C + r * Math.sin(a), Z0 + z);
+
     M.push({ id: 'bt', fp: [0, 0, 10, 10], draw: K => {
-      const wall = [[Z0, 5.3], [Z0 + 5, R + .05], [Z0 + 21, R]];
+      const wall = [[Z0, 5.35], [Z0 + 4.2, R + .1], [Z0 + ZW, R - .05]];
       let s = lathe(K, C, C, wall, 'rs fr', 0) + half(K, wall, 'rs');
-      // zwei Mauerbänder (Rücksprünge), sichtbare Seite
-      [8.2, 14.6].forEach(z => { const pts = []; for (let i = 0; i <= 48; i++) { const a = TAU * i / 48; if (vis(K, a)) pts.push([C + (R + .1) * Math.cos(a), C + (R + .1) * Math.sin(a), Z0 + z]); }
-        if (pts.length > 1) s += `<path class="dt" stroke-width="1.1" d="${K.path(pts)}"/>`; });
-      // Bruchsteinlagen: feine Fugenringe
-      for (let z = 3; z < 21; z += 3.5) { const pts = []; for (let i = 0; i <= 48; i++) { const a = TAU * i / 48; if (vis(K, a)) pts.push([C + R * Math.cos(a), C + R * Math.sin(a), Z0 + z]); }
-        if (pts.length > 1) s += `<path class="dt" opacity=".22" d="${K.path(pts)}"/>`; }
-      // Scharten (v_03: eine auf der Ostseite oben, zwei unten) und Wappenstein
-      [[.15, 16.5, 'dim'], [1.0, 11.3, 'dim'], [-.45, 5.2, 'dim']].forEach(([a, z, c]) => { if (!vis(K, a)) return; const p = at(K, a, z, R + .05);
-        s += `<rect class="wn ${c}" data-f="${Math.floor(z / 5)}" x="${f2(p[0] - .25)}" y="${f2(p[1] - .8)}" width=".5" height="1.6"/>`; });
-      const w = at(K, .95, 18.6, R + .06); if (vis(K, .95)) s += `<path class="rs sd" d="M${f2(w[0] - .7)} ${f2(w[1] - .9)}h1.4v1.1l-.7 .9l-.7 -.9z"/>`;
-      // Konsolkranz unter dem Dach
-      s += lathe(K, C, C, [[Z0 + 21, R + .05], [Z0 + 21.9, R + .3]], 'rs', 0);
-      // Dach: zwölfseitige Pyramide, Ziegel (Biberschwanz), kleine Spitze
-      const roof = [[Z0 + 21.9, R + .45], [Z0 + 22.1, R + .45], [Z0 + 27.6, .15]];
-      s += lathe(K, C, C, roof, 'tl fr', 6, [1]) + half(K, roof, 'tl');
+      // Licht am Abend: Anstrahlung des Sockels, Abdunklung nach oben (Klassen wsl/wsh, Deckkraft kommt aus dem CSS)
+      const lo = band(K, 0, 5.2), lo2 = band(K, 0, 2.4), hi = band(K, 11, ZW), hi2 = band(K, 15.2, ZW);
+      [hi, hi2].forEach(d => { if (d) s += `<path class="wsh" fill="#000" opacity="0" d="${d}"/>`; });
+      [lo, lo2].forEach(d => { if (d) s += `<path class="wsl" fill="#FFCF73" opacity="0" d="${d}"/>`; });
+
+      // Bruchsteinmauerwerk: unregelmäßige Lagen mit Lücken und kurzen Stoßfugen (ein Pfad, damit die Karte leicht bleibt)
+      setSeed(11);
+      let mas = '';
+      for (let z = 1.1, k = 0; z < ZW - .5; z += .8 + rnd() * .35, k++) {
+        let run = [];
+        const flush = () => { if (run.length > 1) mas += K.path(run); run = []; };
+        for (let i = 0; i <= 72; i++) {
+          const a = TAU * i / 72;
+          if (!vis(K, a) || rnd() < .3) { flush(); continue; }
+          const r = rAt(z) + .02; run.push([C + r * Math.cos(a), C + r * Math.sin(a), Z0 + z]);
+        }
+        flush();
+        for (let j = 0; j < 5; j++) { const a = Math.PI * (rnd() * 2 - .5); if (!vis(K, a)) continue; const r = rAt(z) + .02; mas += K.path([[C + r * Math.cos(a), C + r * Math.sin(a), Z0 + z], [C + r * Math.cos(a), C + r * Math.sin(a), Z0 + z + .7]]); }
+      }
+      s += `<path class="dt" opacity=".26" d="${mas}"/>`;
+
+      // zwei Mauerbänder (kleine Rücksprünge): Kante und Schattenlinie darunter
+      [7.2, 14.4].forEach(z => { s += `<path class="dt" stroke-width="1.1" d="${arcs(K, R + .16, z)}"/><path class="dt" opacity=".4" d="${arcs(K, R + .08, z - .3)}"/>`; });
+
+      // Öffnungen: schmale dunkle Scharten (kein Licht), ausgebrochenes Loch im Süden, Wappenstein im Norden
+      const slit = (a, z, h = 1.2) => { if (!vis(K, a)) return ''; const p = at(K, a, z, R + .02); return `<rect class="lv" x="${f2(p[0] - .16)}" y="${f2(p[1] - h / 2)}" width=".32" height="${f2(h)}"/>`; };
+      s += slit(Math.PI / 2, 16.2) + slit(.2, 16.4) + slit(3.4, 10.5) + slit(3.5, 16.6) + slit(4.7, 16.8, 1.0);
+      if (vis(K, 1.62)) { const p = at(K, 1.62, 9.2, R + .02); s += `<path class="lv" d="M${f2(p[0] - .22)} ${f2(p[1] - .38)}l.42 -.08l.22 .42l-.08 .46l-.46 .08l-.22 -.3z"/>`; }
+      const w = at(K, 4.62, 15.8, R + .06); if (vis(K, 4.62)) s += `<path class="rs sd" d="M${f2(w[0] - .5)} ${f2(w[1] - .65)}h1v.8l-.5 .7l-.5 -.7z"/>`;
+
+      // Konsolkranz unter dem Dach: Wulst und Konsolen
+      s += lathe(K, C, C, [[Z0 + ZW, R], [Z0 + ZW + .35, R + .28], [Z0 + ZK, R + .45]], 'rs', 0);
+      let cons = ''; for (let i = 0; i < 48; i++) { const a = TAU * i / 48; if (!vis(K, a)) continue; cons += K.path([[C + (R + .25) * Math.cos(a), C + (R + .25) * Math.sin(a), Z0 + ZW + .05], [C + (R + .25) * Math.cos(a), C + (R + .25) * Math.sin(a), Z0 + ZW + .65]]); }
+      s += `<path class="dt" d="${cons}"/>`;
+
+      // Dach: zwölf Flächen (Biberschwanz), Reihen parallel zur Traufe und Grate, Spitze
+      const RE = R + .6, N = 12, apex = [C, C, Z0 + ZT], rim = [];
+      for (let i = 0; i < N; i++) { const a = TAU * (i + .5) / N; rim.push([C + RE * Math.cos(a), C + RE * Math.sin(a), Z0 + ZK + .12]); }
+      for (let i = 0; i < N; i++) {
+        const p0 = rim[i], p1 = rim[(i + 1) % N]; let ex = '';
+        const lerp = (p, t) => [p[0] + (apex[0] - p[0]) * t, p[1] + (apex[1] - p[1]) * t, p[2] + (apex[2] - p[2]) * t];
+        for (let t = .1; t < .95; t += .085) ex += K.path([lerp(p0, t), lerp(p1, t)]);
+        ex += K.path([p0, apex]);
+        s += K.face([p0, p1, apex], 'tl', `<path class="dt tl-d" opacity=".6" d="${ex}"/>`);
+      }
       return s;
     } });
-    return { mods: M, lc: [C, C], z0: 0, top: [C, C, 28], label: 'Beginenturm', h: 27, len: 10 };
+    return { mods: M, lc: [C, C], z0: 0, top: [C, C, 25], pin: [C, C, Z0 + ZT + 1.4], label: 'Beginenturm', h: 24, len: 10 };
   });
 })();
 
@@ -1125,10 +1175,10 @@ ISO.landmark('gartenkirche', H => {
    Mitte (x 25,6–54,4) mit höherem Walmdach und 3-achsigem Mittelrisalit (x 35,2–44,8: 2,5 m nach Süden, 1,5 m nach Norden); Flügel je 8 Achsen. Achsmaß 3,2 m.
    Maße: Kontur OSM w5121415 (80 × 12,7 m); Höhen/Achsen nach ref/georgenpalais/foto (siehe INDEX.md). */
 (() => {
-  const Z0 = 1, L = 80, D = 12.7, WH = 8.5, P = 3.2, XA = 22.4, XB = 57.6, RX0 = 35.2, RX1 = 44.8;
+  const Z0 = 1, L = 80, D = 12.7, WH = 9.4, WW = 6.3, P = 3.2, PW = 22.4 / 9, XA = 22.4, XB = 57.6, RX0 = 35.2, RX1 = 44.8;
   ISO.landmark('georgenpalais', H => {
-    const { f2, hl, vl, winR, wins, hip } = H, M = [], add = m => (M.push(m), m);
-    const ze = Z0 + WH;
+    const { f2, hl, vl, winR, wins, hip, roofPlane } = H, M = [], add = m => (M.push(m), m);
+    const ze = Z0 + WH, zw = Z0 + WW;
     // Wand: Achsen n ab Versatz off, zwei Fensterreihen; opt.door = Achsindex mit Tür im EG; opt.tall = hohe Fenster im OG
     const fac = (n, off = 0, opt = {}) => (len, h) => {
       let q = hl(0, len, .35) + hl(0, len, .9) + hl(0, len, h - 4.3) + hl(0, len, h - .02), w = '';
@@ -1141,17 +1191,43 @@ ISO.landmark('gartenkirche', H => {
       }
       return q + wins(w);
     };
-    const endWall = (len, h) => { let w = '', q = hl(0, len, .35) + hl(0, len, .9) + hl(0, len, h - 4.3);
-      for (let i = 0; i < 3; i++) { const x = (len - 3 * P) / 2 + i * P + P / 2 - .7; w += winR(x, h - 3.7, 1.4, 2.5, 0) + winR(x, h - 7.45, 1.4, 2.5, 1); }
+
+    // Flügelfassade (je 9 Achsen, Pilasterstreifen, mittig Rundbogentür): zwei Reihen kleiner Sprossenfenster
+    const wing = arch => (len, h) => {
+      const n = 9; let q = hl(0, len, .3) + hl(0, len, .8) + hl(0, len, h - .02), w = '';
+      for (let i = 0; i <= n; i++) q += vl(i * PW, .8, h - .3);
+      for (let i = 0; i < n; i++) {
+        const cx = (i + .5) * PW;
+        if (i === 4) {
+          w += arch ? `<path class="lv" d="M${f2(cx - .85)} ${f2(h - .8)}V${f2(h - 3)}A.85 .85 0 0 1 ${f2(cx + .85)} ${f2(h - 3)}V${f2(h - .8)}Z"/>`
+            : `<rect class="lv" x="${f2(cx - .6)}" y="${f2(h - 2.5)}" width="1.2" height="1.7"/>`;
+          q += hl(cx - 1.15, cx + 1.15, h - 3.9) + vl(cx - 1.15, h - 3.9, h - .8) + vl(cx + 1.15, h - 3.9, h - .8);
+        } else { w += winR(cx - .55, h - 2.5, 1.1, 1.5, 0); q += hl(cx - .7, cx + .7, h - .95); }
+        if (i !== 4) w += winR(cx - .55, 1.3, 1.1, 1.45, 1);
+      }
+      return q + wins(w);
+    };
+    // Mittelbau: unten hohe Fenster mit Verdachung, oben kleine Fenster, Kranzgesims
+    const mid = n => (len, h) => {
+      let q = hl(0, len, .3) + hl(0, len, .8) + hl(0, len, h - .02) + hl(0, len, 1.0) + hl(0, len, h - 4.7), w = '';
+      for (let i = 0; i < n; i++) {
+        const cx = (i + .5) * (len / n);
+        w += winR(cx - .65, h - 4.1, 1.3, 3.0, 0) + winR(cx - .55, 1.5, 1.1, 1.55, 1);
+        q += hl(cx - .9, cx + .9, h - 4.3) + hl(cx - .85, cx + .85, 1.2);
+      }
+      return q + wins(w);
+    };
+    const endWall = (len, h) => { let w = '', q = hl(0, len, .3) + hl(0, len, .8) + hl(0, len, h - .02);
+      for (let i = 0; i < 3; i++) { const cx = len / 2 + (i - 1) * 2.8; w += winR(cx - .55, h - 2.5, 1.1, 1.5, 0) + winR(cx - .55, 1.3, 1.1, 1.45, 1); }
       return q + wins(w); };
-    const body = (id, x0, x1, deco) => add({ id, fp: [x0, 0, x1, D], draw: K => K.box(x0, 0, Z0, x1 - x0, D, WH, 'pl', deco) });
+    const body = (id, x0, x1, deco, h = WH) => add({ id, fp: [x0, 0, x1, D], draw: K => K.box(x0, 0, Z0, x1 - x0, D, h, 'pl', deco) });
     // senkrechte Fläche mit Normale nach außen (nx, ny)
     const vface = (K, pts, nx, ny, mat) => {
       let a = 0, b = 0;
       for (let i = 0; i < pts.length; i++) { const p = pts[i], q = pts[(i + 1) % pts.length]; a += (p[1] - q[1]) * (p[2] + q[2]); b += (p[2] - q[2]) * (p[0] + q[0]); }
       return K.face(a * nx + b * ny >= 0 ? pts : pts.slice().reverse(), mat);
     };
-    const dormer = (K, x, side, yEave, slope) => { // side +1 Südhang, −1 Nordhang; yEave = y der Traufe
+    const dormer = (K, x, side, yEave, slope, ze = zw) => { // side +1 Südhang, −1 Nordhang; yEave = y der Traufe
       const t0 = 2.3, yf = yEave - side * t0, yb = yf - side * 1.8, zf = ze + t0 * slope - .2, zb = ze + (t0 + 1.8) * slope - .2, zT = zf + 2.1;
       let s = K.wall(side > 0 ? [x - .9, yf] : [x + .9, yf], side > 0 ? [x + .9, yf] : [x - .9, yf], zf, zT, 'pl', (len, h) => wins(winR(.3, .35, len - .6, h - .6, 1)));
       s += vface(K, [[x + .9, yf, zf], [x + .9, yb, zb], [x + .9, yb, zT], [x + .9, yf, zT]], 1, 0, 'pl');
@@ -1160,20 +1236,40 @@ ISO.landmark('gartenkirche', H => {
       return s;
     };
     // Nordhang ist aus Südost verdeckt (Blick über den First) → nur Süd-Gauben zeichnen
-    const dormers = (K, xs, yN, yS, slope) => xs.map(x => dormer(K, x, 1, yS, slope)).join('');
-    const chimney = (K, x, z) => K.box(x, D / 2 - .5, z - 1, 1, 1, 3.4, 'pl', {});
+    // Gauben nur auf dem Hang, der zum Betrachter zeigt (sonst ragen sie über den First); Nord nach k03
+    const dormers = (K, xs, yN, yS, slope, zE, xn = []) => (K.facing(0, 1) > 1e-6 ? xs.map(x => dormer(K, x, 1, yS, slope, zE)).join('') : '')
+      + (K.facing(0, -1) > 1e-6 ? xn.map(x => dormer(K, x, -1, yN, slope, zE)).join('') : '');
+    const chimney = (K, x, z) => K.box(x - .35, D / 2 - .35, z - .6, .7, .7, 2.0, 'pl', {});   // schlanke Schornsteinköpfe auf dem First (v_06), kein Turm
     const OV = .5;
     // Körper
-    body('wW', 0, XA, { N: fac(7), S: fac(7), W: endWall });
-    body('wC', XA, XB, { N: fac(11), S: fac(11) });
-    body('wE', XB, L, { N: fac(7), S: fac(7), E: endWall });
+    body('wW', 0, XA, { N: wing(false), S: wing(true), W: endWall }, WW);
+    body('wC', XA, XB, { N: mid(11), S: mid(11) });
+    body('wE', XB, L, { N: wing(false), S: wing(true), E: endWall }, WW);
     // Mittelrisalit (Süd 2,5 m, Nord 1,5 m) + Freitreppe nördlich
-    add({ id: 'rS', fp: [RX0, D, RX1, D + 2.5], draw: K => K.box(RX0, D, Z0, RX1 - RX0, 2.5, WH, 'pl', { S: fac(3, 0, { door: 1, tall: true }), E: (len, h) => hl(0, len, .35) + hl(0, len, h - 4.3) }, false) });
+    // Südrisalit: dreiseitig (Mittelteil + zwei schräge Seiten), wie auf v_06
+    add({ id: 'rS', fp: [RX0, D, RX1, D + 2.5], draw: K => {
+      const c = 2.4, fr = (len, h) => hl(0, len, .3) + hl(0, len, .8) + hl(0, len, h - .02) + hl(0, len, h - 4.7)
+        + wins(`<rect class="lv" x="${f2(len / 2 - .75)}" y="${f2(h - 3.4)}" width="1.5" height="2.5"/>` + winR(len / 2 - .55, 1.5, 1.1, 1.55, 1));
+      const sd = (len, h) => hl(0, len, .3) + hl(0, len, .8) + hl(0, len, h - .02) + hl(0, len, h - 4.7)
+        + wins(winR(len / 2 - .65, h - 4.1, 1.3, 3.0, 0) + winR(len / 2 - .55, 1.5, 1.1, 1.55, 1));
+      const z1 = Z0 + WH;
+      return K.wall([RX0, D], [RX0 + c, D + 2.5], Z0, z1, 'pl', sd) + K.wall([RX0 + c, D + 2.5], [RX1 - c, D + 2.5], Z0, z1, 'pl', fr)
+        + K.wall([RX1 - c, D + 2.5], [RX1, D], Z0, z1, 'pl', sd)
+        + K.box(RX0 + 3.6, D + 2.5, Z0, 2.4, 1.3, .55, 'st', {}) + K.box(RX0 + 3.0, D + 3.8, Z0, 3.6, .9, .3, 'st', {});
+    } });
     add({ id: 'rN', fp: [RX0, -1.5, RX1, 0], draw: K => K.box(RX0, -1.5, Z0, RX1 - RX0, 1.5, WH, 'pl', { N: fac(3, 0, { door: 1, tall: true }), E: (len, h) => hl(0, len, .35) + hl(0, len, h - 4.3) }, false)
       + K.box(RX0 + 2, -3.3, Z0, 5.6, 1.8, .6, 'st', {}) + K.box(RX0 + 1.4, -4.5, Z0, 6.8, 1.2, .3, 'st', {}) });
     // Dächer: West-, Mitteltrakt, Osttrakt (hinten → vorne)
-    const wz = 4.7, cz = 8.0, sw = wz / (D / 2 + OV), sc = cz / (D / 2 + OV);
-    add({ id: 'dW', fp: [0, 0, XA, D], above: 'wW', draw: K => hip(K, -OV, -OV, XA + OV, D + OV, ze, ze + wz, 'tl') + dormers(K, [P * 1.5, P * 3.5, P * 5.5], -OV, D + OV, sw) + chimney(K, 6, ze + wz) + chimney(K, 15, ze + wz) });
+    const wz = 4.4, cz = 6.6, sw = wz / (D / 2 + OV), sc = cz / (D / 2 + OV);
+    // Flügeldach: Walm nur am Außenende, innen stößt der First an den Mittelbau
+    const wingRoof = (K, xo, xi, dir) => {
+      const ym = D / 2, zr = zw + wz, y0 = -OV, y1 = D + OV, h = D / 2 + OV;
+      const e0 = dir < 0 ? -OV : XB, e1 = dir < 0 ? XA : L + OV, r0 = dir < 0 ? -OV + h : XB, r1 = dir < 0 ? XA : L + OV - h;
+      let s = roofPlane(K, [[e0, y0, zw], [e1, y0, zw], [r1, ym, zr], [r0, ym, zr]], 'tl', 2.2) + roofPlane(K, [[e1, y1, zw], [e0, y1, zw], [r0, ym, zr], [r1, ym, zr]], 'tl', 2.2);
+      s += dir < 0 ? K.face([[e0, y1, zw], [e0, y0, zw], [r0, ym, zr]], 'tl') : K.face([[e1, y0, zw], [e1, y1, zw], [r1, ym, zr]], 'tl');
+      return s;
+    };
+    add({ id: 'dW', fp: [0, 0, XA, D], above: 'wW', draw: K => wingRoof(K, 0, XA, -1) + dormers(K, [6.5, 12, 17.5], -OV, D + OV, sw, zw, [6.5, 11.7, 17.2]) + [8, 12, 17].map(x => chimney(K, x, zw + wz)).join('') });
     add({ id: 'dC', fp: [XA, 0, XB, D], above: 'wC', draw: K => {
       let s = hip(K, XA - OV, -OV, XB + OV, D + OV, ze, ze + cz, 'tl');
       // Quer-Walmdach des Risalits (Süd) und (Nord)
@@ -1186,13 +1282,13 @@ ISO.landmark('gartenkirche', H => {
       s += K.face([[RX1 + OV, yn, ze], [RX0 - OV, yn, ze], [xm, yn + hw + OV, zS]], 'tl');
       s += K.face([[RX1 + OV, -OV, ze], [RX1 + OV, yn, ze], [xm, yn + hw + OV, zS], [xm, 4.5, zS]], 'tl');
       s += K.face([[RX0 - OV, yn, ze], [RX0 - OV, -OV, ze], [xm, 4.5, zS], [xm, yn + hw + OV, zS]], 'tl');
-      s += dormers(K, [XA + 5, XA + 9, XB - 9, XB - 5], -OV, D + OV, sc);
-      return s + chimney(K, 31, ze + cz) + chimney(K, 49, ze + cz);
+      s += dormers(K, [], -OV, D + OV, sc, ze, [31.5, 34.2, 45.8, 48.5]);
+      return s + [31, 35.5, 40, 44.5, 49].map(x => chimney(K, x, ze + cz)).join('');
     } });
-    add({ id: 'dE', fp: [XB, 0, L, D], above: 'wE', draw: K => hip(K, XB - OV, -OV, L + OV, D + OV, ze, ze + wz, 'tl') + dormers(K, [XB + P * 1.5, XB + P * 3.5, XB + P * 5.5], -OV, D + OV, sw) + chimney(K, 66, ze + wz) + chimney(K, 74, ze + wz) });
+    add({ id: 'dE', fp: [XB, 0, L, D], above: 'wE', draw: K => wingRoof(K, XB, L, 1) + dormers(K, [XB + 5.2, XB + 15.7], -OV, D + OV, sw, zw, [XB + 6.9, XB + 12.1, XB + 17]) + [63, 68, 72].map(x => chimney(K, x, zw + wz)).join('') });
     // Eingeschossiger Anbau am Ostende (graues Dach, in v_06/v_07 sichtbar; nicht in der OSM-Kontur)
     add({ id: 'an', fp: [L, .5, L + 5, 6.5], parent: 'wE', side: 'E', draw: K => K.box(L, .5, Z0, 5, 6, 3.4, 'pl', { E: (len, h) => hl(0, len, .4) + wins(winR(1.3, 1, 1.3, 1.8, 0) + winR(3.6, 1, 1.3, 1.8, 0)), S: (len, h) => hl(0, len, .4) + wins(winR(1.2, 1, 1.3, 1.8, 0) + winR(3.2, 1, 1.3, 1.8, 0)) }) + hip(K, L - .3, .2, L + 5.3, 6.8, Z0 + 3.4, Z0 + 4.9, 'sl') });
-    return { mods: M, lc: [L / 2, D / 2], z0: 0, top: [L / 2, D / 2, Z0 + 15], label: 'Georgenpalais', h: 15, len: L };
+    return { mods: M, lc: [L / 2, D / 2], z0: 0, top: [L / 2, D / 2, Z0 + 17], pin: [L / 2, D / 2, Z0 + 18.6], label: 'Georgenpalais', h: 17, len: L };
   });
 })();
 
@@ -1340,6 +1436,7 @@ ISO.landmark('hauptbahnhof', H => {
     });
     const ring = t => { const r = []; for (let i = 5; i < t.length; i += 2) r.push([t[i], t[i + 1]]); return r; };
     const PART = T.map(t => { const r = ring(t); return { zw: t[0], h: t[1], shape: t[2], rh: t[3], mc: t[4], r, minx: Math.min(...r.map(q => q[0])), maxx: Math.max(...r.map(q => q[0])), miny: Math.min(...r.map(q => q[1])), maxy: Math.max(...r.map(q => q[1])) }; });
+    PART[3].shape = 5;   // Foyer (w37761426): First senkrecht zur Nordfassade, Giebel zur Platzseite
     const fp = [Math.min(...PART.map(p => p.minx)), Math.min(...PART.map(p => p.miny)), Math.max(...PART.map(p => p.maxx)), Math.max(...PART.map(p => p.maxy))];
     // Teil B steht auf Teil A (B beginnt dort, wo A endet, und beide Grundrisse überlappen) → alle Stücke von A vor allen Stücken von B
     const SP = {};   // "a>b": Teil a liegt unter Teil b
@@ -1422,10 +1519,31 @@ ISO.landmark('hauptbahnhof', H => {
     const RING = { fh: 7.6, bay: 4.4, ww: 2.0, wh: 4.6, sill: 1.5, mx: 1.4, ...LIT };
     const DRUM = { fh: 12, bay: 3.4, ww: 1.5, wh: 7.5, sill: 2.4, mx: 1.0, ...LIT };
     const FOY = { fh: 5.4, bay: 3.6, ww: 2.0, wh: 3.6, sill: 1.2, mx: 1.4, ...LIT };
-    function deco(p) {
+    /* Foyer-Hauptfassade (Nordseite zum Theodor-Heuss-Platz, v_09/v_10/hcc-nacht): zwei Fensterreihen zwischen Lisenen, in der Mitte Säulenportikus
+       mit Balkon. Wandkoordinaten u (L→R, Mitte = len/2), v nach unten ab Traufe. Anstrahlung abends violett (Nachtfoto), Eingang warm. */
+    const foyerFront = (len, h) => {
+      const c = len / 2, acc = {}, put = (k, r) => (acc[k] = acc[k] || []).push(r);
+      const win = (u, y, w, hh, f) => { const q = rnd(), k = q < .1 ? 'off' : q < .3 ? 'dim' : q < .42 ? 'hi' : ''; put(f + ' ' + k, rect(u - w / 2, y, w, hh)); };
+      [-13.6, -9.0, 9.0, 13.6].forEach((o, i) => { win(c + o, 1.5, 1.6, 3.9, 3); win(c + o, 6.8, 1.6, 4.2, 2); });
+      [-3.6, 0, 3.6].forEach(o => win(c + o, 1.5, 1.7, 3.6, 4));              // Obergeschoss über dem Balkon
+      let s = '', dt = '';
+      [-15.9, -11.3, -6.7, 6.7, 11.3, 15.9].forEach(o => { dt += `M${f2(c + o)} 0V${f2(h)}`; });                    // Lisenen
+      dt += `M0 1H${f2(len)}M0 5.9H${f2(len)}`;                                                                         // Gesims, Geschossband
+      s += `<path class="dt" d="${dt}"/>`;
+      s += `<path class="brz" d="${rect(c - 5.9, 6.5, 11.8, h - 6.5)}"/>`;                                           // Portikus: dunkle Tiefe
+      const doors = [-3.8, 0, 3.8].map(o => rect(c + o - 1.2, 7.6, 2.4, h - 7.6)).join('');
+      s += `<path class="wn hi" d="${doors}"/>`;                                                                       // warm beleuchteter Eingang
+      s += Object.entries(acc).map(([k, v]) => { const [f, c2] = k.split(' '); return `<path class="wn${c2 ? ' ' + c2 : ''}" data-f="${f}" d="${v.join('')}"/>`; }).join('');
+      s += `<path class="wn dim" d="${[-5.6, -1.9, 1.9, 5.6].map(o => rect(c + o - .5, 6.5, 1, h - 6.5)).join('')}"/>`;   // Säulen
+      s += `<path class="brz" d="${rect(c - 6.4, 5.3, 12.8, 1.2)}"/>` + `<path class="dt" d="${Array.from({ length: 17 }, (_, i) => `M${f2(c - 6.2 + i * .775)} 5.3v1.2`).join('')}"/>`;   // Balkon mit Geländer
+      s += [0, 1].map(() => `<rect class="wsl" fill="#7F5BE6" opacity="0" y="${f2(h * .08)}" width="${f2(len)}" height="${f2(h * .92)}"/>`).join('');
+      return s;
+    };
+    function deco(p, a, b) {
       const pt = p.part, id = IDS[pt];
       return (len, h) => {
         if (len < 2.5 || h < 1) return '';
+        if (id === 'w37761426' && len > 30 && b[0] < a[0] && Math.abs(b[1] - a[1]) < len * .7) return foyerFront(len, h);
         if (id === 'w526529261') return windows(len, h, DRUM) + vlines(len, h, 3.4);        // Trommel: Pilaster und hohe Fenster
         if (id === 'w1490187483') return windows(len, h, RING) + hlines(len, [h * .5]);      // Ringbau
         if (id === 'w37761426' || id === 'w526550619') return windows(len, h, FOY) + hlines(len, [h - 5.4]);
@@ -1452,6 +1570,7 @@ ISO.landmark('hauptbahnhof', H => {
         }
         return s;
       }
+      if (shape === 5) return gableRoof(K, q);
       // Sattel-/Walmdach auf dem Hüllrechteck (längste Kante bestimmt die Firstrichtung)
       let bi = 0, bl = 0; r.forEach((p, i) => { const n = r[(i + 1) % r.length], l = Math.hypot(n[0] - p[0], n[1] - p[1]); if (l > bl) { bl = l; bi = i; } });
       const e0 = r[bi], e1 = r[(bi + 1) % r.length], ux = (e1[0] - e0[0]) / bl, uy = (e1[1] - e0[1]) / bl, vx = -uy, vy = ux;
@@ -1465,18 +1584,33 @@ ISO.landmark('hauptbahnhof', H => {
       return s;
     }
 
+    // Satteldach quer: First senkrecht zur längsten Kante (Fassade), Giebel mit Relief-Medaillon zur Fassadenseite
+    function gableRoof(K, q) {
+      const { zw, h, mc, r } = q, z = Z0 + zw, zt = Z0 + h, mat = MATS[mc];
+      let bi = 0, bl = 0; r.forEach((p, i) => { const n = r[(i + 1) % r.length], l = Math.hypot(n[0] - p[0], n[1] - p[1]); if (l > bl) { bl = l; bi = i; } });
+      const e0 = r[bi], e1 = r[(bi + 1) % r.length], ux = (e1[0] - e0[0]) / bl, uy = (e1[1] - e0[1]) / bl, vx = -uy, vy = ux;
+      let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9;
+      r.forEach(p => { const u = (p[0] - e0[0]) * ux + (p[1] - e0[1]) * uy, v = (p[0] - e0[0]) * vx + (p[1] - e0[1]) * vy; u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v); });
+      const W = (u, v, zz) => [e0[0] + u * ux + v * vx, e0[1] + u * uy + v * vy, zz], um = (u0 + u1) / 2;
+      const A = W(u0, v0, z), B = W(u1, v0, z), C = W(u1, v1, z), Dd = W(u0, v1, z), R0 = W(um, v0, zt), R1 = W(um, v1, zt);
+      let s = K.face([A, Dd, R1, R0], mat) + K.face([B, C, R1, R0], mat) + K.face([A, B, R0], 'pl') + K.face([Dd, C, R1], 'pl');
+      const zc = z + (zt - z) * .34, rr = 2.7, ring = Array.from({ length: 20 }, (_, i) => W(um + rr * Math.cos(i * Math.PI / 10), v0, zc + rr * 1.15 * Math.sin(i * Math.PI / 10)));
+      s += K.poly(ring, 'wn dim') + K.poly([A, R0, B], 'dt') + K.poly([W(u0 + 1.6, v0, z + .6), W(u1 - 1.6, v0, z + .6)], 'dt');
+      return s;
+    }
+
     /* ---------- Zeichnen ---------- */
     const draw = K => {
       let s = '';
       const left = PART.map(() => 0); P.forEach(p => left[p.part]++);
       order(K).forEach(p => {
-        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'pl', deco(p));
+        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'pl', deco(p, p.v[i], p.v[(i + 1) % p.v.length]));
         if (--left[p.part] === 0) s += roof(K, PART[p.part]);
       });
       return s;
     };
     const M = [{ id: 'hcc', fp, draw }];
-    return { mods: M, lc: [0, 0], z0: 0, top: [-10, 5, Z0 + 44], label: 'HCC', h: 44, len: 140 };
+    return { mods: M, lc: [0, 0], z0: 0, top: [-32, -35, Z0 + 44], pin: [-32, -35, Z0 + 46], label: 'HCC', h: 44, len: 140 };
   });
 })();
 
@@ -1884,13 +2018,13 @@ ISO.landmark('heinzvonheidenarena', H => {
       return s + wins(w);
     };
     // Flügelfassade: Reliefband, Bogenfenster zwischen Pilastern, Sockel
-    const wingS = (step = 4.6, lead = 0) => (len, h) => {
+    const wingS = (step = 4.6, lead = 0, ww = 2.4) => (len, h) => {
       let q = balustrade(len) + hl(0, len, 2.3) + hl(0, len, 4.3), w = '';
       const n = Math.max(1, Math.floor((len - 1.6) / step)), x0 = (len - (n - 1) * step) / 2;
       for (let i = 0; i < n; i++) {
         const u = x0 + i * step;
-        w += winA(u - 1.2, 5.4, 2.4, 5.2, 1);
-        q += `<path class="dt" d="M${f2(u - 1.5)} 2.7h3V4.0h-3Z"/>` + hl(u - 1.6, u + 1.6, 5.1);                  // Reliefplatte über dem Fenster
+        w += winA(u - ww / 2, 5.4, ww, 5.2, 1);
+        q += `<path class="dt" d="M${f2(u - ww / 2 - .3)} 2.7h${f2(ww + .6)}V4.0h-${f2(ww + .6)}Z"/>` + hl(u - ww / 2 - .4, u + ww / 2 + .4, 5.1);                  // Reliefplatte über dem Fenster
         if (i < n - 1) q += vl(u + step / 2, 2.3, 11.2);                                                           // Pilaster
       }
       q += vl(.5, 2.3, 11.2) + vl(len - .5, 2.3, 11.2) + hl(0, len, 11.2);
@@ -1949,11 +2083,11 @@ ISO.landmark('heinzvonheidenarena', H => {
     // ======== FLÜGEL (OSM-Grundriss, jeder Block eigener Grundriss) ========
     const sides = { S: plain, E: plain, N: plain, W: plain };
     // Frontflügel links/rechts vom Risalit: Reliefband und Bogenfenster in Pilastern
-    add({ id: 'fL', fp: [12, 46.4, 31, 63.4], draw: K => K.box(12, 46.4, Z0, 19, 17, HW, 'pl', { S: wingS(4.6), E: plain, N: plain, W: plain }) + deck(K, 12, 46.4, 31, 63.4) + sky(K, 14, 50.4, 29, 59.4) });
-    add({ id: 'fR', fp: [50.8, 46.4, 71, 63.4], draw: K => K.box(50.8, 46.4, Z0, 20.2, 17, HW, 'pl', { S: wingS(4.6), E: plain, N: plain, W: plain }) + deck(K, 50.8, 46.4, 71, 63.4) + sky(K, 52.8, 50.4, 68.8, 59.4) });
+    add({ id: 'fL', fp: [12, 46.4, 31, 63.4], draw: K => K.box(12, 46.4, Z0, 19, 17, HW, 'pl', { S: wingS(3.4, 0, 2.0), E: plain, N: plain, W: plain }) + deck(K, 12, 46.4, 31, 63.4) + sky(K, 14, 50.4, 29, 59.4) });
+    add({ id: 'fR', fp: [50.8, 46.4, 71, 63.4], draw: K => K.box(50.8, 46.4, Z0, 20.2, 17, HW, 'pl', { S: wingS(3.4, 0, 2.0), E: plain, N: plain, W: plain }) + deck(K, 50.8, 46.4, 71, 63.4) + sky(K, 52.8, 50.4, 68.8, 59.4) });
     // Seitenflügel und Rückflügel
-    add({ id: 'sW', fp: [0, 0, 18, 46.4], draw: K => K.box(0, 0, Z0, 18, 46.4, HW, 'pl', sides) + deck(K, 0, 0, 18, 46.4) + sky(K, 4, 3, 14, 21) + sky(K, 4, 25, 14, 43) });
-    add({ id: 'sE', fp: [59, 0, 83, 46.4], draw: K => K.box(59, 0, Z0, 24, 46.4, HW, 'pl', sides) + deck(K, 59, 0, 83, 46.4) + sky(K, 64, 3, 78, 21) + sky(K, 64, 25, 78, 43) });
+    add({ id: 'sW', fp: [0, 0, 18, 46.4], draw: K => K.box(0, 0, Z0, 18, 46.4, HW, 'pl', sides) + deck(K, 0, 0, 18, 46.4) + sky(K, 4, 4, 14, 42) });
+    add({ id: 'sE', fp: [59, 0, 83, 46.4], draw: K => K.box(59, 0, Z0, 24, 46.4, HW, 'pl', sides) + deck(K, 59, 0, 83, 46.4) + sky(K, 64, 4, 78, 42) });
     add({ id: 'rear', fp: [18, 0, 59, 19.2], draw: K => K.box(18, 0, Z0, 41, 19.2, HW, 'pl', sides) + deck(K, 18, 0, 59, 19.2) + sky(K, 22, 4, 34, 15.2) + sky(K, 43, 4, 55, 15.2)
       + hipC(K, 34.5, 3, 42.5, 16.2, Z0 + HW, Z0 + HW + 2.2, 'sl', 2) + hipC(K, 36, 6, 41, 13, Z0 + HW + 2.2, Z0 + HW + 4.2, 'pl tp', 1.6) });
 
@@ -1983,7 +2117,7 @@ ISO.landmark('heinzvonheidenarena', H => {
           const pts = [P(a - da, zz), P(a + da, zz), P(a + da, zz + hh), P(a - da, zz + hh)];
           if (K.facing(Math.cos(a), -Math.sin(a)) > 0) w += `<path class="wn dim" data-f="2" d="${K.path(pts)}Z"/>`; });
       }
-      return q + w + lathe(K, cx, cy, [[zt + 1.0, R + .1], [zt + 2.3, R - 1.2], [zt + 3.0, 2.2], [zt + 3.3, .3]], 'cu', 6);
+      return q + w + lathe(K, cx, cy, [[zt + 1.0, R + .1], [zt + 2.3, R - 1.2], [zt + 3.0, 2.2], [zt + 3.3, .3]], 'sl', 6);
     } });
     // flacher Eingangsvorsprung (≈ 3 m) mit Portal, Rundbögen und Stufen
     add({ id: 'step', fp: [32.7, 64.8, 49.1, 66.2], parent: 'ris', side: 'S', draw: K => K.box(32.7, 64.8, Z0, 16.4, 1.4, 5.6, 'pl', {
@@ -2002,7 +2136,7 @@ ISO.landmark('heinzvonheidenarena', H => {
         + [[1.9, 48.4], [10.1, 48.4], [1.9, 62.8], [10.1, 62.8], [6, 62.8]].map(([a, b]) => dormer(K, x + a, b, Z0 + HP + 1.7)).join('') + (K.wallVisible([x, 64.8], [x + 12, 64.8]) ? gablePed(K, x) : '') + urn(K, x + .6, 64.2, Z0 + HP) + urn(K, x + 11.4, 64.2, Z0 + HP);
     } });
     pav('pW', 0); pav('pE', 71);
-    return { mods: M, ground, lc: [41.45, 33.1], z0: 0, top: [41, 50, 28], label: 'Landesmuseum', h: 28, len: 83 };
+    return { mods: M, ground, lc: [41.45, 33.1], z0: 0, top: [41, 50, 28], pin: [41.5, 33.1, Z0 + 31], label: 'Landesmuseum', h: 28, len: 83 };
   });
 })();
 
@@ -2368,7 +2502,7 @@ ISO.landmark('heinzvonheidenarena', H => {
    Jeder Teil ist in konvexe Stücke zerlegt (Sortierung ohne Durchdringung); Dächer entstehen aus dem Teilumriss. */
 (() => {
   const Z0 = 1;
-  /*DATA*/const D = [[0,11,0,[-16.3,2.9,-20.9,-3.7,-25.0,-0.8,-11.2,18.8],7],[0,11,0,[3.4,-10.9,-2.4,-6.9,-4.0,-5.7,-9.8,-1.7,-10.6,-1.1,-16.3,2.9,-11.2,18.8,17.5,-1.2],85],[0,11,0,[-9.8,-1.7,-14.3,-8.3,-15.2,-7.7,-10.6,-1.1],7],[0,11,0,[-2.4,-6.9,-7.0,-13.4,-8.6,-12.3,-4.0,-5.7],7],[0,11,0,[3.7,-20.9,-1.2,-17.5,3.4,-10.9,17.5,-1.2],11],[0,11,1,[18.3,-15.7,10.9,-19.2,3.4,-21.3,16.9,-2.1,20.7,-7.1,20.7,-11.4],61],[0,11,1,[10.9,-19.2,12.1,-21.9,10.7,-24.5,8.2,-24.9,3.4,-21.3],15],[0,11,2,[-1.3,-17.4,-1.4,-17.7,-7.1,-13.7],3],[0,11,2,[-2.4,-7.0,3.3,-10.9,-1.3,-17.4,-7.1,-13.7],11],[0,11,3,[-8.6,-12.3,-8.8,-12.5,-14.5,-8.5],3],[0,11,3,[-9.7,-1.8,-4.1,-5.7,-8.6,-12.3,-14.5,-8.5],11],[0,11,4,[-15.2,-7.7,-15.3,-8.0,-21.1,-3.9],3],[0,11,4,[-16.3,2.8,-10.6,-1.2,-15.2,-7.7,-21.1,-3.9],11],[0,46,5,[8.0,6.9,2.9,10.4,6.4,15.4,11.5,11.9],15],[0,7,6,[-4.7,14.3,-9.6,17.7,-7.8,20.3,-2.8,16.9],15],[0,6,7,[9.5,4.4,9.9,5.0,17.9,-0.6,17.5,-1.2],15],[46,46,8,[4.2,9.3,3.8,11.9,5.3,14.1,7.9,14.6,10.1,13.0,10.6,10.4,9.1,8.2,6.4,7.7],255]], T = [[11,23.5,2,12.5,0,0,-11.2,18.8,-25.0,-0.8,-20.9,-3.7,-16.3,2.9,-10.6,-1.1,-15.2,-7.7,-14.3,-8.3,-9.8,-1.7,-4.0,-5.7,-8.6,-12.3,-7.0,-13.4,-2.4,-6.9,3.4,-10.9,-1.2,-17.5,3.7,-20.9,17.5,-1.2],[11,20,2,9,0,0,20.7,-7.1,16.9,-2.1,3.4,-21.3,8.2,-24.9,10.7,-24.5,12.1,-21.9,10.9,-19.2,18.3,-15.7,20.7,-11.4],[11,22,2,11,0,0,-1.4,-17.7,-1.3,-17.4,3.3,-10.9,-2.4,-7.0,-7.1,-13.7],[11,22,2,11,0,0,-8.8,-12.5,-8.6,-12.3,-4.1,-5.7,-9.7,-1.8,-14.5,-8.5],[11,22,2,11,0,0,-15.3,-8.0,-15.2,-7.7,-10.6,-1.2,-16.3,2.8,-21.1,-3.9],[46,46,0,0,0,0,6.4,15.4,2.9,10.4,8.0,6.9,11.5,11.9],[7,10,2,3,0,0,-7.8,20.3,-9.6,17.7,-4.7,14.3,-2.8,16.9],[6,6,0,0,0,0,17.9,-0.6,9.9,5.0,9.5,4.4,17.5,-1.2],[46,70,1,24,0,0,9.1,8.2,10.6,10.4,10.1,13.0,7.9,14.6,5.3,14.1,3.8,11.9,4.2,9.3,6.4,7.7]], IDS = ["hall", "chor-o", "giebel3", "giebel2", "giebel1", "turm", "anbau-sw", "anbau-se", "helm"];/*END*/
+  /*DATA*/const D = [[0,15.5,0,[-16.3,2.9,-20.9,-3.7,-25.0,-0.8,-11.2,18.8],7],[0,15.5,0,[3.4,-10.9,-2.4,-6.9,-4.0,-5.7,-9.8,-1.7,-10.6,-1.1,-16.3,2.9,-11.2,18.8,17.5,-1.2],85],[0,15.5,0,[-9.8,-1.7,-14.3,-8.3,-15.2,-7.7,-10.6,-1.1],7],[0,15.5,0,[-2.4,-6.9,-7.0,-13.4,-8.6,-12.3,-4.0,-5.7],7],[0,15.5,0,[3.7,-20.9,-1.2,-17.5,3.4,-10.9,17.5,-1.2],11],[0,12.5,1,[18.3,-15.7,10.9,-19.2,3.4,-21.3,16.9,-2.1,20.7,-7.1,20.7,-11.4],61],[0,12.5,1,[10.9,-19.2,12.1,-21.9,10.7,-24.5,8.2,-24.9,3.4,-21.3],15],[0,46,2,[8.6,6.0,1.7,10.8,6.5,17.7,13.4,12.8],15],[0,15.5,3,[-1.3,-17.4,-1.4,-17.7,-7.1,-13.7],3],[0,15.5,3,[-2.4,-7.0,3.3,-10.9,-1.3,-17.4,-7.1,-13.7],11],[0,15.5,4,[-8.6,-12.3,-8.8,-12.5,-14.5,-8.5],3],[0,15.5,4,[-9.7,-1.8,-4.1,-5.7,-8.6,-12.3,-14.5,-8.5],11],[0,15.5,5,[-15.2,-7.7,-15.3,-8.0,-21.1,-3.9],3],[0,15.5,5,[-16.3,2.8,-10.6,-1.2,-15.2,-7.7,-21.1,-3.9],11],[0,7,6,[-4.7,14.3,-9.6,17.7,-7.8,20.3,-2.8,16.9],15],[0,6,7,[9.5,4.4,9.9,5.0,17.9,-0.6,17.5,-1.2],15],[46,46,8,[4.1,9.6,3.5,12.7,5.3,15.3,8.4,15.8,11.0,14.0,11.5,10.9,9.7,8.4,6.6,7.8],255]], T = [[15.5,28.0,2,12.5,0,0,-11.2,18.8,-25.0,-0.8,-20.9,-3.7,-16.3,2.9,-10.6,-1.1,-15.2,-7.7,-14.3,-8.3,-9.8,-1.7,-4.0,-5.7,-8.6,-12.3,-7.0,-13.4,-2.4,-6.9,3.4,-10.9,-1.2,-17.5,3.7,-20.9,17.5,-1.2],[12.5,22.5,2,10,0,0,20.7,-7.1,16.9,-2.1,3.4,-21.3,8.2,-24.9,10.7,-24.5,12.1,-21.9,10.9,-19.2,18.3,-15.7,20.7,-11.4],[46,46,0,0,0,0,6.5,17.7,1.7,10.8,8.6,6.0,13.4,12.8],[15.5,26.5,2,11,0,0,-1.4,-17.7,-1.3,-17.4,3.3,-10.9,-2.4,-7.0,-7.1,-13.7],[15.5,26.5,2,11,0,0,-8.8,-12.5,-8.6,-12.3,-4.1,-5.7,-9.7,-1.8,-14.5,-8.5],[15.5,26.5,2,11,0,0,-15.3,-8.0,-15.2,-7.7,-10.6,-1.2,-16.3,2.8,-21.1,-3.9],[7,10,2,3,0,0,-7.8,20.3,-9.6,17.7,-4.7,14.3,-2.8,16.9],[6,6,0,0,0,0,17.9,-0.6,9.9,5.0,9.5,4.4,17.5,-1.2],[46,70,1,24,0,0,9.7,8.4,11.5,10.9,11.0,14.0,8.4,15.8,5.3,15.3,3.5,12.7,4.1,9.6,6.6,7.8]], IDS = ["hall", "chor-o", "turm", "giebel3", "giebel2", "giebel1", "anbau-sw", "anbau-se", "helm"];/*END*/
   ISO.landmark('markuskirche', H => {
     const { f2, rnd } = H;
     const P = D.map((d, n) => {
@@ -2439,6 +2573,10 @@ ISO.landmark('heinzvonheidenarena', H => {
 
     /* ---------- Fassaden (Wandkoordinaten: u nach rechts, v nach unten ab Oberkante) ---------- */
     const rect = (x, y, w, h) => `M${f2(x)} ${f2(y)}h${f2(w)}v${f2(h)}h${f2(-w)}z`;
+    const arch = (x, y, w, h) => { const r = w / 2; return h <= r ? rect(x, y, w, h) : `M${f2(x)} ${f2(y + h)}V${f2(y + r)}a${f2(r)} ${f2(r)} 0 0 1 ${f2(w)} 0V${f2(y + h)}z`; };   // Fenster mit Rundbogen
+    const circ = (cx, cy, r) => `M${f2(cx - r)} ${f2(cy)}a${f2(r)} ${f2(r)} 0 1 0 ${f2(2 * r)} 0a${f2(r)} ${f2(r)} 0 1 0 ${f2(-2 * r)} 0z`;
+    const ringDt = (cx, cy, r) => `<path class="dt" d="${circ(cx, cy, r)}"/>`;
+    const spokes = (cx, cy, r) => `<path class="dt" d="${Array.from({ length: 6 }, (_, i) => { const a = i * Math.PI / 3 + .3; return `M${f2(cx + r * Math.cos(a))} ${f2(cy + r * Math.sin(a))}L${f2(cx - r * Math.cos(a))} ${f2(cy - r * Math.sin(a))}`; }).join('')}"/>`;   // Maßwerk der Rose
     function windows(len, h, o) {
       const { fh, bay, ww, wh, sill, mx } = o, acc = {}, rows = Math.floor((h - (o.top || mx)) / fh);
       if (rows < 1 || len < ww + 2 * mx) return '';
@@ -2448,7 +2586,7 @@ ISO.landmark('heinzvonheidenarena', H => {
         if (yb - wh < .3) continue;
         for (let b = 0; b < nb; b++) {
           const q = rnd(), c = q < o.pOff ? ' off' : q < o.pOff + o.pDim ? ' dim' : q < o.pOff + o.pDim + o.pHi ? ' hi' : '';
-          const key = f + c; (acc[key] = acc[key] || []).push(rect(off + b * bay, yb - wh, ww, wh));
+          const key = f + c; (acc[key] = acc[key] || []).push((o.arch ? arch : rect)(off + b * bay, yb - wh, ww, wh));
         }
       }
       return Object.entries(acc).map(([k, v]) => { const [f, ...c] = k.split(' '); return `<path class="wn${c.length ? ' ' + c.join(' ') : ''}" data-f="${f}" d="${v.join('')}"/>`; }).join('');
@@ -2456,27 +2594,53 @@ ISO.landmark('heinzvonheidenarena', H => {
     const vlines = (len, h, step) => { let d = ''; for (let u = step / 2; u < len; u += step) d += `M${f2(u)} 0V${f2(h)}`; return `<path class="dt" d="${d}"/>`; };
     const hlines = (len, ys) => ys.length ? `<path class="dt" d="${ys.map(y => `M0 ${f2(y)}H${f2(len)}`).join('')}"/>` : '';
     const LIT = { pOff: .52, pDim: .24, pHi: .08 };
-    const NAVE = { fh: 8.4, bay: 5.2, ww: 1.8, wh: 5.6, sill: 2.2, mx: 2.0, ...LIT };
+    const NAVE = { fh: 9, bay: 4.4, ww: 1.8, wh: 8.2, sill: 3.0, mx: 2.0, arch: 1, ...LIT };
     const GABL = { fh: 8.4, bay: 7, ww: 4.4, wh: 5.6, sill: 2.2, mx: 1.2, ...LIT };
     const TURM = { fh: 9, bay: 3.2, ww: .9, wh: 4, sill: 1.5, mx: 1.4, pOff: .55, pDim: .2, pHi: .05 };
-    const SMALL = { fh: 8, bay: 3.6, ww: 1.4, wh: 3.6, sill: 1.6, mx: 1.2, ...LIT };
-    function deco(p) {
-      const id = IDS[p.part];
+    const SMALL = { fh: 7, bay: 3.4, ww: 1.4, wh: 4.4, sill: 1.8, mx: 1.2, arch: 1, ...LIT };
+    // Wandfläche mit Normale n (aus Wandrichtung a→b): Südostseite (Eingang, zur Straße) = „front“ des Turms
+    const nrm = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); return [-dy / l, dx / l]; };
+    function deco(p, a, b) {
+      const id = IDS[p.part], n = nrm(a, b), front = n[0] * .57 + n[1] * .82 > .75;
       return (len, h) => {
         if (len < 2.2 || h < 1) return '';
-        if (id === 'turm') return windows(len, h, TURM) + (len > 4 ? `<path class="wn hi" data-f="4" d="${rect(len / 2 - 1.1, 5.2, 2.2, 2.2)}"/>` : '') + hlines(len, [h - 13, h - 3.2]);    // Uhr unter dem Glockengeschoss
-        if (id.startsWith('giebel')) return windows(len, h, GABL) + hlines(len, [2.2]);
-        if (id === 'hall') return windows(len, h, NAVE) + hlines(len, [h - 1.4]);
+        if (id === 'turm') {   // Westturm: Eckpfeiler, Schlitze, Portal (Südseite), Uhr, Schallarkaden
+          let s = `<path class="dt" d="M.55 0V${f2(h)}M${f2(len - .55)} 0V${f2(h)}"/>` + hlines(len, [h - 11.5, h - 20, h - 33]);
+          const lit = (d, f, c) => `<path class="wn${c ? ' ' + c : ''}" data-f="${f}" d="${d}"/>`;
+          s += lit(arch(len / 2 - 1.55, 1.8, .95, 5.4) + arch(len / 2 + .6, 1.8, .95, 5.4), 4, rnd() < .5 ? 'hi' : '');       // Schallöffnungen
+          s += `<circle class="clockface" cx="${f2(len / 2)}" cy="${f2(h - 33 + 1.9)}" r="1.25"/>` + ringDt(len / 2, h - 33 + 1.9, 1.7);   // Uhr
+          if (front) s += `<path class="brz" d="${arch(len / 2 - 1.3, h - 6.4, 2.6, 6.4)}"/>` + lit(circ(len / 2, h - 12.8, .95), 3) + ringDt(len / 2, h - 12.8, 1.4);   // Portal und Rose
+          else s += lit(rect(len / 2 - .35, h - 18, .7, 3.4) + rect(len / 2 - .35, h - 27, .7, 3.4), 2) + lit(arch(len / 2 - .45, h - 9, .9, 4), 1, 'dim');
+          return s;
+        }
+        if (id.startsWith('giebel')) {   // Giebelfront: Rose, zwei Rundbogenfenster, Lisenen
+          const c = len / 2;
+          return `<path class="dt" d="M.5 0V${f2(h)}M${f2(len - .5)} 0V${f2(h)}M0 6.8H${f2(len)}"/>` + ringDt(c, 3.7, 2.3)
+            + `<path class="wn hi" data-f="4" d="${circ(c, 4.3, 2.0)}"/>` + spokes(c, 4.3, 2.0)
+            + `<path class="wn" data-f="2" d="${arch(c - 2.3, 8.7, 1.5, 5.8)}${arch(c + .8, 8.7, 1.5, 5.8)}"/>`;
+        }
+        if (id === 'hall') return windows(len, h, NAVE) + hlines(len, [h - 1.4, 2.0]) + vlines(len, h, 4.4);
         return windows(len, h, SMALL) + hlines(len, [h - 1.2]);
       };
     }
 
     /* ---------- Dächer ---------- */
+    // senkrechte Giebel-/Wimpergdreiecke mit bekannter Außennormale (K.face verlässt sich bei nz≈0 auf Rundungsrauschen und kann sie umdrehen)
+    const shd = (K, nx, ny) => (ny * K.view[0] - nx * K.view[1] >= 0 ? 'fr' : 'sd');
+    const vface = (K, pts, nx, ny, mat) => K.facing(nx, ny) <= 1e-6 ? '' : `<path class="${mat} ${shd(K, nx, ny)}" d="${K.path(pts)}Z"/>`;
     const MATS = ['sl', 'cu', 'rs'];
     function roof(K, q) {
       const { zw, h, shape, rh, mc, r } = q, z = Z0 + zw, zt = Z0 + h, mat = MATS[mc];
       const cx = r.reduce((a, p) => a + p[0], 0) / r.length, cy = r.reduce((a, p) => a + p[1], 0) / r.length;
-      if (shape === 0) return K.poly(r.map(p => [p[0], p[1], zt]), 'st tp');
+      const ln = (...pts) => `<path class="dt cu-d" d="${K.path(pts)}"/>`;
+      if (shape === 0) {
+        let t = K.poly(r.map(p => [p[0], p[1], zt]), 'st tp');
+        if (q.h === 46) for (let i = 0; i < r.length; i++) {   // Turm: vier Wimperge (Zierlgiebel) unter dem Helm
+          const a = r[i], b = r[(i + 1) % r.length], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, zt + 4.2];
+          t += vface(K, [[a[0], a[1], zt], [b[0], b[1], zt], m], -(b[1] - a[1]), b[0] - a[0], 'st') + ln([a[0], a[1], zt], m, [b[0], b[1], zt]);
+        }
+        return t;
+      }
       if (shape === 1) { let s = ''; for (let i = 0; i < r.length; i++) { const a = r[i], b = r[(i + 1) % r.length]; s += K.face([[a[0], a[1], z], [b[0], b[1], z], [cx, cy, zt]], mat); } return s; }
       if (shape === 4) {
         let R = 0; r.forEach(p => R += Math.hypot(p[0] - cx, p[1] - cy)); R /= r.length;
@@ -2500,7 +2664,8 @@ ISO.landmark('heinzvonheidenarena', H => {
       const hip = shape === 3 && (u1 - u0) > 2 * hw ? hw : 0;
       const A = W(u0, v0, z), B = W(u1, v0, z), C = W(u1, v1, z), Dd = W(u0, v1, z), R0 = W(u0 + hip, vm, zt), R1 = W(u1 - hip, vm, zt);
       let s = K.face([A, B, R1, R0], mat) + K.face([C, Dd, R0, R1], mat);
-      s += hip ? K.face([B, C, R1], mat) + K.face([Dd, A, R0], mat) : K.face([B, C, R1], 'st') + K.face([Dd, A, R0], 'st');
+      s += hip ? K.face([B, C, R1], mat) + K.face([Dd, A, R0], mat) : vface(K, [B, C, R1], ux, uy, 'st') + vface(K, [Dd, A, R0], -ux, -uy, 'st');
+      if (mat === 'sl') s += ln(R0, R1) + ln(A, R0) + ln(Dd, R0) + ln(B, R1) + ln(C, R1);   // Kupferpatina an First und Graten
       return s;
     }
 
@@ -2509,13 +2674,13 @@ ISO.landmark('heinzvonheidenarena', H => {
       let s = '';
       const left = PART.map(() => 0); P.forEach(p => left[p.part]++);
       order(K).forEach(p => {
-        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'st', deco(p));
+        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'st', deco(p, p.v[i], p.v[(i + 1) % p.v.length]));
         if (--left[p.part] === 0) s += roof(K, PART[p.part]);
       });
       return s;
     };
     const M = [{ id: 'markuskirche', fp, draw }];
-    return { mods: M, lc: [0, 0], z0: 0, top: [-15, -9, Z0 + 72], label: 'Markuskirche', h: 70, len: 60 };
+    return { mods: M, lc: [0, 0], z0: 0, top: [-15, -9, Z0 + 72], pin: [-1, 2, Z0 + 74], label: 'Markuskirche', h: 70, len: 60 };
   });
 })();
 
@@ -3315,6 +3480,7 @@ ISO.landmark('neuesRathaus', H => {
       for (let i = 0; i < 5; i++) {
         const u = (i + .5) * (len / 5);
         w += winRows(u, h, i === 2 ? [1, 2] : [0, 1, 2], 1.6);
+        q += `<path class="pl fr" d="M${f2(u - 1.25)} ${f2(h - 9.1)}H${f2(u + 1.25)}L${f2(u)} ${f2(h - 9.85)}Z"/>`;   // Dreiecksverdachung über dem Hauptgeschoss-Fenster (Kader)
       }
       q += `<rect class="gl" x="${f2(len / 2 - 1.3)}" y="${f2(h - 4.1)}" width="2.6" height="3.3"/>` + vl(len / 2, h - 4.1, h - .8);
       q += vl(.45, 0, h - .8) + vl(len - .45, 0, h - .8);               // Eckpilaster
@@ -3357,7 +3523,7 @@ ISO.landmark('neuesRathaus', H => {
     add({ id: 'wpPort', fp: [21.2, YR, 31.9, 24.8], parent: 'wp', side: 'S', draw: K => {
       const x0 = 21.65, x1 = 31.45, y0 = YR, y1 = 23.6, zc = Z0 + .5, zt = Z0 + 4.4;
       let s = K.box(x0 - .5, y0, Z0, x1 - x0 + 1, y1 - y0 + 1.1, .5, 'st');                                    // Stufe/Sockel
-      for (let i = 0; i < 4; i++) s += lathe(K, x0 + 1.0 + i * (x1 - x0 - 2.0) / 3, y1 - .6, [[zc, .9], [zc + .5, .72], [zt - .6, .62], [zt, .78]], 'st fr', 2);
+      for (let i = 0; i < 6; i++) s += lathe(K, x0 + .85 + i * (x1 - x0 - 1.7) / 5, y1 - .6, [[zc, .6], [zc + .35, .53], [zt - .8, .47], [zt - .3, .53], [zt, .64]], 'st fr', 2);   // sechs Säulen (Kader Google Earth, Nov. 2026; Faltblatt des Ministeriums: sechs toskanische Säulen)
       s += K.box(x0, y0, zt, x1 - x0, y1 - y0, .7, 'st', { S: l => hl(0, l, .25) });                          // Gebälk + Balkonplatte
       const zb = zt + .7;
       s += K.wall([x0, y1 - .2], [x1, y1 - .2], zb, zb + 1.0, 'st', l => hl(0, l, .18) + Array.from({ length: Math.floor(l / .7) }, (_, i) => vl(.35 + i * .7, .18, 1.0)).join(''));
@@ -3379,7 +3545,7 @@ ISO.landmark('neuesRathaus', H => {
       return s;
     } });
 
-    return { mods: M, lc: [27, 10], z0: 0, top: [27, 10, 19], label: 'Wangenheimpalais', h: 19, len: 52 };
+    return { mods: M, lc: [27, 10], z0: 0, top: [27, 10, 19], label: 'Wangenheimpalais', h: 19, len: 52, pin: [26.8, 9.6, ZR + 4] };   // Punkt über der Mitte des Hauptbaus
   });
 })();
 
@@ -3397,24 +3563,30 @@ ISO.landmark('neuesRathaus', H => {
     const area = p => p.reduce((s, a, i) => { const b = p[(i + 1) % p.length]; return s + a[0] * b[1] - b[0] * a[1]; }, 0);
     const hole = p => area(p) > 0 ? p : p.slice().reverse();       // Wandnormalen zeigen in den Hof (siehe K.wall)
 
-    // Wanddeko: y läuft von der Oberkante nach UNTEN
-    const cren = len => { let s = ''; for (let u = .4; u < len - 1; u += 2.4) s += `<rect class="sl" x="${f2(u)}" y=".25" width="1.2" height=".85"/>`; return s; };
-    const plinth = (len, h, ph = 2.6) => {
-      const t = h - ph, k = ph / 3; let q = hl(0, len, t) + hl(0, len, t + k) + hl(0, len, t + 2 * k);
-      for (let u = .9; u < len; u += 2.1) q += vl(u, t, t + k) + vl(u + 1.05, t + k, t + 2 * k) + vl(u, t + 2 * k, h);
+    // Wanddeko: y läuft von der Oberkante nach UNTEN. Alle Linien einer Wand werden zu EINEM Pfad gesammelt (leichtes SVG, wenige Knoten)
+    const hD = (x0, x1, y) => `M${f2(x0)} ${f2(y)}H${f2(x1)}`, vD = (x, y0, y1) => `M${f2(x)} ${f2(y0)}V${f2(y1)}`;
+    const DT = d => d ? `<path class="dt" d="${d}"/>` : '';
+    const cren = len => { let d = ''; for (let u = .4; u < len - 1; u += 2.4) d += `M${f2(u)} .25h1.2v.85h-1.2Z`; return `<path class="sl" d="${d}"/>`; };
+    const plinthD = (len, h, ph = 2.6) => {
+      const t = h - ph, k = ph / 3; let q = hD(0, len, t) + hD(0, len, t + k) + hD(0, len, t + 2 * k);
+      for (let u = .9; u < len; u += 2.1) q += vD(u, t, t + k) + vD(u + 1.05, t + k, t + 2 * k) + vD(u, t + 2 * k, h);
       return q;
     };
-    const hood = (x, y, w, h) => `<path class="dt" d="${arch(x - .4, y - .4, w + .8, h + .4)}"/><path class="dt" d="M${f2(x - .5)} ${f2(y + h + .3)}H${f2(x + w + .5)}"/>`;
-    const winH = (x, y, w, h, f, cls = '') => hood(x, y, w, h) + winA(x, y, w, h, f, cls);
-    const quoins = (len, h) => { let q = ''; for (let v = 3; v < h - 1.2; v += 2) q += `<path class="dt" d="M0 ${f2(v)}h1.5M${f2(len - 1.5)} ${f2(v + 1)}h1.5"/>`; return q; };
-    const plain = (len, h) => plinth(len, h) + hl(0, len, 1.5) + cren(len) + quoins(len, h);
+    const quoinsD = (len, h) => { let q = ''; for (let v = 3; v < h - 1.2; v += 2) q += `M0 ${f2(v)}h1.5M${f2(len - 1.5)} ${f2(v + 1)}h1.5`; return q; };
+    // Fenster einer Wand sammeln: leuchtendes Glas einzeln (data-f / Klassen fürs Licht), Rahmen, Sprossen und Kappen je als ein gemeinsamer Pfad
+    const winAcc = () => { const a = { wn: '', dt: '', mul: '' }; a.add = (x, y, w, h, f, cls = '', hoodOn = true) => {
+      a.wn += `<path class="wn${cls || H.vari()}" data-f="${f}" d="${arch(x, y, w, h)}"/>`;
+      a.mul += `M${f2(x + w / 2)} ${f2(y + w * .1)}V${f2(y + h)}M${f2(x)} ${f2(y + w / 2 + (h - w / 2) * .35)}H${f2(x + w)}`;
+      if (hoodOn) a.dt += `${arch(x - .4, y - .4, w + .8, h + .4)}M${f2(x - .5)} ${f2(y + h + .3)}H${f2(x + w + .5)}M${f2(x + w / 2 - .35)} ${f2(y - .45)}h.7l-.15 .7h-.4Z`;
+      return a; }; a.out = () => wins(a.wn) + DT(a.dt) + (a.mul ? `<path class="mul" d="${a.mul}"/>` : ''); return a; };
+    const plain = (len, h) => DT(plinthD(len, h) + hD(0, len, 1.5) + quoinsD(len, h)) + cren(len);
     // Geschossfassade: Reihen Bogenfenster; step = Achsabstand
     const bays = (rows, step, ww, wh, arc) => (len, h) => {
-      let q = plinth(len, h) + hl(0, len, 1.5) + cren(len) + quoins(len, h), w = '';
+      let d = plinthD(len, h) + hD(0, len, 1.5) + quoinsD(len, h); const A = winAcc();
       const n = Math.floor((len - 2) / step), off = (len - n * step) / 2 + step / 2;
-      rows.forEach(([v, fl]) => { q += hl(0, len, v - .6); for (let i = 0; i < n; i++) w += winH(off + i * step - ww / 2, v, ww, wh, fl); });
-      if (arc) { const m = Math.floor((len - 2) / 2.2); for (let i = 0; i < m; i++) w += winA(1.2 + i * 2.2, 1.9, 1, 1.9, 3, ' dim'); }
-      return q + wins(w);
+      rows.forEach(([v, fl]) => { d += hD(0, len, v - .6); for (let i = 0; i < n; i++) A.add(off + i * step - ww / 2, v, ww, wh, fl); });
+      if (arc) { const m = Math.floor((len - 2) / 2.2); for (let i = 0; i < m; i++) A.add(1.2 + i * 2.2, 1.9, 1, 1.9, 3, ' dim', false); }
+      return DT(d) + cren(len) + A.out();
     };
     const roofP = (K, x0, y0, x1, y1, z) => K.poly([[x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z]], 'sl tp');
     const slab = (x0, y0, x1, y1, h, deco) => K => K.box(x0, y0, Z0, x1 - x0, y1 - y0, h, 'pl', deco, false) + roofP(K, x0, y0, x1, y1, Z0 + h);
@@ -3437,7 +3609,7 @@ ISO.landmark('neuesRathaus', H => {
       [[90.7, 71.5], [90.8, 80.5], [94.5, 80.5], [94.5, 78.7], [96.4, 77.3], [100.3, 77.3], [101.6, 78.6], [101.7, 80.3], [108.9, 80.2], [116.2, 80.1], [116.2, 75.2], [110.0, 75.3], [110.0, 71.2], [108.9, 71.2]],
     ].map(hole);
     const ZW = 11, ZC = 20;                    // Höhe der Seitenflügel / des Mittelbaus über Z0
-    const GI = [126, 36, 169, 64], ZG = Z0 + 14, ZR = Z0 + ZC + 4.5;   // Lichthof-Öffnung, Glasdach, Rand des Ringdaches
+    const GI = [126, 36, 169, 64], ZG = Z0 + ZC + 1.5, ZR = Z0 + ZC + 7.5;   // Lichthof-Öffnung, Glasdach, Rand des Ringdaches
     const wingDeco = { S: bays([[2.8, 1], [7.2, 0]], 4.8, 1.9, 3.4), E: bays([[3, 1]], 6, 1.9, 3.4) };
     const wing = (x0, x1, hs) => K => {
       let s = '';
@@ -3458,7 +3630,7 @@ ISO.landmark('neuesRathaus', H => {
       const nb = Math.round((gx1 - gx0) / 4), ym = (gy0 + gy1) / 2;
       s += K.face([[gx0, gy1, ZG], [gx1, gy1, ZG], [gx1, ym, ZG + 3.5], [gx0, ym, ZG + 3.5]], 'gl', Array.from({ length: nb - 1 }, (_, k) => `<path class="dt" d="${K.path([[gx0 + (k + 1) * (gx1 - gx0) / nb, gy1, ZG], [gx0 + (k + 1) * (gx1 - gx0) / nb, ym, ZG + 3.5]])}"/>`).join(''));
       s += K.face([[gx0, gy0, ZG], [gx1, gy0, ZG], [gx1, ym, ZG + 3.5], [gx0, ym, ZG + 3.5]], 'gl');
-      const bw = (A, B) => K.wall(A, B, ZG, ZR, 'bk', (l, h) => hl(0, l, h * .5) + wins(Array.from({ length: Math.floor(l / 4.5) }, (_, k) => winA(1.5 + k * 4.5, .6, 1.5, h - 1.2, 2)).join('')));
+      const bw = (A, B) => K.wall(A, B, ZG, ZR, 'bk', (l, h) => { const W2 = winAcc(); for (let k = 0; k < Math.floor(l / 4.5); k++) W2.add(1.5 + k * 4.5, .6, 1.5, h - 1.2, 2, '', false); return DT(hD(0, l, h * .5)) + W2.out(); });
       s += bw([gx0, gy0], [gx1, gy0]); // Nordwand des Schachtes (nach Süden gerichtet)
       s += K.wall([gx0, gy1], [gx0, gy0], ZG, ZR, 'bk', plain);
       // Ringdach: vier flache Schrägen vom Rand (Traufe) zum Schachtrand
@@ -3472,7 +3644,7 @@ ISO.landmark('neuesRathaus', H => {
 
     // --- vier Ecktürme am Mittelbau (nur der rechts in der Mitte mit Spitzhelm) ---
     const tow = (id, x, y, pointed) => add({ id, fp: [x, y, x + 10, y + 10], above: 'wsMid', draw: K => {
-      const f = (len, h) => hl(0, len, 1) + hl(0, len, h * .5) + cren(len) + quoins(len, h) + wins(winH(len / 2 - .9, 4, 1.8, 6.5, 1) + winH(len / 2 - .9, h * .5 + 2.4, 1.8, 5, 2));
+      const f = (len, h) => { const A = winAcc().add(len / 2 - .9, 4, 1.8, 6.5, 1).add(len / 2 - .9, h * .5 + 2.4, 1.8, 5, 2); return DT(hD(0, len, 1) + hD(0, len, h * .5) + quoinsD(len, h)) + cren(len) + A.out(); };
       const hh = pointed ? 11 : 13, z0 = Z0 + ZC;
       let s = K.box(x, y, z0, 10, 10, hh, 'pl', { S: f, E: f, N: f, W: f });
       const z = z0 + hh;
@@ -3485,10 +3657,10 @@ ISO.landmark('neuesRathaus', H => {
     // --- Portalvorbau mit drei Bögen und zwei Löwen, Mittelturm darüber ---
     add({ id: 'wsPortal', fp: [136, 91, 160, 95], above: 'wsMid', draw: K => {
       const f = (len, h) => {
-        let q = hl(0, len, 1.5) + hl(0, len, .2), w = '';
-        [4, 12, 20].forEach(u => { w += hood(u - 2, 2.8, 4, h - 2.8) + winA(u - 2, 2.8, 4, h - 2.8, 0, ' dim'); });
-        let bd = ''; for (let u = .6; u < len; u += .8) bd += `M${f2(u)} .2v1.3`;
-        return q + `<path class="dt" d="${bd}"/>` + wins(w);
+        let d = hD(0, len, 1.5) + hD(0, len, .2); const A = winAcc();
+        [4, 12, 20].forEach(u => A.add(u - 2, 2.8, 4, h - 2.8, 0, ' dim'));
+        for (let u = .6; u < len; u += .8) d += `M${f2(u)} .2v1.3`;
+        return DT(d) + A.out();
       };
       let s = K.box(136, 91, Z0, 24, 3.6, 8.6, 'pl', { S: f, E: plain, W: plain });
       [[139.4, 96], [156.6, 96]].forEach(([x, y]) => { s += K.box(x - 1.3, y - .6, Z0, 2.6, 2.4, 1.8, 'pl') + K.box(x - .9, y - .2, Z0 + 1.8, 1.8, 1.6, 1.1, 'pl') + K.box(x - .5, y + .6, Z0 + 2.4, .9, .8, .9, 'pl'); });
@@ -3496,13 +3668,12 @@ ISO.landmark('neuesRathaus', H => {
     } });
     add({ id: 'wsTower', fp: [142, 80, 154, 92], above: 'wsPortal', draw: K => {
       const f = (len, h) => {
-        let q = hl(0, len, .5) + hl(0, len, 9.4) + hl(0, len, 15.8) + cren(len) + quoins(len, h);
-        let w = winH(len / 2 - .9, 17, 1.8, 3.4, 1) + winH(len / 2 - 2.6, 2.4, 1.7, 6.2, 3) + winH(len / 2 + .9, 2.4, 1.7, 6.2, 3) + winH(len / 2 - .9, 11, 1.8, 3.6, 2);
-        return q + wins(w);
+        const A = winAcc().add(len / 2 - .9, 17, 1.8, 3.4, 1).add(len / 2 - 2.6, 2.4, 1.7, 6.2, 3).add(len / 2 + .9, 2.4, 1.7, 6.2, 3).add(len / 2 - .9, 11, 1.8, 3.6, 2);
+        return DT(hD(0, len, .5) + hD(0, len, 9.4) + hD(0, len, 15.8) + quoinsD(len, h)) + cren(len) + A.out();
       };
       let s = K.box(142, 80, Z0 + ZC, 12, 12, 18, 'pl', { S: f, E: f, W: f, N: f });
       const z = Z0 + ZC + 18;
-      s += K.box(141.4, 79.4, z, 13.2, 13.2, 1.8, 'pl', { S: l => cren(l) + hl(0, l, .3), E: l => cren(l) + hl(0, l, .3) });
+      s += K.box(141.4, 79.4, z, 13.2, 13.2, 1.8, 'pl', { S: l => cren(l) + DT(hD(0, l, .3)), E: l => cren(l) + DT(hD(0, l, .3)) });
       [[141.4, 79.4], [152.8, 79.4], [141.4, 90.8], [152.8, 90.8]].forEach(([x, y]) => { s += K.box(x, y, z + 1.8, 1.8, 1.8, 2.4, 'pl') + lathe(K, x + .9, y + .9, [[z + 4.2, 1.1], [z + 5.8, .3]], 'sl', 4); });
       return s;
     } });
@@ -3514,7 +3685,8 @@ ISO.landmark('neuesRathaus', H => {
     } });
     [[40, 99, 3.4], [112, 99, 3.2], [190, 99, 3.4]].forEach(([x, y, r]) => tree(x, y, r));
 
-    return { mods: M, lc: [120, 47], z0: 0, top: [148, 86, 44], label: 'Welfenschloss', h: 44, len: 240 };
+    // pin: über der Mitte des Hauptbaus (Lichthof), knapp über den Ecktürmen – nicht über dem Westende
+    return { mods: M, lc: [120, 47], z0: 0, top: [148, 86, 44], pin: [146, 56, Z0 + ZC + 20], label: 'Welfenschloss', h: 44, len: 240 };
   });
 })();
 

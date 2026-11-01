@@ -41,15 +41,15 @@
 | p_vwtower | fertig | Доработка: VW-Tower |
 | p_heizkraftwerklinden | fertig | Доработка: Heizkraftwerk Linden |
 | p_telemax | fertig | Доработка: Telemax |
-| p_landesmuseum | ready | Доработка: Landesmuseum |
-| p_welfenschloss | ready | Доработка: Welfenschloss (Universität) |
-| p_wangenheim | ready | Доработка: Wangenheimpalais |
-| p_beginenturm | ready | Доработка: Beginenturm |
-| p_georgenpalais | ready | Доработка: Georgenpalais |
-| p_anzeiger | ready | Доработка: Anzeiger-Hochhaus |
+| p_landesmuseum | fertig | Доработка: Landesmuseum |
+| p_welfenschloss | fertig | Доработка: Welfenschloss (Universität) |
+| p_wangenheim | fertig | Доработка: Wangenheimpalais |
+| p_beginenturm | fertig | Доработка: Beginenturm |
+| p_georgenpalais | fertig | Доработка: Georgenpalais |
+| p_anzeiger | fertig | Доработка: Anzeiger-Hochhaus |
 | p_ihmezentrum | ready | Доработка: Ihme-Zentrum |
-| p_hcc | ready | Доработка: HCC / Stadthalle |
-| p_markuskirche | ready | Доработка: Markuskirche |
+| p_hcc | fertig | Доработка: HCC / Stadthalle |
+| p_markuskirche | fertig | Доработка: Markuskirche |
 | p_nordlb | ready | Доработка: NORD/LB |
 | p_neuesRathaus | wartet | Доработка: Neues Rathaus |
 | p_opernhaus | wartet | Доработка: Opernhaus |
