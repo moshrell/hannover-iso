@@ -113,7 +113,7 @@
       return prism(K, P, Z0 + BASE_H, Z0 + z1, 'glb', curtain({ bay: 2.4 }), false) + green(K, P, Z0 + z1);
     } }));
     // gläsernes Schrägdach über dem Foyer (Südwestseite des Turmfußes)
-    add({ id: 'wedge', fp: [34, 28, 52, 60], draw: K => K.face([[52, 28, Z0 + BASE_H], [54, 54, Z0 + BASE_H], [36, 60, Z0 + 1], [34, 30, Z0 + 1]], 'glb') });
+    add({ id: 'wedge', fp: [34, 28, 52, 60], draw: K => K.facing(-1, 0) > .3 ? K.face([[52, 28, Z0 + BASE_H], [54, 54, Z0 + BASE_H], [36, 60, Z0 + 1], [34, 30, Z0 + 1]], 'glb') : '' });  // aus Südost fast kantenparallel (Spitzen-Artefakt) → nur zeichnen, wenn die Schräge zum Betrachter zeigt
 
     /* ---------- Hof ---------- */
     const COURT = [[18.2, 14.4], [131, 14.4], [131, 41], [103.4, 41], [103.4, 55.2], [84, 55.2], [84, 96.6], [18.2, 96.6]];
@@ -121,6 +121,6 @@
       + K.poly([[22, 62, Z0 + .1], [40, 66, Z0 + .1], [34, 88, Z0 + .1], [22, 90, Z0 + .1]], 'park')
       + K.poly([[88, 20, Z0 + .1], [126, 22, Z0 + .1], [126, 30, Z0 + .1], [90, 27, Z0 + .1]], 'park');
 
-    return { mods: M, lc: [72.65, 54.55], z0: 0, ground, top: [60, 36, 83], label: 'NORD/LB', h: 83, len: 145.3 };
+    return { mods: M, lc: [72.65, 54.55], z0: 0, ground, top: [60, 36, 83], pin: [66, 46, 90], label: 'NORD/LB', h: 83, len: 145.3 };
   });
 })();

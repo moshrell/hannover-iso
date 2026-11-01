@@ -1,7 +1,7 @@
 {
  "title": "NORD/LB (Norddeutsche Landesbank)",
  "fact": "Bürohaus von Behnisch, Behnisch & Partner (2002): 17-geschossiger Glasturm aus gestapelten, versetzten Körpern über einer Randbebauung mit Gründächern um einen Hof.",
- "studio": "Das Verwaltungsgebäude der Norddeutschen Landesbank am Friedrichswall, 2002 von Behnisch, Behnisch & Partner (Günter und Stefan Behnisch) fertiggestellt, bietet rund 40.000 m² für etwa 1.500 Beschäftigte. Eine Randbebauung mit begrünten Dächern umschließt einen großen Hof; darüber stapeln sich gegeneinander verdrehte Glaskörper zu einem 17-geschossigen Hochhaus (rund 70 m, mit dem gläsernen Kopf etwa 83 m). Zum Friedrichswall zeigt der Bau eine lange dunkelblaue Glasfassade; im Erdgeschoss liegen öffentliche Räume wie Gastronomie und Ausstellungen.",
+ "studio": "Das Verwaltungsgebäude der Norddeutschen Landesbank am Friedrichswall, im Juni 2002 eröffnet und von Behnisch, Behnisch & Partner entworfen, bündelt rund 1.500 Beschäftigte, die zuvor auf 16 Standorte verteilt waren. Eine Randbebauung mit begrünten Dächern umschließt einen offenen Hof; aus der Mitte wächst frei ein Hochhaus aus gegeneinander versetzten Glaskörpern, rund 70 m hoch, mit dem gläsernen Kopf etwa 83 m. Zum Friedrichswall zeigt der Bau eine lange dunkelblaue Glasfassade.",
  "detail": "studio.html?lm=nordlb",
  "minor": false,
  "osm": [
@@ -19,5 +19,10 @@
    1,
    0
   ]
- ]
+ ],
+ "card_phi": 0,
+ "seo": "Am Friedrichswall, dort wo die Innenstadt in die ruhigere Südstadt übergeht, steht das Verwaltungsgebäude der NORD/LB. Das Stuttgarter Büro Behnisch, Behnisch & Partner entwarf es für die Norddeutsche Landesbank; im Juni 2002 zogen etwa 1.500 Mitarbeiter ein, die vorher an 16 Standorten saßen. Der Komplex besteht aus mehreren Flügeln mit Gründächern, die einen offenen Innenhof umschließen. Aus dessen Mitte wächst ein Hochhaus aus verdrehten, gestapelten Glasblöcken, das mit rund 70 Metern zu den markanten Punkten der Skyline zählt; samt gläsernem Aufsatz werden etwa 83 Meter genannt. Auffällig ist der Kontrast zwischen der ruhigen, dunkelblauen Glasfront zur Straße und der verspielten Staffelung im Inneren. Der Hof verbindet die Stadt mit dem nahen Maschpark und lädt zum Durchgehen ein.",
+ "addr": "Friedrichswall 10, 30159 Hannover",
+ "year": "2002",
+ "arch": "Behnisch, Behnisch & Partner"
 }
