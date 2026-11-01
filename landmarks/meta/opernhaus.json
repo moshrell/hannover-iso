@@ -1,12 +1,28 @@
 {
  "title": "Opernhaus",
- "fact": "Staatsoper von Georg Ludwig Friedrich Laves (1845–1852): Vorhalle mit Terrasse, Giebel mit Figurengruppe.",
- "studio": "Staatsoper Hannover, erbaut 1845–1852 von Georg Ludwig Friedrich Laves; Vorhalle mit Terrasse, Giebel mit Figurengruppe.",
+ "fact": "Staatsoper von Georg Ludwig Friedrich Laves (1845–1852): Säulenvorhalle mit Terrasse, Giebel mit Figurengruppe, Front zum Opernplatz.",
+ "studio": "Staatsoper Hannover, erbaut 1845–1852 von Georg Ludwig Friedrich Laves im Stil des Klassizismus. Vor dem Mittelbau mit Giebel und Figurengruppe liegt eine Säulenvorhalle mit Terrasse; zwei niedrigere Flügel mit Rundbogenfenstern rahmen sie ein. Die Front zeigt nach Westen zum Opernplatz und zur Georgstraße.",
  "detail": "studio.html?lm=opernhaus",
  "minor": false,
  "osm": [
   "w4816458"
  ],
  "h": 40,
- "rank": 1
+ "rank": 1,
+ "face": [
+  "compass",
+  [
+   0,
+   1
+  ],
+  [
+   -0.879,
+   0.477
+  ]
+ ],
+ "card_phi": -35,
+ "addr": "Opernplatz 1, 30159 Hannover",
+ "year": "1845–1852",
+ "arch": "Georg Ludwig Friedrich Laves, Klassizismus",
+ "seo": "Die Staatsoper Hannover steht am Opernplatz im Zentrum der Stadt, nur wenige Schritte von der Georgstraße und vom Kröpcke entfernt. Der Hofbaumeister Georg Ludwig Friedrich Laves entwarf das Opernhaus für König Ernst August; gebaut wurde es von 1845 bis 1852. Der Bau im Stil des Klassizismus gliedert sich in einen hohen Mittelbau mit Giebel und Figurengruppe und zwei niedrigere Seitenflügel aus Sandstein mit Rundbogenfenstern. Vor dem Mittelbau liegt eine Säulenvorhalle mit einer Terrasse, über der fünf hohe Bogenfenster mit Pilastern stehen. Hinter dem Mittelbau schließt sich das Bühnenhaus an. Im Zweiten Weltkrieg wurde das Haus schwer beschädigt und danach wieder aufgebaut. Heute ist es das Opernhaus der Niedersächsischen Staatstheater und eines der bekanntesten Bauwerke der Hannoveraner Innenstadt. Auf der nächtlichen Isometrie-Karte steht es auf seinem echten Platz mit der Front nach Westen."
 }
