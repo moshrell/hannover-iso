@@ -9,7 +9,7 @@
   // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): ein Punkt pro Gebäude, über dem höchsten Punkt der Zeichnung
   // Pins aus landmarks/meta/*.json (window.LMETA, von tools/build-landmarks.py erzeugt); Position aus tiles/meta.js (labels)
   const FACTS = {};
-  Object.entries(window.LMETA || {}).forEach(([n, m]) => { if (m.pin === false) return; FACTS[n] = { t: m.title, f: m.fact, d: m.detail, from: [n], minor: !!m.minor }; });
+  Object.entries(window.LMETA || {}).forEach(([n, m]) => { if (m.pin === false) return; FACTS[n] = { t: m.title, f: m.fact, d: m.detail, from: [n], minor: !!m.minor, r: m.rank == null ? 50 : m.rank }; });
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
   const labelsEl = document.getElementById('labels');
   const v = { x: 0, y: 0, z: 1 };
@@ -29,11 +29,12 @@
     M.pins = Object.entries(FACTS).map(([name, F]) => {
       const ls = F.from.map(n => M.labels.find(l => l.name === n)).filter(Boolean);
       if (!ls.length) { console.error('karte: keine Position für', name); return null; }
-      const p = { name, x: ls.reduce((s, l) => s + l.x, 0) / ls.length, y: ls.reduce((s, l) => s + l.y, 0) / ls.length };
+      const p = { name, r: F.r, x: ls.reduce((s, l) => s + l.x, 0) / ls.length, y: ls.reduce((s, l) => s + l.y, 0) / ls.length };
       const b = document.createElement('button'); b.className = 'km-pin' + (F.minor ? ' minor' : ''); b.dataset.n = F.t; b.setAttribute('aria-label', F.t + ' – Detailansicht öffnen');
       b.addEventListener('click', () => openDetail(name, b)); labelsEl.appendChild(b); p.el = b; return p;
-    }).filter(Boolean);
+    }).filter(Boolean).sort((a, b) => a.r - b.r);
   }
+  const PIN_GAP = 38;   // Mindestabstand zwischen gezeigten Punkten (px)
   const levelFor = z => { const dpr = Math.min(2, window.devicePixelRatio || 1); for (let i = 0; i < M.levels.length; i++) if (M.levels[i].s * 2 >= z * dpr * .9) return i; return M.levels.length - 1; };
   /* Zeichnen auf EINE Leinwand statt riesiger Ebenen: nie schwarz (Poster + grobe Stufen liegen immer darunter), kein Bild-Ziehen am PC */
   function fit() {
@@ -79,7 +80,16 @@
     if (cache.size > 260) { const old = [...cache.entries()].filter(([id, e]) => !id.startsWith('0/') && e.u < fno - 30).sort((a, b) => a[1].u - b[1].u);
       for (let n = 0; n < old.length && cache.size > 200; n++) cache.delete(old[n][0]); }
     map.classList.toggle('far', v.z < .8);
-    M.pins.forEach(p => { p.el.style.transform = `translate3d(${(v.x + p.x * v.z).toFixed(1)}px, ${(v.y + p.y * v.z).toFixed(1)}px, 0) translate(-50%, -50%) translate(0, -12px)`; });
+    // Punkte: wichtigste zuerst; ein Punkt, der näher als PIN_GAP an einem schon gezeigten liegt, wird ausgeblendet (beim Heranzoomen kommen die übrigen dazu)
+    const shown = [];
+    M.pins.forEach(p => {
+      const sx = v.x + p.x * v.z, sy = v.y + p.y * v.z - 12;
+      p.el.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0) translate(-50%, -50%)`;
+      const inView = sx > -20 && sx < cw + 20 && sy > -20 && sy < ch + 20;
+      const ok = inView && !shown.some(q => Math.hypot(q[0] - sx, q[1] - sy) < PIN_GAP);
+      if (ok) shown.push([sx, sy]);
+      if (ok !== p.on) { p.on = ok; p.el.classList.toggle('off', !ok); }
+    });
     if (fading) apply();
   }
   // Nach der Detailansicht (große Seite im Rahmen, auf dem Telefon knapper Speicher): Leinwand neu anlegen und alles neu zeichnen, sonst bleibt die Karte manchmal schwarz
@@ -117,7 +127,9 @@
   }, 350); };
   const pts = new Map(); let last = null, moved = 0;
   const hint = document.getElementById('hint'), hideHint = () => { if (hint) hint.classList.add('gone'); };
-  map.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; hideHint(); map.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); map.classList.add('drag'); last = null; moved = 0; });
+  let tapPin = null, tapDone = null, multi = false;
+  map.addEventListener('click', () => { const pb = tapDone; tapDone = null; if (pb) pb.click(); });
+  map.addEventListener('pointerdown', e => { const pb = e.target.closest('.km-pin'); if (e.target.closest('button') && !pb) return; hideHint(); tapDone = null; if (!pts.size) { tapPin = pb; multi = false; } else { multi = true; } map.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); map.classList.add('drag'); last = null; moved = 0; });
   map.addEventListener('pointermove', e => {
     if (!pts.has(e.pointerId)) return;
     pts.set(e.pointerId, [e.clientX, e.clientY]);
@@ -130,11 +142,19 @@
     }
     last = cur;
   });
-  const up = e => { pts.delete(e.pointerId); last = null; if (!pts.size) { map.classList.remove('drag'); settle(); } };
+  const up = e => {
+    const had = pts.has(e.pointerId); pts.delete(e.pointerId); last = null;
+    if (!pts.size) {
+      map.classList.remove('drag');
+      // Tipp auf einen Punkt (Zeiger war gefangen, daher kein click am Button): öffnen, wenn kaum bewegt und nicht mit zwei Fingern
+      tapDone = (had && e.type === 'pointerup' && tapPin && !multi && moved < 8) ? tapPin : null; tapPin = null;   // geöffnet wird erst im folgenden click (sonst trifft er die geöffnete Detailansicht und schließt sie)
+      settle();
+    }
+  };
   map.addEventListener('pointerup', up); map.addEventListener('pointercancel', up);
   map.addEventListener('dragstart', e => e.preventDefault());
   map.addEventListener('wheel', e => { e.preventDefault(); hideHint(); const r = map.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0016), e.clientX - r.left, e.clientY - r.top); settle(); }, { passive: false });
-  map.addEventListener('dblclick', e => { if (e.target.closest('button')) return; const r = map.getBoundingClientRect(); zoomAt(1.8, e.clientX - r.left, e.clientY - r.top); });
+  map.addEventListener('dblclick', e => { if (e.target.closest('button') && !e.target.closest('.km-pin')) return; const r = map.getBoundingClientRect(); zoomAt(1.8, e.clientX - r.left, e.clientY - r.top); });
   document.getElementById('zin').addEventListener('click', () => { hideHint(); zoomAt(1.5, map.clientWidth / 2, map.clientHeight / 2); settle(); });
   document.getElementById('zout').addEventListener('click', () => { hideHint(); zoomAt(1 / 1.5, map.clientWidth / 2, map.clientHeight / 2); });
   document.getElementById('zall').addEventListener('click', () => { hideHint(); fly((M.box[0] + M.box[2]) / 2, (M.box[1] + M.box[3]) / 2, zMin); });
@@ -147,7 +167,7 @@
   const ORDER = Object.keys(FACTS);
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;   // Regel der Website: nur gedämpft (kürzer), nicht abgeschaltet
   const wide = () => window.matchMedia('(min-width:720px)').matches;
-  let current = null, closing = false, opener = null, closeT = 0;
+  let openedAt = 0, current = null, closing = false, opener = null, closeT = 0;
   function fill(name) {
     const F = FACTS[name], m = (window.LMETA || {})[name] || {};
     current = name; dTitle.textContent = F.t; dFact.textContent = F.f;
@@ -163,6 +183,7 @@
     if (p) fly(p.x, p.y + 40, Math.max(v.z, 1.6));
     const sb = window.innerWidth - root.clientWidth;   // Scrollbalken-Breite, damit die Seite beim Sperren nicht springt
     root.classList.add('km-lock'); if (sb > 0) root.style.paddingRight = sb + 'px';
+    openedAt = performance.now();
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
     requestAnimationFrame(() => requestAnimationFrame(() => { if (dlg.open && !closing) dlg.classList.add('on'); }));
   }
@@ -180,7 +201,7 @@
   document.getElementById('detail-next').addEventListener('click', () => stepTo(1));
   dlg.addEventListener('cancel', e => { e.preventDefault(); closeDetail(); });
   dlg.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') stepTo(-1); else if (e.key === 'ArrowRight') stepTo(1); });
-  dlg.addEventListener('click', e => { if (e.target === dlg) closeDetail(); });
+  dlg.addEventListener('click', e => { if (e.target === dlg && performance.now() - openedAt > 450) closeDetail(); });
   dlg.addEventListener('close', () => {
     if (!dlg.open) frame.src = 'about:blank';
     dlg.classList.remove('on'); closing = false; current = null; clearTimeout(closeT);
