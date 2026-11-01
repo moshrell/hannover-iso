@@ -23,8 +23,9 @@
 ## Для сборщика (главный чат)
 1. `git fetch`; слить нужные ветки `lm/*` в `main` (конфликтов быть не должно: файлы разные).
 2. `python3 tools/build-landmarks.py` → `cd data && python3 prep.py osm.json.gz mitte.js` → плитки: **точечно** `node tools/render-tiles.mjs --at lat,lon,радиус_м [--at …]` (только блоки вокруг изменённых зданий, результат вмешивается в `tiles/`; минуты вместо ~45 мин), полный `node tools/render-tiles.mjs` без `--at` — только если менялся общий стиль/движок (`core/`, `studio`-свет, цвета).
-3. `sh tools/sync-vorschau.sh ../kravets-site`, коммит в kravets-site (по-русски, `git diff --stat` перед коммитом), push в `master` → https://kravets-webdesign.de/vorschau/karte-ksn0/ (деплой по FTP идёт десятки минут).
-4. Обновить README (на месте, устаревшее убрать).
+3. Миниатюры изменённых зданий: `node tools/thumbs.mjs имя,имя` → `python3 tools/thumbs-webp.py` → снова `python3 tools/build-landmarks.py`.
+4. `sh tools/sync-vorschau.sh ../kravets-site`, затем в kravets-site `npm run build` (страница `/hannover-karte/` берёт тексты и миниатюры из копии), коммит в kravets-site (по-русски, `git diff --stat` перед коммитом), push в `master` → https://kravets-webdesign.de/vorschau/karte-ksn0/ (деплой по FTP идёт десятки минут).
+5. Обновить README (на месте, устаревшее убрать).
 
 Здания раздаёт очередь: чату достаточно фразы «Зайди в репозиторий moshrell/hannover-iso (ветка main), прочитай prompts/START.md и выполни» — он сам берёт свободное здание (`python3 tools/queue.py claim`, ветка `lm/<id>` = занято), читает `prompts/<id>.md` и `prompts/VIDEO-ARBEIT.md`. Список и статусы: `prompts/QUEUE.md` (ставит сборщик). Здания вне зоны `core` в `data/bbox.json` (Telemax): сборщик перед рендером расширяет зону детальных плиток.
 
@@ -35,5 +36,6 @@
 
 ## Точка на карте и поворот в карточке (для агентов зданий)
 - Точка: по умолчанию над самой высокой деталью рисунка. Своя позиция: `return { …, pin: [x, y, z] }` в модуле (локальные метры). Проверка: `sh tools/preview.sh <id> 1.5` (рисует контрольную точку).
+- Вид для фильтра под картой: `kat` (Kirchen, Schlösser & Rathäuser, Kultur & Verkehr, Türme & Denkmäler, Moderne).
 - Карточка: `card_phi` в `landmarks/meta/<id>.json` (градусы) поворачивает здание только в `studio.html`; на карте здание стоит по OSM/`face`.
 - Масштаб на карте = `размер OSM / len` модуля в пределах 0,85–1,4; цель ×1,0.

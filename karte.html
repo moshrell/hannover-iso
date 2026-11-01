@@ -2,19 +2,23 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
-<title>Hannover · Karte (Entwurf)</title>
+<title>Hannover bei Nacht · Karte</title>
+<meta name="description" content="Hannover am Abend als begehbare Karte: Straßen und Häuser nach OpenStreetMap, die Wahrzeichen einzeln von Hand gezeichnet, mit Abendlicht.">
 <link rel="preload" as="image" href="tiles/poster.webp">
 <link rel="stylesheet" href="karte.css">
 </head>
 <body class="km-page">
-<div class="km-wrap">
-  <span class="km-eb">Hannover-Karte · Entwurf</span>
-  <h1>Hannover</h1>
-  <p class="km-sub">Von der Oststadt bis zum Maschsee: Straßen und Häuser nach OpenStreetMap, die Wahrzeichen von Hand gezeichnet. Leuchtende Punkte antippen: das Wahrzeichen öffnet sich mit Abendlicht.</p>
+<header class="km-wrap km-hero">
+  <span class="km-eb">Hannover bei Nacht</span>
+  <h1>Hannover, <em>von Hand gezeichnet</em></h1>
+  <p class="km-sub">Straßen und Häuser nach echten Kartendaten, die Wahrzeichen einzeln gezeichnet. Ziehen, zoomen, auf einen leuchtenden Punkt tippen: das Haus öffnet sich mit Abendlicht.</p>
+</header>
 
+<main>
+<div class="km-wrap">
   <!-- Kartenblock: dieselbe Markierung steht in der Website-Seite /hannover-karte/ (kravets-site/src/pages/hannover-karte.astro) -->
   <div class="km">
     <div class="km-map" id="map" aria-label="Isometrische Karte von Hannover am Abend">
@@ -33,12 +37,19 @@
       <div class="km-sheet">
         <div class="km-top" id="detail-top">
           <i class="km-handle"></i>
-          <div class="km-head">
-            <div><p class="km-eb" id="detail-eb" hidden></p><h2 id="detail-title"></h2><p class="km-fact" id="detail-fact"></p></div>
-            <button class="km-btn km-ic" id="detail-close" type="button" aria-label="Schließen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+          <p class="km-count" id="detail-count"></p>
+          <button class="km-btn km-ic" id="detail-close" type="button" aria-label="Schließen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
+        <div class="km-body" id="detail-body">
+          <div class="km-stage"><img class="km-stage-pre" id="detail-pre" alt="" decoding="async"><iframe id="detail-frame" title="Zeichnung mit Abendlicht" src="about:blank"></iframe></div>
+          <div class="km-info">
+            <p class="km-eb" id="detail-eb"></p>
+            <h2 id="detail-title"></h2>
+            <p class="km-fact" id="detail-fact"></p>
+            <p class="km-text" id="detail-text"></p>
+            <dl class="km-facts" id="detail-facts"></dl>
           </div>
         </div>
-        <iframe id="detail-frame" title="Detailansicht" src="about:blank"></iframe>
         <div class="km-foot">
           <button class="km-btn km-gold" id="detail-back" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>Zur Karte</button>
           <div class="km-nav">
@@ -49,12 +60,42 @@
       </div>
     </dialog>
   </div>
-
-  <ul class="km-list km-after" id="list"></ul>
-
-  <p class="km-credit">Kartendaten © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap-Mitwirkende</a> (ODbL) ·
-    Projektion nach iso-figure (MIT, Tolga Cohce) · Wahrzeichen nicht maßstabsgetreu</p>
 </div>
+
+<section class="km-wrap km-pick km-after" aria-labelledby="pick-h">
+  <div class="km-pick-head">
+    <span class="km-eb">Wahrzeichen</span>
+    <h2 id="pick-h">Was möchten Sie sehen?</h2>
+    <p class="km-sub"><b class="km-n" data-km-count></b> Bauten von der Marktkirche bis zum Telemax. Antippen: das Haus öffnet sich groß, mit Abendlicht und Geschichte.</p>
+    <div class="km-chips" id="chips" role="group" aria-label="Nach Art filtern"></div>
+  </div>
+  <ul class="km-grid" id="list"></ul>
+</section>
+
+<section class="km-wrap km-about km-after" aria-labelledby="about-h">
+  <div class="km-about-head">
+    <span class="km-eb">Über das Projekt</span>
+    <h2 id="about-h">Eine Stadt, Haus für Haus</h2>
+    <p class="km-sub">Die Karte läuft im Browser, auf dem Telefon wie am großen Bildschirm, ohne App. Sie lässt sich in jede Website einbinden: für Gästeinformation, Hotels oder Stadtführungen.</p>
+  </div>
+  <ol class="km-steps">
+    <li><span class="km-eb">01</span><h3>Echte Kartendaten</h3><p>Straßen, Häuser, Bäume und Wasser kommen aus OpenStreetMap, jedes Gebäude in seiner wahren Lage.</p></li>
+    <li><span class="km-eb">02</span><h3>Von Hand gezeichnet</h3><p>Jedes Wahrzeichen ist einzeln nach Fotos gezeichnet: Giebel, Kuppeln, Fensterreihen, Uhren.</p></li>
+    <li><span class="km-eb">03</span><h3>Abendlicht</h3><p>In der Detailansicht gehen die Laternen an, dann Fenster und Fassade, Etage für Etage.</p></li>
+  </ol>
+  <dl class="km-stats">
+    <div><dt>Wahrzeichen</dt><dd data-km-count></dd></div>
+    <div><dt>Gebäude</dt><dd>170 000</dd></div>
+    <div><dt>Bäume</dt><dd>29 000</dd></div>
+  </dl>
+</section>
+</main>
+
+<footer class="km-wrap km-after">
+  <p class="km-credit">Kartendaten © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap-Mitwirkende</a> (ODbL) ·
+    Projektion nach iso-figure (MIT, Tolga Cohce) · Wahrzeichen nicht maßstabsgetreu ·
+    Gestaltung und Umsetzung: <a href="https://kravets-webdesign.de/" rel="noopener">Kravets Webdesign</a></p>
+</footer>
 
 <script src="tiles/meta.js"></script>
 <script src="landmarks/meta.js"></script>

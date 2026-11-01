@@ -9,7 +9,7 @@
   // Punkte auf der Karte (ohne Schrift, damit nichts verdeckt): ein Punkt pro Gebäude, über dem höchsten Punkt der Zeichnung
   // Pins aus landmarks/meta/*.json (window.LMETA, von tools/build-landmarks.py erzeugt); Position aus tiles/meta.js (labels)
   const FACTS = {};
-  Object.entries(window.LMETA || {}).forEach(([n, m]) => { if (m.pin === false) return; FACTS[n] = { t: m.title, f: m.fact, d: m.detail, from: [n], minor: !!m.minor, r: m.rank == null ? 50 : m.rank }; });
+  Object.entries(window.LMETA || {}).forEach(([n, m]) => { if (m.pin === false) return; FACTS[n] = { t: m.title, f: m.fact, d: m.detail, from: [n], minor: !!m.minor, r: m.rank == null ? 50 : m.rank, k: m.kat || 'Weitere', m }; });
   const map = document.getElementById('map'), world = document.getElementById('world'), poster = document.getElementById('poster');
   const labelsEl = document.getElementById('labels');
   const v = { x: 0, y: 0, z: 1 };
@@ -165,14 +165,36 @@
   const dlg = document.getElementById('detail'), frame = document.getElementById('detail-frame'), dTitle = document.getElementById('detail-title'), dFact = document.getElementById('detail-fact');
   const dEb = document.getElementById('detail-eb'), dTop = document.getElementById('detail-top'), root = document.documentElement;
   const ORDER = Object.keys(FACTS);
+  let filter = '';   // gewählte Art in der Auswahl: Weiter/Zurück bleiben innerhalb dieser Art
+  const order = () => filter ? ORDER.filter(n => FACTS[n].k === filter) : ORDER;
   const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;   // Regel der Website: nur gedämpft (kürzer), nicht abgeschaltet
   const wide = () => window.matchMedia('(min-width:720px)').matches;
   let openedAt = 0, current = null, closing = false, opener = null, closeT = 0;
+  const dText = document.getElementById('detail-text'), dFacts = document.getElementById('detail-facts'), dCount = document.getElementById('detail-count');
+  const dPre = document.getElementById('detail-pre'), dBody = document.getElementById('detail-body');
+  frame.addEventListener('load', () => { if (frame.getAttribute('src') !== 'about:blank') frame.classList.add('ready'); });
+  // Steckbrief: nur Felder, die in landmarks/meta/<name>.json stehen; Adresse führt zur Karte von OpenStreetMap
+  function facts(m) {
+    dFacts.textContent = '';
+    [['Baujahr', m.year], ['Architektur', m.arch], ['Adresse', m.addr]].forEach(([k, val]) => {
+      if (!val) return;
+      const d = document.createElement('div'), dt = document.createElement('dt'), dd = document.createElement('dd');
+      dt.textContent = k;
+      if (k === 'Adresse') { const a = document.createElement('a'); a.href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(val); a.rel = 'noopener'; a.target = '_blank'; a.textContent = val; dd.appendChild(a); }
+      else dd.textContent = val;
+      d.append(dt, dd); dFacts.appendChild(d);
+    });
+  }
   function fill(name) {
-    const F = FACTS[name], m = (window.LMETA || {})[name] || {};
+    const F = FACTS[name], m = F.m;
     current = name; dTitle.textContent = F.t; dFact.textContent = F.f;
-    const eb = [m.year, m.arch, m.addr].filter(Boolean).join(' · ');   // Felder erscheinen, sobald sie in LMETA stehen
-    dEb.textContent = eb; dEb.hidden = !eb;
+    dEb.textContent = F.k; dEb.hidden = false;
+    dText.textContent = m.seo || (m.studio && m.studio !== F.f ? m.studio : '');
+    facts(m);
+    const L = order(), i = L.indexOf(name);
+    dCount.innerHTML = ''; const b = document.createElement('b'); b.textContent = String(i + 1).padStart(2, '0'); dCount.append(b, ` / ${String(L.length).padStart(2, '0')}` + (filter ? ' · ' + filter : ''));
+    if (m.thumb) dPre.src = ROOT + 'landmarks/thumbs/' + name + '.webp'; else dPre.removeAttribute('src');
+    frame.classList.remove('ready'); dBody.scrollTop = 0; const info = dBody.querySelector('.km-info'); if (info) info.scrollTop = 0;
     frame.src = ROOT + F.d + (F.d.includes('?') ? '&' : '?') + 'embed';
   }
   function openDetail(name, from) {
@@ -194,7 +216,7 @@
     closeT = setTimeout(fin, reduced() ? 260 : 480);
     dlg.addEventListener('transitionend', function te(e) { if (e.target !== dlg || e.propertyName !== 'transform') return; dlg.removeEventListener('transitionend', te); fin(); });
   }
-  const stepTo = d => { if (!current || closing) return; const i = ORDER.indexOf(current); openDetail(ORDER[(i + d + ORDER.length) % ORDER.length]); };
+  const stepTo = d => { if (!current || closing) return; const L = order().includes(current) ? order() : ORDER, i = L.indexOf(current); openDetail(L[(i + d + L.length) % L.length]); };
   document.getElementById('detail-close').addEventListener('click', closeDetail);
   document.getElementById('detail-back').addEventListener('click', closeDetail);
   document.getElementById('detail-prev').addEventListener('click', () => stepTo(-1));
@@ -203,7 +225,7 @@
   dlg.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') stepTo(-1); else if (e.key === 'ArrowRight') stepTo(1); });
   dlg.addEventListener('click', e => { if (e.target === dlg && performance.now() - openedAt > 450) closeDetail(); });
   dlg.addEventListener('close', () => {
-    if (!dlg.open) frame.src = 'about:blank';
+    if (!dlg.open) { frame.src = 'about:blank'; frame.classList.remove('ready'); }
     dlg.classList.remove('on'); closing = false; current = null; clearTimeout(closeT);
     root.classList.remove('km-lock'); root.style.paddingRight = '';
     redraw(); setTimeout(redraw, 400);
@@ -222,13 +244,36 @@
   };
   dTop.addEventListener('pointerup', swEnd); dTop.addEventListener('pointercancel', swEnd);
 
-  /* ---------- Liste unter der Karte (echter Text für Google) ---------- */
-  const list = document.getElementById('list');
-  Object.entries(FACTS).forEach(([name, F]) => {
-    const li = document.createElement('li'); const b = document.createElement('button');
-    b.innerHTML = `<b></b><span></span>`; b.firstChild.textContent = F.t; b.lastChild.textContent = F.f;
-    b.addEventListener('click', () => openDetail(name, b)); li.appendChild(b); list.appendChild(li);
-  });
+  /* ---------- Auswahl unter der Karte: Filter nach Art + Bildkacheln ----------
+     Steht die Liste schon im HTML (Website-Seite, für Suchmaschinen vorab erzeugt: li[data-lm] mit button.km-tile), wird sie nur verbunden. */
+  const list = document.getElementById('list'), chips = document.getElementById('chips');
+  const short = y => String(y || '').split(/\s\(|;/)[0].trim();
+  if (list) {
+    if (!list.querySelector('[data-lm]')) Object.entries(FACTS).forEach(([name, F]) => {
+      const li = document.createElement('li'); li.dataset.lm = name; li.dataset.kat = F.k; if (F.r <= 1) li.className = 'big';
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'km-tile';
+      const th = document.createElement('span'); th.className = 'km-th';
+      if (F.m.thumb) { const im = new Image(); im.src = ROOT + 'landmarks/thumbs/' + name + '.webp'; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.width = F.m.thumb[0]; im.height = F.m.thumb[1]; th.appendChild(im); }
+      const tt = document.createElement('span'); tt.className = 'km-tt'; const tb = document.createElement('b'), ts = document.createElement('small');
+      tb.textContent = F.t; ts.textContent = short(F.m.year) || F.k; tt.append(tb, ts);
+      b.append(th, tt); li.appendChild(b); list.appendChild(li);
+    });
+    list.querySelectorAll('[data-lm]').forEach(li => { const b = li.querySelector('button'), name = li.dataset.lm; if (b && FACTS[name]) b.addEventListener('click', () => openDetail(name, b)); });
+    if (chips) {
+      const kats = [...new Set(Object.values(FACTS).map(F => F.k))];
+      const all = [['', 'Alle', ORDER.length], ...kats.map(k => [k, k, ORDER.filter(n => FACTS[n].k === k).length])];
+      const btns = all.map(([k, label, n]) => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'km-chip'; b.setAttribute('aria-pressed', k === filter);
+        const sm = document.createElement('small'); sm.textContent = n; b.append(label, sm);
+        b.addEventListener('click', () => {
+          filter = k; btns.forEach(x => x.setAttribute('aria-pressed', x === b));
+          list.querySelectorAll('[data-lm]').forEach(li => { li.hidden = !!k && li.dataset.kat !== k; });
+        });
+        chips.appendChild(b); return b;
+      });
+    }
+  }
+  document.querySelectorAll('[data-km-count]').forEach(el => { el.textContent = ORDER.length; });
 
   /* ---------- Start ---------- */
   // Eichung: Telefon 390 × 624 (z = 1.5) zeigt 260 × 416 Welteinheiten um den Punkt „Rathaus + START“ (Rathaus groß, darunter ein Stück Maschteich).

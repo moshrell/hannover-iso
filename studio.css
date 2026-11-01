@@ -64,7 +64,9 @@
   /* Einbettung in die Karte (?embed): nur Zeichnung + Knopf */
   html.embed .intro, html.embed .credit { display:none; }
   html.embed .wrap { display:block; min-height:0; padding:8px 12px 16px; max-width:none; }
-  html.embed .stage { width:min(100%, calc((100svh - 96px) * var(--ar))); margin:0 auto; }
+  html.embed .stage { width:min(100%, calc((100svh - 112px) * var(--ar))); margin:0 auto; }
+  /* In der Karte darf der Rahmen selbst nie scrollen: sonst „klebt“ ein Wisch über der Zeichnung am Rahmen (Chrome), und die Karte darunter lässt sich auf dem Telefon nicht weiterschieben */
+  html.embed, html.embed body { height:100%; overflow:hidden; }
   html.embed .side-col { max-width:880px; margin:0 auto; }
   @media (max-width:899px) { html.embed .wrap { min-height:100svh; display:flex; flex-direction:column; justify-content:center; } }
   /* Bedienleiste in der Einbettung: mittig und fest, damit nichts springt */
