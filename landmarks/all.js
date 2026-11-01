@@ -2502,7 +2502,7 @@ ISO.landmark('heinzvonheidenarena', H => {
    Jeder Teil ist in konvexe Stücke zerlegt (Sortierung ohne Durchdringung); Dächer entstehen aus dem Teilumriss. */
 (() => {
   const Z0 = 1;
-  /*DATA*/const D = [[0,15.5,0,[-16.3,2.9,-20.9,-3.7,-25.0,-0.8,-11.2,18.8],7],[0,15.5,0,[3.4,-10.9,-2.4,-6.9,-4.0,-5.7,-9.8,-1.7,-10.6,-1.1,-16.3,2.9,-11.2,18.8,17.5,-1.2],85],[0,15.5,0,[-9.8,-1.7,-14.3,-8.3,-15.2,-7.7,-10.6,-1.1],7],[0,15.5,0,[-2.4,-6.9,-7.0,-13.4,-8.6,-12.3,-4.0,-5.7],7],[0,15.5,0,[3.7,-20.9,-1.2,-17.5,3.4,-10.9,17.5,-1.2],11],[0,12.5,1,[18.3,-15.7,10.9,-19.2,3.4,-21.3,16.9,-2.1,20.7,-7.1,20.7,-11.4],61],[0,12.5,1,[10.9,-19.2,12.1,-21.9,10.7,-24.5,8.2,-24.9,3.4,-21.3],15],[0,46,2,[8.6,6.0,1.7,10.8,6.5,17.7,13.4,12.8],15],[0,15.5,3,[-1.3,-17.4,-1.4,-17.7,-7.1,-13.7],3],[0,15.5,3,[-2.4,-7.0,3.3,-10.9,-1.3,-17.4,-7.1,-13.7],11],[0,15.5,4,[-8.6,-12.3,-8.8,-12.5,-14.5,-8.5],3],[0,15.5,4,[-9.7,-1.8,-4.1,-5.7,-8.6,-12.3,-14.5,-8.5],11],[0,15.5,5,[-15.2,-7.7,-15.3,-8.0,-21.1,-3.9],3],[0,15.5,5,[-16.3,2.8,-10.6,-1.2,-15.2,-7.7,-21.1,-3.9],11],[0,7,6,[-4.7,14.3,-9.6,17.7,-7.8,20.3,-2.8,16.9],15],[0,6,7,[9.5,4.4,9.9,5.0,17.9,-0.6,17.5,-1.2],15],[46,46,8,[4.1,9.6,3.5,12.7,5.3,15.3,8.4,15.8,11.0,14.0,11.5,10.9,9.7,8.4,6.6,7.8],255]], T = [[15.5,28.0,2,12.5,0,0,-11.2,18.8,-25.0,-0.8,-20.9,-3.7,-16.3,2.9,-10.6,-1.1,-15.2,-7.7,-14.3,-8.3,-9.8,-1.7,-4.0,-5.7,-8.6,-12.3,-7.0,-13.4,-2.4,-6.9,3.4,-10.9,-1.2,-17.5,3.7,-20.9,17.5,-1.2],[12.5,22.5,2,10,0,0,20.7,-7.1,16.9,-2.1,3.4,-21.3,8.2,-24.9,10.7,-24.5,12.1,-21.9,10.9,-19.2,18.3,-15.7,20.7,-11.4],[46,46,0,0,0,0,6.5,17.7,1.7,10.8,8.6,6.0,13.4,12.8],[15.5,26.5,2,11,0,0,-1.4,-17.7,-1.3,-17.4,3.3,-10.9,-2.4,-7.0,-7.1,-13.7],[15.5,26.5,2,11,0,0,-8.8,-12.5,-8.6,-12.3,-4.1,-5.7,-9.7,-1.8,-14.5,-8.5],[15.5,26.5,2,11,0,0,-15.3,-8.0,-15.2,-7.7,-10.6,-1.2,-16.3,2.8,-21.1,-3.9],[7,10,2,3,0,0,-7.8,20.3,-9.6,17.7,-4.7,14.3,-2.8,16.9],[6,6,0,0,0,0,17.9,-0.6,9.9,5.0,9.5,4.4,17.5,-1.2],[46,70,1,24,0,0,9.7,8.4,11.5,10.9,11.0,14.0,8.4,15.8,5.3,15.3,3.5,12.7,4.1,9.6,6.6,7.8]], IDS = ["hall", "chor-o", "turm", "giebel3", "giebel2", "giebel1", "anbau-sw", "anbau-se", "helm"];/*END*/
+  /*DATA*/const D = [[0,11,0,[-10.5,18.2,-10.4,18.3,-7.1,16.0,-10.6,11.1],7],[0,11,0,[-11.8,18.0,-10.5,18.2,-10.6,11.1],1],[0,11,0,[-24.3,-0.1,-24.4,0.0,-11.8,18.0,-11.8,18.0,-10.6,11.1],7],[0,11,0,[-24.1,-1.4,-24.3,-0.1,-10.6,11.1],1],[0,11,0,[-20.9,-3.7,-24.2,-1.4,-24.1,-1.4,-10.6,11.1,-16.3,2.9],19],[0,11,0,[-4.0,-5.7,-9.8,-1.7,-10.6,-1.1,-16.3,2.9,-10.6,11.1,-2.1,5.1],21],[0,11,0,[-9.8,-1.7,-14.3,-8.3,-15.2,-7.7,-10.6,-1.1],7],[0,11,0,[6.4,-0.8,3.4,-10.9,-2.4,-6.9,-4.0,-5.7,-2.1,5.1,1.4,10.0],18],[0,11,0,[-2.4,-6.9,-7.0,-13.4,-8.6,-12.3,-4.0,-5.7],7],[0,11,0,[13.4,-5.7,3.7,-20.9,-1.2,-17.5,3.4,-10.9],6],[0,11,0,[17.1,-1.1,17.4,-1.3,3.7,-20.9],3],[0,11,0,[13.4,-5.7,16.9,-0.8,17.1,-1.1,3.7,-20.9],3],[0,11,0,[6.4,-0.8,13.4,-5.7,3.4,-10.9],1],[0,11,0,[1.4,10.0,9.8,4.1,6.4,-0.8],3],[0,11,1,[12.0,-18.9,6.0,-17.6,15.2,-4.5,18.5,-9.7,17.1,-15.6],31],[0,11,2,[-6.1,16.4,-6.1,16.4,2.0,10.8,-2.1,5.2],7],[0,11,2,[-7.1,15.9,-7.0,16.2,-6.1,16.4,-2.1,5.2],3],[0,11,2,[-2.1,5.2,-10.5,11.1,-7.1,15.9],3],[0,11,3,[9.9,4.1,10.4,4.9,16.8,0.4,17.0,-0.6,13.4,-5.7],15],[0,11,3,[13.4,-5.7,6.5,-0.8,9.9,4.1],3],[0,11,4,[-1.3,-17.4,-1.4,-17.7,-7.1,-13.7],3],[0,11,4,[-2.4,-7.0,3.3,-10.9,-1.3,-17.4,-7.1,-13.7],11],[0,11,5,[-8.6,-12.3,-8.8,-12.5,-14.5,-8.5],3],[0,11,5,[-9.7,-1.8,-4.1,-5.7,-8.6,-12.3,-14.5,-8.5],11],[0,11,6,[-15.2,-7.7,-15.3,-8.0,-21.1,-3.9],3],[0,11,6,[-16.3,2.8,-10.6,-1.2,-15.2,-7.7,-21.1,-3.9],11],[0,44,7,[8.1,5.9,2.3,10.0,6.3,15.7,12.1,11.7],15],[0,8,8,[-24.4,6.1,-17.5,15.9,-14.7,14.0,-21.6,4.1],15],[0,5,9,[6.0,-17.7,7.4,-18.0,11.2,-20.6,8.3,-24.7,3.4,-21.3],31],[0,15,10,[17.1,-1.1,16.9,0.5,17.7,1.7,19.2,2.0,20.5,1.1,20.8,-0.4,19.9,-1.7,18.4,-1.9],255],[0,14,11,[-27.3,-1.9,-27.5,-0.6,-26.7,0.5,-25.5,0.7,-24.4,-0.1,-24.2,-1.3,-24.9,-2.4,-26.2,-2.6],255],[0,14,12,[-12.8,18.8,-13.0,20.0,-12.3,21.1,-11.0,21.3,-10.0,20.6,-9.7,19.3,-10.5,18.2,-11.8,18.0],255],[0,13,13,[-7.9,16.8,-8.0,17.7,-7.5,18.5,-6.6,18.7,-5.8,18.1,-5.6,17.2,-6.2,16.4,-7.1,16.2],255],[44,44,14,[4.1,8.8,3.6,11.6,5.2,13.9,8.0,14.4,10.3,12.8,10.8,10.0,9.2,7.7,6.4,7.2],255]], T = [[11,24.5,2,13.5,0,0,-2.1,5.1,-10.6,11.1,-7.1,16.0,-10.4,18.3,-10.5,18.2,-11.8,18.0,-11.8,18.0,-24.4,0.0,-24.3,-0.1,-24.1,-1.4,-24.2,-1.4,-20.9,-3.7,-16.3,2.9,-10.6,-1.1,-15.2,-7.7,-14.3,-8.3,-9.8,-1.7,-4.0,-5.7,-8.6,-12.3,-7.0,-13.4,-2.4,-6.9,3.4,-10.9,-1.2,-17.5,3.7,-20.9,17.4,-1.3,17.1,-1.1,16.9,-0.8,13.4,-5.7,6.4,-0.8,9.8,4.1,1.4,10.0],[11,19.5,5,8.5,0,0,18.5,-9.7,15.2,-4.5,6.0,-17.6,12.0,-18.9,17.1,-15.6],[11,19.5,2,8.5,0,1,2.0,10.8,-6.1,16.4,-6.1,16.4,-7.0,16.2,-7.1,15.9,-10.5,11.1,-2.1,5.2],[11,19.5,2,8.5,0,1,17.0,-0.6,16.8,0.4,10.4,4.9,9.9,4.1,6.5,-0.8,13.4,-5.7],[11,19.5,2,8.5,0,0,-1.4,-17.7,-1.3,-17.4,3.3,-10.9,-2.4,-7.0,-7.1,-13.7],[11,19.5,2,8.5,0,0,-8.8,-12.5,-8.6,-12.3,-4.1,-5.7,-9.7,-1.8,-14.5,-8.5],[11,19.5,2,8.5,0,0,-15.3,-8.0,-15.2,-7.7,-10.6,-1.2,-16.3,2.8,-21.1,-3.9],[44,44,0,0,0,0,6.3,15.7,2.3,10.0,8.1,5.9,12.1,11.7],[8,13.5,2,5.5,0,1,-14.7,14.0,-17.5,15.9,-24.4,6.1,-21.6,4.1],[5,8,3,3,0,0,8.3,-24.7,11.2,-20.6,7.4,-18.0,6.0,-17.7,3.4,-21.3],[15,20,1,5,1,0,19.9,-1.7,20.8,-0.4,20.5,1.1,19.2,2.0,17.7,1.7,16.9,0.5,17.1,-1.1,18.4,-1.9],[14,20,1,6,0,0,-24.9,-2.4,-24.2,-1.3,-24.4,-0.1,-25.5,0.7,-26.7,0.5,-27.5,-0.6,-27.3,-1.9,-26.2,-2.6],[14,20,1,6,0,0,-10.5,18.2,-9.7,19.3,-10.0,20.6,-11.0,21.3,-12.3,21.1,-13.0,20.0,-12.8,18.8,-11.8,18.0],[13,17,1,4,0,0,-6.2,16.4,-5.6,17.2,-5.8,18.1,-6.6,18.7,-7.5,18.5,-8.0,17.7,-7.9,16.8,-7.1,16.2],[44,70,1,26,0,0,9.2,7.7,10.8,10.0,10.3,12.8,8.0,14.4,5.2,13.9,3.6,11.6,4.1,8.8,6.4,7.2]], IDS = ["hall", "apsis", "sgiebel1", "sgiebel2", "giebel3", "giebel2", "giebel1", "turm", "anbau-w", "sakristei", "erker", "eckturm2", "eckturm1", "fiale", "helm"];/*END*/
   ISO.landmark('markuskirche', H => {
     const { f2, rnd } = H;
     const P = D.map((d, n) => {
@@ -2573,10 +2573,9 @@ ISO.landmark('heinzvonheidenarena', H => {
 
     /* ---------- Fassaden (Wandkoordinaten: u nach rechts, v nach unten ab Oberkante) ---------- */
     const rect = (x, y, w, h) => `M${f2(x)} ${f2(y)}h${f2(w)}v${f2(h)}h${f2(-w)}z`;
-    const arch = (x, y, w, h) => { const r = w / 2; return h <= r ? rect(x, y, w, h) : `M${f2(x)} ${f2(y + h)}V${f2(y + r)}a${f2(r)} ${f2(r)} 0 0 1 ${f2(w)} 0V${f2(y + h)}z`; };   // Fenster mit Rundbogen
-    const circ = (cx, cy, r) => `M${f2(cx - r)} ${f2(cy)}a${f2(r)} ${f2(r)} 0 1 0 ${f2(2 * r)} 0a${f2(r)} ${f2(r)} 0 1 0 ${f2(-2 * r)} 0z`;
-    const ringDt = (cx, cy, r) => `<path class="dt" d="${circ(cx, cy, r)}"/>`;
-    const spokes = (cx, cy, r) => `<path class="dt" d="${Array.from({ length: 6 }, (_, i) => { const a = i * Math.PI / 3 + .3; return `M${f2(cx + r * Math.cos(a))} ${f2(cy + r * Math.sin(a))}L${f2(cx - r * Math.cos(a))} ${f2(cy - r * Math.sin(a))}`; }).join('')}"/>`;   // Maßwerk der Rose
+    const FRONT = [.57, .82], WEST = [-.82, .573];
+    const archP = (x, y, w, h) => `M${f2(x)} ${f2(y + h)}V${f2(y + w / 2)}A${f2(w / 2)} ${f2(w / 2)} 0 0 1 ${f2(x + w)} ${f2(y + w / 2)}V${f2(y + h)}z`;
+    const disc = (cx, cy, r) => `M${f2(cx - r)} ${f2(cy)}a${f2(r)} ${f2(r)} 0 1 0 ${f2(2 * r)} 0a${f2(r)} ${f2(r)} 0 1 0 ${f2(-2 * r)} 0z`;
     function windows(len, h, o) {
       const { fh, bay, ww, wh, sill, mx } = o, acc = {}, rows = Math.floor((h - (o.top || mx)) / fh);
       if (rows < 1 || len < ww + 2 * mx) return '';
@@ -2586,46 +2585,55 @@ ISO.landmark('heinzvonheidenarena', H => {
         if (yb - wh < .3) continue;
         for (let b = 0; b < nb; b++) {
           const q = rnd(), c = q < o.pOff ? ' off' : q < o.pOff + o.pDim ? ' dim' : q < o.pOff + o.pDim + o.pHi ? ' hi' : '';
-          const key = f + c; (acc[key] = acc[key] || []).push((o.arch ? arch : rect)(off + b * bay, yb - wh, ww, wh));
+          const key = f + c; (acc[key] = acc[key] || []).push((o.arch ? archP : rect)(off + b * bay, yb - wh, ww, wh));
         }
       }
       return Object.entries(acc).map(([k, v]) => { const [f, ...c] = k.split(' '); return `<path class="wn${c.length ? ' ' + c.join(' ') : ''}" data-f="${f}" d="${v.join('')}"/>`; }).join('');
     }
     const vlines = (len, h, step) => { let d = ''; for (let u = step / 2; u < len; u += step) d += `M${f2(u)} 0V${f2(h)}`; return `<path class="dt" d="${d}"/>`; };
     const hlines = (len, ys) => ys.length ? `<path class="dt" d="${ys.map(y => `M0 ${f2(y)}H${f2(len)}`).join('')}"/>` : '';
-    const LIT = { pOff: .52, pDim: .24, pHi: .08 };
-    const NAVE = { fh: 9, bay: 4.4, ww: 1.8, wh: 8.2, sill: 3.0, mx: 2.0, arch: 1, ...LIT };
-    const GABL = { fh: 8.4, bay: 7, ww: 4.4, wh: 5.6, sill: 2.2, mx: 1.2, ...LIT };
-    const TURM = { fh: 9, bay: 3.2, ww: .9, wh: 4, sill: 1.5, mx: 1.4, pOff: .55, pDim: .2, pHi: .05 };
-    const SMALL = { fh: 7, bay: 3.4, ww: 1.4, wh: 4.4, sill: 1.8, mx: 1.2, arch: 1, ...LIT };
-    // Wandfläche mit Normale n (aus Wandrichtung a→b): Südostseite (Eingang, zur Straße) = „front“ des Turms
+    const LIT = { pOff: .50, pDim: .26, pHi: .08 };
+    const NAVE = { fh: 8.4, bay: 5.2, ww: 2.0, wh: 5.6, sill: 2.2, mx: 2.0, arch: 1, ...LIT };
+    const GABL = { fh: 4.6, bay: 3.4, ww: 1.5, wh: 3.4, sill: 1.0, mx: 1.4, arch: 1, ...LIT };
+    const TURM = { fh: 9, bay: 3.4, ww: 1.2, wh: 4.4, sill: 1.5, mx: 1.4, arch: 1, pOff: .55, pDim: .2, pHi: .05 };
+    const SMALL = { fh: 7.4, bay: 3.6, ww: 1.6, wh: 4, sill: 1.6, mx: 1.2, arch: 1, ...LIT };
+    const path = (c, d, f) => `<path class="${c}"${f ? ` data-f="${f}"` : ''} d="${d}"/>`;
+    const ringDt = (cx, cy, r) => path('dt', disc(cx, cy, r));
+    const spokes = (cx, cy, r) => path('dt', Array.from({ length: 6 }, (_, i) => { const a = i * Math.PI / 3 + .3; return `M${f2(cx + r * Math.cos(a))} ${f2(cy + r * Math.sin(a))}L${f2(cx - r * Math.cos(a))} ${f2(cy - r * Math.sin(a))}`; }).join(''));
+    // Wandnormale (wie K.wall: (−dy, dx)); „front“ = Südseite des Turms (Portal), zur Karte hin
     const nrm = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); return [-dy / l, dx / l]; };
     function deco(p, a, b) {
-      const id = IDS[p.part], n = nrm(a, b), front = n[0] * .57 + n[1] * .82 > .75;
+      const id = IDS[p.part], n = nrm(a, b), front = n[0] * FRONT[0] + n[1] * FRONT[1] > .6;
       return (len, h) => {
         if (len < 2.2 || h < 1) return '';
-        if (id === 'turm') {   // Westturm: Eckpfeiler, Schlitze, Portal (Südseite), Uhr, Schallarkaden
-          let s = `<path class="dt" d="M.55 0V${f2(h)}M${f2(len - .55)} 0V${f2(h)}"/>` + hlines(len, [h - 11.5, h - 20, h - 33]);
-          const lit = (d, f, c) => `<path class="wn${c ? ' ' + c : ''}" data-f="${f}" d="${d}"/>`;
-          s += lit(arch(len / 2 - 1.55, 1.8, .95, 5.4) + arch(len / 2 + .6, 1.8, .95, 5.4), 4, rnd() < .5 ? 'hi' : '');       // Schallöffnungen
-          s += `<circle class="clockface" cx="${f2(len / 2)}" cy="${f2(h - 33 + 1.9)}" r="1.25"/>` + ringDt(len / 2, h - 33 + 1.9, 1.7);   // Uhr
-          if (front) s += `<path class="brz" d="${arch(len / 2 - 1.3, h - 6.4, 2.6, 6.4)}"/>` + lit(circ(len / 2, h - 12.8, .95), 3) + ringDt(len / 2, h - 12.8, 1.4);   // Portal und Rose
-          else s += lit(rect(len / 2 - .35, h - 18, .7, 3.4) + rect(len / 2 - .35, h - 27, .7, 3.4), 2) + lit(arch(len / 2 - .45, h - 9, .9, 4), 1, 'dim');
+        if (id === 'turm') {   // Eckpfeiler, Uhr ganz oben, darunter Schallarkaden, unten Portal + Rose (Südseite) (k04, k05)
+          let s = path('dt', `M.7 ${f2(12)}V${f2(h)}M${f2(len - .7)} 12V${f2(h)}`) + hlines(len, [1.0, 12, 20, h - 15]);
+          s += `<circle class="clockface" cx="${f2(len / 2)}" cy="3.2" r="1.35"/>` + ringDt(len / 2, 3.2, 1.8);
+          s += path('wn' + (rnd() < .5 ? ' hi' : ''), archP(len / 2 - 2.0, 5.6, 1.3, 5.6) + archP(len / 2 + .7, 5.6, 1.3, 5.6), 4);
+          if (front) s += `<path class="brz" d="${archP(len / 2 - 1.4, h - 6.6, 2.8, 6.6)}"/>` + path('wn', disc(len / 2, h - 12.6, 1.1), 3) + ringDt(len / 2, h - 12.6, 1.6);
+          else s += path('wn', archP(len / 2 - .4, 14.5, .8, 3.6) + archP(len / 2 - .4, 23, .8, 3.6), 2) + path('wn dim', archP(len / 2 - .45, h - 9, .9, 4), 1);
           return s;
         }
-        if (id.startsWith('giebel')) {   // Giebelfront: Rose, zwei Rundbogenfenster, Lisenen
-          const c = len / 2;
-          return `<path class="dt" d="M.5 0V${f2(h)}M${f2(len - .5)} 0V${f2(h)}M0 6.8H${f2(len)}"/>` + ringDt(c, 3.7, 2.3)
-            + `<path class="wn hi" data-f="4" d="${circ(c, 4.3, 2.0)}"/>` + spokes(c, 4.3, 2.0)
-            + `<path class="wn" data-f="2" d="${arch(c - 2.3, 8.7, 1.5, 5.8)}${arch(c + .8, 8.7, 1.5, 5.8)}"/>`;
+        if (id.startsWith('sgiebel') || id.startsWith('giebel')) {   // Giebelfront: Rose mit Speichen in Bogennische, darunter Arkade (Süd) bzw. zwei Bogenfenster (Nord)
+          const c = len / 2, sud = id.startsWith('s'), rr = Math.min(2.1, len / 4.2), ry = 3.6;
+          let s = path('dt', `M.5 0V${f2(h)}M${f2(len - .5)} 0V${f2(h)}`) + path('dt', archP(c - rr - 1, ry - rr - .6, 2 * rr + 2, h - ry + rr - .4)) + path('wn hi', disc(c, ry + .3, rr), 4) + spokes(c, ry + .3, rr);
+          const wy = ry + rr + 1.2;
+          if (sud) { let d = ''; const n = 5, w = .55, g = (2 * rr + .6) / n; for (let k = 0; k < n; k++) d += archP(c - rr - .3 + k * g + (g - w) / 2, wy, w, 2.2); s += path('wn', d, 2) + hlines(len, [wy + 2.5]);
+            if (h - wy > 6) s += `<path class="brz" d="${archP(c - 1.1, h - 4.2, 2.2, 4.2)}"/>`; }
+          else if (h - wy > 3) s += path('wn', archP(c - 1.9, wy, 1.3, Math.min(5, h - wy - .6)) + archP(c + .6, wy, 1.3, Math.min(5, h - wy - .6)), 2);
+          return s;
         }
-        if (id === 'hall') return windows(len, h, NAVE) + hlines(len, [h - 1.4, 2.0]) + vlines(len, h, 4.4);
+        if (id === 'hall') {
+          if (n[0] * WEST[0] + n[1] * WEST[1] > .8 && len > 6) { const c = len / 2;   // Westgiebel: großes Rundbogenfenster mit Mosaik (k06, k09)
+            return path('wn dim', archP(c - 3.4, 1.2, 6.8, 9.2), 3) + path('dt', archP(c - 4.1, .5, 8.2, 10.5)) + path('dt', `M${f2(c)} 4.6V10.4M${f2(c - 3.4)} 7.6H${f2(c + 3.4)}`); }
+          return windows(len, h, NAVE) + hlines(len, [h - 1.4]); }
+        if (id.startsWith('eckturm') || id === 'fiale' || id === 'erker') return path('wn dim', archP(len / 2 - .25, h * .3, .5, 1.6), 1) + hlines(len, [h - 1.5]);
+        if (id === 'anbau-w') return path('wn dim', archP(len / 2 - 1.2, h - 3.4, 2.4, 3.4), 1) + hlines(len, [h - 1]);
         return windows(len, h, SMALL) + hlines(len, [h - 1.2]);
       };
     }
 
     /* ---------- Dächer ---------- */
-    // senkrechte Giebel-/Wimpergdreiecke mit bekannter Außennormale (K.face verlässt sich bei nz≈0 auf Rundungsrauschen und kann sie umdrehen)
     const shd = (K, nx, ny) => (ny * K.view[0] - nx * K.view[1] >= 0 ? 'fr' : 'sd');
     const vface = (K, pts, nx, ny, mat) => K.facing(nx, ny) <= 1e-6 ? '' : `<path class="${mat} ${shd(K, nx, ny)}" d="${K.path(pts)}Z"/>`;
     const MATS = ['sl', 'cu', 'rs'];
@@ -2634,14 +2642,22 @@ ISO.landmark('heinzvonheidenarena', H => {
       const cx = r.reduce((a, p) => a + p[0], 0) / r.length, cy = r.reduce((a, p) => a + p[1], 0) / r.length;
       const ln = (...pts) => `<path class="dt cu-d" d="${K.path(pts)}"/>`;
       if (shape === 0) {
-        let t = K.poly(r.map(p => [p[0], p[1], zt]), 'st tp');
-        if (q.h === 46) for (let i = 0; i < r.length; i++) {   // Turm: vier Wimperge (Zierlgiebel) unter dem Helm
+        let t = K.poly(r.map(p => [p[0], p[1], zt]), 'pl tp');
+        if (zw === 44) for (let i = 0; i < r.length; i++) {   // Turm: vier Wimperge unter dem Helm
           const a = r[i], b = r[(i + 1) % r.length], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, zt + 4.2];
-          t += vface(K, [[a[0], a[1], zt], [b[0], b[1], zt], m], -(b[1] - a[1]), b[0] - a[0], 'st') + ln([a[0], a[1], zt], m, [b[0], b[1], zt]);
+          t += vface(K, [[a[0], a[1], zt], [b[0], b[1], zt], m], -(b[1] - a[1]), b[0] - a[0], 'pl') + ln([a[0], a[1], zt], m, [b[0], b[1], zt]);
         }
+        if (zw === 44) r.forEach(a => { const dx = Math.sign(cx - a[0]) * .55, dy = Math.sign(cy - a[1]) * .55, q = [[a[0], a[1]], [a[0] + dx, a[1]], [a[0] + dx, a[1] + dy], [a[0], a[1] + dy]];   // Eckfialen
+          for (let i = 0; i < 4; i++) { const A = q[i], B = q[(i + 1) % 4]; t += K.face([[A[0], A[1], zt], [B[0], B[1], zt], [a[0] + dx / 2, a[1] + dy / 2, zt + 5]], 'sl'); } });
         return t;
       }
       if (shape === 1) { let s = ''; for (let i = 0; i < r.length; i++) { const a = r[i], b = r[(i + 1) % r.length]; s += K.face([[a[0], a[1], z], [b[0], b[1], z], [cx, cy, zt]], mat); } return s; }
+      if (shape === 5) {   // Apsis: Zeltdach, Spitze in der Mitte der Sehne (längste Kante) auf Firsthöhe des Chors
+        let bi = 0, bl = 0; r.forEach((p, i) => { const n = r[(i + 1) % r.length], l = Math.hypot(n[0] - p[0], n[1] - p[1]); if (l > bl) { bl = l; bi = i; } });
+        const a0 = r[bi], a1 = r[(bi + 1) % r.length], ap = [(a0[0] + a1[0]) / 2, (a0[1] + a1[1]) / 2, zt];
+        let s = ''; for (let i = 0; i < r.length; i++) { if (i === bi) continue; const a = r[i], b = r[(i + 1) % r.length]; s += K.face([[a[0], a[1], z], [b[0], b[1], z], ap], mat); }
+        return s;
+      }
       if (shape === 4) {
         let R = 0; r.forEach(p => R += Math.hypot(p[0] - cx, p[1] - cy)); R /= r.length;
         const N = 28, KS = 6, pt = (k, i) => { const ph = k / KS * Math.PI / 2, a = i / N * 2 * Math.PI; return [cx + R * Math.cos(ph) * Math.cos(a), cy + R * Math.cos(ph) * Math.sin(a), z + rh * Math.sin(ph)]; };
@@ -2653,34 +2669,51 @@ ISO.landmark('heinzvonheidenarena', H => {
         }
         return s;
       }
-      // Sattel-/Walmdach auf dem Hüllrechteck (längste Kante bestimmt die Firstrichtung)
+      // Sattel-/Walmdach auf dem Hüllrechteck: First entlang der längeren Seite (q.sw dreht um 90°)
       let bi = 0, bl = 0; r.forEach((p, i) => { const n = r[(i + 1) % r.length], l = Math.hypot(n[0] - p[0], n[1] - p[1]); if (l > bl) { bl = l; bi = i; } });
       const e0 = r[bi], e1 = r[(bi + 1) % r.length];
-      let ux = (e1[0] - e0[0]) / bl, uy = (e1[1] - e0[1]) / bl; if (q.sw) [ux, uy] = [-uy, ux];
+      let ux = (e1[0] - e0[0]) / bl, uy = (e1[1] - e0[1]) / bl;
+      const ext = (ux, uy) => { let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9; r.forEach(p => { const u = (p[0] - e0[0]) * ux + (p[1] - e0[1]) * uy, v = -(p[0] - e0[0]) * uy + (p[1] - e0[1]) * ux; u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v); }); return [u0, u1, v0, v1]; };
+      let [u0, u1, v0, v1] = ext(ux, uy);
+      if (u1 - u0 < v1 - v0) { [ux, uy] = [-uy, ux]; [u0, u1, v0, v1] = ext(ux, uy); }
+      if (q.sw) { [ux, uy] = [-uy, ux]; [u0, u1, v0, v1] = ext(ux, uy); }
       const vx = -uy, vy = ux;
-      let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9;
-      r.forEach(p => { const u = (p[0] - e0[0]) * ux + (p[1] - e0[1]) * uy, v = (p[0] - e0[0]) * vx + (p[1] - e0[1]) * vy; u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v); });
       const W = (u, v, zz) => [e0[0] + u * ux + v * vx, e0[1] + u * uy + v * vy, zz], vm = (v0 + v1) / 2, hw = (v1 - v0) / 2;
       const hip = shape === 3 && (u1 - u0) > 2 * hw ? hw : 0;
       const A = W(u0, v0, z), B = W(u1, v0, z), C = W(u1, v1, z), Dd = W(u0, v1, z), R0 = W(u0 + hip, vm, zt), R1 = W(u1 - hip, vm, zt);
       let s = K.face([A, B, R1, R0], mat) + K.face([C, Dd, R0, R1], mat);
-      s += hip ? K.face([B, C, R1], mat) + K.face([Dd, A, R0], mat) : vface(K, [B, C, R1], ux, uy, 'st') + vface(K, [Dd, A, R0], -ux, -uy, 'st');
-      if (mat === 'sl') s += ln(R0, R1) + ln(A, R0) + ln(Dd, R0) + ln(B, R1) + ln(C, R1);   // Kupferpatina an First und Graten
+      s += hip ? K.face([B, C, R1], mat) + K.face([Dd, A, R0], mat) : vface(K, [B, C, R1], ux, uy, 'pl') + vface(K, [Dd, A, R0], -ux, -uy, 'pl');
+      if (mat === 'sl') s += ln(R0, R1);
+      if (rh === 13.5) [[u0, -1], [u1, 1]].forEach(([ue, sg]) => {   // Westgiebel des Langhauses: großes Rundbogenfenster mit Mosaik im Giebelfeld (k06, k09)
+        const nx = ux * sg, ny = uy * sg; if (nx * WEST[0] + ny * WEST[1] < .8 || K.facing(nx, ny) <= 1e-6) return;
+        const pts = [], R = 3.2, zb = z - 6; pts.push(W(ue, vm - R, zb)); for (let k = 0; k <= 12; k++) { const a = Math.PI * k / 12; pts.push(W(ue, vm - R * Math.cos(a), z + 1.5 + R * Math.sin(a))); } pts.push(W(ue, vm + R, zb));
+        s += `<path class="wn dim" data-f="3" d="${K.path(pts)}Z"/><path class="dt" d="${K.path([W(ue, vm, zb), W(ue, vm, z + 1.5 + R)])}${K.path([W(ue, vm - R, z + 1.5), W(ue, vm + R, z + 1.5)])}"/>`;
+      });   // Kupferpatina am First
+      if (shape === 2 && mc === 0) {   // grüne Kupferkante (Ortgang) am zugewandten Giebelende
+        const e = K.facing(ux, uy) > 0 ? [B, R1, C] : K.facing(-ux, -uy) > 0 ? [Dd, R0, A] : null;
+        if (e) s += `<path class="cu-d" fill="none" stroke-width="1.4" d="${K.path(e)}"/>`;
+      }
       return s;
     }
 
     /* ---------- Zeichnen ---------- */
     const draw = K => {
+      // Reihenfolge für den einen Kartenblick: Teile von hinten nach vorn (Tiefe des Teilschwerpunkts), je Teil erst Wände (hinten → vorn), dann Dach.
+      // Das Satteldach des Langhauses überdeckt so die niedrigeren Nordgiebel, Südgiebel/Turm/Chor stehen davor.
+      const [vx, vy] = K.view, dep = (x, y) => x * vx + y * vy;
+      const info = PART.map((q, i) => { const ps = P.filter(p => p.part === i); const cx = q.r.reduce((a, p) => a + p[0], 0) / q.r.length, cy = q.r.reduce((a, p) => a + p[1], 0) / q.r.length; return { i, ps, d: dep(cx, cy), z0: Math.min(...ps.map(p => p.z0)) }; });
+      info.sort((a, b) => (a.z0 - b.z0 > 20 ? 1 : b.z0 - a.z0 > 20 ? -1 : a.d - b.d));
       let s = '';
-      const left = PART.map(() => 0); P.forEach(p => left[p.part]++);
-      order(K).forEach(p => {
-        if (p.z1 - p.z0 > .05) for (let i = 0; i < p.v.length; i++) if (p.m >> i & 1) s += K.wall(p.v[i], p.v[(i + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'st', deco(p, p.v[i], p.v[(i + 1) % p.v.length]));
-        if (--left[p.part] === 0) s += roof(K, PART[p.part]);
+      info.forEach(({ i, ps }) => {
+        ps.slice().sort((a, b) => dep(a.cx, a.cy) - dep(b.cx, b.cy)).forEach(p => {
+          if (p.z1 - p.z0 > .05) for (let k = 0; k < p.v.length; k++) if (p.m >> k & 1) s += K.wall(p.v[k], p.v[(k + 1) % p.v.length], Z0 + p.z0, Z0 + p.z1, 'pl', deco(p, p.v[k], p.v[(k + 1) % p.v.length]));
+        });
+        s += roof(K, PART[i]);
       });
       return s;
     };
     const M = [{ id: 'markuskirche', fp, draw }];
-    return { mods: M, lc: [0, 0], z0: 0, top: [-15, -9, Z0 + 72], pin: [-1, 2, Z0 + 74], label: 'Markuskirche', h: 70, len: 60 };
+    return { mods: M, lc: [0, 0], z0: 0, top: [-15, -9, Z0 + 72], label: 'Markuskirche', h: 70, len: 60 };
   });
 })();
 
