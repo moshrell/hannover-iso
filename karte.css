@@ -126,24 +126,32 @@ html.km-lock { overflow:hidden; }
 }
 @media (min-width:1200px) { .km-grid { grid-template-columns:repeat(4, minmax(0, 1fr)); } }
 
-/* ---------- Über das Projekt ---------- */
+/* ---------- Über das Projekt: ein Haus mit Schieber Nacht ↔ Abendlicht, daneben kurzer Text ---------- */
 .km-page .km-about { padding-top:72px; }
-.km-steps { list-style:none; margin:28px 0 0; padding:0; display:grid; gap:18px; }
-.km-steps li { border-top:1px solid var(--km-line); padding-top:16px; }
-.km-steps h3 { font-size:1.35rem; margin:.4rem 0 .35rem; }
-.km-steps p { margin:0; color:var(--km-mut); font-size:.94rem; line-height:1.6; }
-.km-stats { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; margin:32px 0 0; }
-.km-stats div { border:1px solid var(--km-line); border-radius:14px; padding:14px 12px; }
-.km-stats dt { font:500 .64rem/1.4 var(--km-mono); letter-spacing:.14em; text-transform:uppercase; color:var(--km-mut); }
-.km-stats dd { margin:.3rem 0 0; font:400 clamp(1.5rem, 6vw, 2.6rem)/1 var(--km-serif); color:var(--km-glow); }
-@media (min-width:760px) { .km-steps { grid-template-columns:repeat(3, 1fr); gap:28px; } }
+.km-about { display:grid; gap:28px; }
+.km-cmp { position:relative; margin:0; aspect-ratio:1000 / 965; border-radius:20px; overflow:hidden; border:1px solid var(--km-line); background:var(--km-bg);
+          touch-action:pan-y; cursor:ew-resize; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; }
+.km-cmp img { position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none; -webkit-user-drag:none; }
+.km-cmp-lit { position:absolute; inset:0; clip-path:inset(0 100% 0 0); }
+.km-cmp-line { position:absolute; top:0; bottom:0; left:0; width:2px; margin-left:-1px; pointer-events:none;
+               background:linear-gradient(transparent, var(--km-glow) 18%, var(--km-glow) 82%, transparent); box-shadow:0 0 18px 2px rgba(255,231,163,.45); }
+.km-cmp-knob { position:absolute; top:50%; left:0; width:48px; height:48px; margin:-24px 0 0 -24px; padding:0; border-radius:50%; cursor:ew-resize;
+               border:1px solid var(--km-gold); background:rgba(10,14,12,.86); color:var(--km-glow); display:flex; align-items:center; justify-content:center;
+               box-shadow:0 0 0 6px rgba(255,231,163,.08), 0 0 26px rgba(255,231,163,.35); -webkit-tap-highlight-color:transparent; touch-action:none; }
+.km-cmp-knob svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.km-cmp-knob:focus-visible { outline:2px solid var(--km-glow); outline-offset:4px; }
+.km-cmp figcaption { position:absolute; left:12px; right:12px; bottom:12px; display:flex; justify-content:space-between; pointer-events:none; }
+.km-cmp figcaption span { font:500 .66rem/1 var(--km-mono); letter-spacing:.14em; text-transform:uppercase; color:var(--km-txt);
+                          background:rgba(10,14,12,.75); border:1px solid var(--km-line); border-radius:999px; padding:.55rem .8rem; }
+.km-about h2 { margin:.5rem 0 .9rem; }
+.km-lead { margin:0; font-size:1.05rem; line-height:1.65; max-width:56ch; }
+.km-figs { display:flex; flex-wrap:wrap; gap:6px 26px; margin:1.6rem 0 1.4rem; padding:1.1rem 0; border-block:1px solid var(--km-line); }
+.km-figs span { font:500 .68rem/1.2 var(--km-mono); letter-spacing:.14em; text-transform:uppercase; color:var(--km-mut); }
+.km-figs b { display:block; margin-bottom:.35rem; font:400 clamp(1.8rem, 7vw, 2.6rem)/1 var(--km-serif); letter-spacing:0; text-transform:none; color:var(--km-glow); text-shadow:0 0 22px rgba(255,231,163,.35); }
+.km-cta { margin-top:1.5rem; }
 @media (min-width:1000px) {
   .km-page .km-about { padding-top:110px; }
-  .km-about { display:grid; grid-template-columns:minmax(260px, 300px) 1fr; column-gap:48px; }
-  .km-about-head { grid-row:span 2; }
-  .km-steps { margin:0; }
-  .km-stats { gap:14px; }
-  .km-stats div { padding:20px; }
+  .km-about { grid-template-columns:minmax(0, 1.1fr) minmax(0, 1fr); gap:64px; align-items:center; }
 }
 .km-credit { margin:56px 0 0; padding-bottom:calc(32px + env(safe-area-inset-bottom)); font:.72rem/1.7 var(--km-mono); color:rgba(237,232,221,.5); }
 .km-credit a { color:inherit; }

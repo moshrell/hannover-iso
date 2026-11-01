@@ -153,7 +153,7 @@
   };
   map.addEventListener('pointerup', up); map.addEventListener('pointercancel', up);
   map.addEventListener('dragstart', e => e.preventDefault());
-  map.addEventListener('wheel', e => { e.preventDefault(); hideHint(); const r = map.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0016), e.clientX - r.left, e.clientY - r.top); settle(); }, { passive: false });
+  map.addEventListener('wheel', e => { e.preventDefault(); e.stopPropagation(); hideHint(); const r = map.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0016), e.clientX - r.left, e.clientY - r.top); settle(); }, { passive: false });
   map.addEventListener('dblclick', e => { if (e.target.closest('button') && !e.target.closest('.km-pin')) return; const r = map.getBoundingClientRect(); zoomAt(1.8, e.clientX - r.left, e.clientY - r.top); });
   document.getElementById('zin').addEventListener('click', () => { hideHint(); zoomAt(1.5, map.clientWidth / 2, map.clientHeight / 2); settle(); });
   document.getElementById('zout').addEventListener('click', () => { hideHint(); zoomAt(1 / 1.5, map.clientWidth / 2, map.clientHeight / 2); });
@@ -222,6 +222,8 @@
   document.getElementById('detail-prev').addEventListener('click', () => stepTo(-1));
   document.getElementById('detail-next').addEventListener('click', () => stepTo(1));
   dlg.addEventListener('cancel', e => { e.preventDefault(); closeDetail(); });
+  // Website: eigenes weiches Scrollen hört das Rad am ganzen Fenster ab und würde den Text in der Detailansicht blockieren → Rad hier nicht weitergeben
+  dlg.addEventListener('wheel', e => e.stopPropagation(), { passive: true });
   dlg.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') stepTo(-1); else if (e.key === 'ArrowRight') stepTo(1); });
   dlg.addEventListener('click', e => { if (e.target === dlg && performance.now() - openedAt > 450) closeDetail(); });
   dlg.addEventListener('close', () => {
@@ -274,6 +276,36 @@
     }
   }
   document.querySelectorAll('[data-km-count]').forEach(el => { el.textContent = ORDER.length; });
+
+  /* ---------- Über das Projekt: Schieber Nacht ↔ Abendlicht ---------- */
+  const cmp = document.getElementById('cmp');
+  if (cmp) {
+    const lit = document.getElementById('cmp-lit'), line = document.getElementById('cmp-line'), knob = document.getElementById('cmp-knob');
+    let val = 0, touched = false, demoRaf = 0;
+    const set = v => { val = Math.max(0, Math.min(100, v)); lit.style.clipPath = `inset(0 ${(100 - val).toFixed(2)}% 0 0)`; line.style.left = knob.style.left = val.toFixed(2) + '%'; knob.setAttribute('aria-valuenow', Math.round(val)); };
+    const fromX = x => { const r = cmp.getBoundingClientRect(); set((x - r.left) / r.width * 100); };
+    const stopDemo = () => { touched = true; cancelAnimationFrame(demoRaf); };
+    let drag = null;
+    cmp.addEventListener('pointerdown', e => { stopDemo(); drag = { id: e.pointerId, x: e.clientX, y: e.clientY, on: e.target === knob || e.pointerType === 'mouse' }; if (drag.on) { cmp.setPointerCapture(e.pointerId); fromX(e.clientX); } });
+    cmp.addEventListener('pointermove', e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (!drag.on) { if (Math.abs(e.clientX - drag.x) > 8 && Math.abs(e.clientX - drag.x) > Math.abs(e.clientY - drag.y)) { drag.on = true; cmp.setPointerCapture(e.pointerId); } else return; }   // Telefon: senkrecht wischen scrollt die Seite
+      fromX(e.clientX);
+    });
+    const end = e => { if (drag && e.pointerId === drag.id) { if (!drag.on && e.type === 'pointerup') fromX(e.clientX); drag = null; } };
+    cmp.addEventListener('pointerup', end); cmp.addEventListener('pointercancel', end);
+    knob.addEventListener('keydown', e => { const d = { ArrowLeft: -5, ArrowDown: -5, ArrowRight: 5, ArrowUp: 5, Home: -100, End: 100 }[e.key]; if (d == null) return; e.preventDefault(); stopDemo(); set(val + d); });
+    set(0);
+    // Einmal von selbst aufziehen, sobald der Abschnitt zu sehen ist
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => { if (!es.some(x => x.isIntersecting) || touched) return; io.disconnect();
+        const t0 = performance.now(), D = reduced() ? 900 : 2400, ease = t => 1 - Math.pow(1 - t, 3);
+        const step = now => { if (touched) return; const t = Math.min(1, (now - t0) / D); set(62 * ease(t)); if (t < 1) demoRaf = requestAnimationFrame(step); };
+        demoRaf = requestAnimationFrame(step);
+      }, { threshold: .45 });
+      io.observe(cmp);
+    } else set(62);
+  }
 
   /* ---------- Start ---------- */
   // Eichung: Telefon 390 × 624 (z = 1.5) zeigt 260 × 416 Welteinheiten um den Punkt „Rathaus + START“ (Rathaus groß, darunter ein Stück Maschteich).
